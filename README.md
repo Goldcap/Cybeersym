@@ -20,6 +20,9 @@ src/events.py   adverse-event plugin layer (supply/demand path-transforms)
 src/data/       real fixtures: FRED egg prices, USDA culls + flock transform, seasonality
 src/vNN_*.py    the analysis script that established each version (see CHANGELOG.md)
 src/figures/    one chart per version
+src/bullwhip/   standalone bullwhip module — the recursion channel (own README)
+docs/plans/     implementation specs/plans  (Compound Engineering convention)
+docs/solutions/ solved-problem learnings, searchable before new work
 CHANGELOG.md    the version arc — each version is one finding. START HERE.
 ```
 
@@ -35,6 +38,34 @@ python3 v08_wedge.py                   # the distributional wedge
 Run any `vNN_*.py` from inside `src/`; each regenerates its figure and prints its
 result. They import the engine (`model`, `pricers`, `events`) and data (`data.*`) as
 sibling modules, so `src/` is the working directory.
+
+## Docs & workflow
+
+Work is planned in **Linear** (team **Cybeersym / `CYB`**) and mirrored into version
+control under a [**Compound Engineering**](https://github.com/EveryInc/compound-engineering-plugin)
+docs convention — two folders, each with YAML frontmatter so they're machine-searchable:
+
+- **`docs/plans/`** — one spec/plan per feature, `YYYY-MM-DD-<type>-<slug>-plan.md`
+  with `title / type / status / date` frontmatter. The **Linear ticket is the
+  canonical spec**; the plan file is its version-controlled mirror — spec changes
+  happen in Linear first, then sync here. Each plan closes with the *shipped outcome*
+  (final numbers + commit), so the doc records what was built, not just what was hoped.
+- **`docs/solutions/`** — one reusable **learning** per file (a refuted assumption, a
+  non-obvious fix, a pattern), with richer frontmatter (`category / tags / component /
+  root_cause / …`). These are meant to be read *before* the next build, so mistakes
+  compound into knowledge instead of repeating. This is the "compound" in compound
+  engineering.
+
+The split mirrors this repo's method: a **plan** is the hypothesis, a **solution** is
+what survived contact with the data. Example — the bullwhip module (`src/bullwhip/`)
+was specced in `docs/plans/2026-06-28-feat-bullwhip-v0-recursion-channel-plan.md`
+(tracking `CYB-1`) and its learnings captured in
+`docs/solutions/bullwhip-seeing-is-not-acting.md`.
+
+> **Multi-agent note.** This repo is worked by more than one Claude (Claude Code in the
+> terminal, Claude Desktop in chat). Linear is the shared channel: tickets carry the
+> canonical spec, comments carry the back-and-forth (each agent signs its comments). The
+> repo holds code + committed results; Linear holds the live spec and discussion.
 
 ## The one idea
 
