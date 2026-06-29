@@ -256,6 +256,20 @@ callable and a flat state vector, knowing nothing about supply chains.
   to **CYB-4**; v0 establishes the border-collision identity from the eigenvalue,
   bistability, and constraint-activity evidence.
 
+## Empirical grounding
+
+The control parameter β is not a modelling convenience — it is a *measured* human
+bias. Sterman (1989) fit this exact anchoring-and-adjustment rule to Beer Game players
+and found a **mean supply-line weight β = 0.34** (his β = α_SL/α_s *is* our β), with
+89% of subjects below ⅔; Croson & Donohue (2006) showed the bias persists with every
+operational/stochastic cause stripped out (their lab control is our σ=0 isolation), and
+it survives visibility, training, and disclosed optimal policy (CDKS 2014). So the knob
+we sweep to find chaos is one people demonstrably exhibit — and its measured mean lands
+right at the edge of the instability the model finds. The full cited case (behavioral
+foundation, real-world amplification/oscillation signatures *and* their disconfirming
+caveats, and the honesty firewall on why we do **not** claim to detect chaos directly
+in macro data) is in [`../../docs/empirical_grounding.md`](../../docs/empirical_grounding.md).
+
 ## Scope (v0 deliberately excludes)
 
 Deterministic demand only (noise OFF — chaos must be endogenous; the stochastic
