@@ -17,7 +17,9 @@ itself validated against a map of known exponent first.
 cd src/chaos
 python3 lyapunov.py      # instrument self-test: logistic r=4 -> λ = ln 2
 python3 bifurcation.py   # instrument self-test: logistic period-doubling cascade
-python3 run_v0.py        # the supply-chain result + the three figures
+python3 linearize.py     # instrument self-test: recovers logistic multiplier 2−r
+python3 run_v0.py        # the chaos result (λ>0) + the bifurcation/sensitivity figures
+python3 run_route.py     # names the route: eigenvalues + bistability + phase portraits
 ```
 
 ## The nonlinearity (the chaos generator)
@@ -67,9 +69,10 @@ underweighting):
   **chaotic smear** as β falls. The attractor stays **bounded** the whole way (it
   does not run away).
 * **Bottom — the load-bearing measurement.** The largest Lyapunov exponent is
-  **λ ≈ 0 in the stable/quasiperiodic regime and turns robustly positive
-  (λ up to +0.054 nats/step) below β ≈ 0.26.** The sign change *locates* the onset
-  of chaos. Chaos is *defined* by this, not by the picture looking busy.
+  **λ ≈ 0 on the frequency-locked invariant loop and turns robustly positive
+  (λ up to +0.054 nats/step) below β ≈ 0.26**, where the loop breaks down. The sign
+  change *locates* the onset of chaos. Chaos is *defined* by this, not by the
+  picture looking busy.
 
 ![sensitive dependence](figures/cybeersym_chaos_v0_sensitive_dependence.png)
 
@@ -79,29 +82,70 @@ underweighting):
   visual signature of λ>0); in the stable regime (β=0.32) the same gap **decays**
   back toward the fixed point (→ 1e-11). Same model, opposite verdict, set only by β.
 
-## The route we actually measured (a spec correction the model earned)
+## The route, named rigorously: a border-collision bifurcation (two spec corrections)
 
-The spec's criterion 1 predicted a *pristine logistic-style period-doubling
-cascade* (fixed point → period-2 → period-4 → … → chaos). The model refuted the
-"pristine" part and produced something richer and **more faithful to the
-literature**: a **supercritical Hopf → quasiperiodic → chaos** transition. As β
-crosses onset the fixed-point amplitude grows *continuously from zero* with
-**λ ≈ 0** (the marginal signature of a Hopf bifurcation to a two-frequency torus,
-not a flip to period-2), and only as the torus breaks down — via frequency-locking
-and embedded period-doubled windows — does λ lift clearly positive into chaos.
+The model earned **two** corrections, each by direct measurement (`run_route.py`).
 
-This is exactly what **Mosekilde & Larsen (1988)** report for the beer game:
-quasiperiodicity, torus dynamics, frequency-locking *and* period-doubling — a rich
-bifurcation structure, not a single clean cascade. Period-doubled and periodic
-windows *do* appear (e.g. period-2/4 bands near onset, and a narrow periodic window
-embedded in the chaotic band — the supply-chain analogue of the logistic period-3
-window); they are not the *global* route. Reported as the finding, per the
-project's method — same discipline as CYB-1's "information sharing suppresses but
-does not flatten": let the data refute the spec, and the correction is the result.
+**First correction.** The spec's criterion 1 predicted a *pristine logistic-style
+period-doubling cascade*. Refuted: the onset is not a gentle flip to period-2.
 
-The **load-bearing claim is unaffected**: bounded + aperiodic + λ>0 + deterministic
-+ conserved = deterministic chaos, measured. The route to it is just more
-interesting than the first framing.
+**Second correction.** The natural next guess — a **smooth Neimark–Sacker** (the
+discrete Hopf, a complex eigenvalue pair crossing the unit circle into a
+quasiperiodic torus) — is *also* refuted by direct measurement. Three independent
+confirmations all point elsewhere:
+
+![route diagnosis](figures/cybeersym_chaos_v0_route_diagnosis.png)
+
+1. **(a) Eigenvalues at the physical fixed point never reach the unit circle.**
+   Linearizing the one-step map at the equilibrium (`linearize.py`) and tracking the
+   leading complex pair as β falls: it climbs only to **|λ| ≈ 0.91 (∠ ≈ 40°)** and
+   then the fixed point **loses feasibility** (an inventory / supply line would go
+   negative). A Neimark–Sacker *requires* |λ|→1; here the equilibrium is destroyed
+   **while still linearly stable** — it collides with a switching manifold of the
+   piecewise-linear map.
+2. **(b) Onset is a hard jump with bistability.** The attractor amplitude jumps
+   **0 → ~525 over Δβ ≈ 0.003** (discontinuous, not continuous-from-zero), and just
+   above onset a large cycle **coexists** with the still-globally-stable fixed point
+   (β ∈ [0.295, 0.298]). A supercritical Hopf shows neither; these are the hallmarks
+   of a **hard, hysteretic** transition.
+3. **(c) Geometry.** Delay-embedded phase portraits (below) show the closed
+   invariant loop Desktop's intuition called for — but born via (a)+(b), riding the
+   `order ≥ 0` constraint (the flat segments are the piecewise-smooth fingerprint).
+   Spectra: a single sharp line → a **subharmonic at f/2** (period-doubling *within*
+   the loop) → broadband.
+
+![phase portraits](figures/cybeersym_chaos_v0_phase_portraits.png)
+
+**Verdict: a BORDER-COLLISION bifurcation of a piecewise-smooth map**
+(Zhusubaliyev & Mosekilde) — frequency-locked points → invariant loop →
+frequency-locking / period-doubling → bounded **strange attractor** (λ>0). The
+clamps (`max(0, order)`, `ship = min(inventory, backlog)`) are not a numerical
+nuisance; they **are** the bifurcation mechanism. The structural reason a clean
+logistic cascade never appears: this is a ~21-D *piecewise-smooth* delay system —
+clean period-doubling cascades are a low-dimensional-*smooth*-map phenomenon.
+
+Same discipline as CYB-1's "information sharing suppresses but does not flatten":
+let the data refute the framing — *including a framing handed over by the other
+agent* — and the correction is the sharper, more citable result. The **load-bearing
+claim is unaffected**: bounded + aperiodic + λ>0 + deterministic + conserved =
+deterministic chaos, measured.
+
+## Regime classification (load-bearing for later tickets)
+
+The β axis carries **three** regimes, not two:
+
+| regime | β (at a_S=0.7) | character |
+|--------|----------------|-----------|
+| **stable** | β ≳ 0.30 | equilibrium; perturbations decay |
+| **bounded turbulence** | ~0.30 ≳ β ≳ 0.05 | invariant loop → strange attractor; **goods conserved, amplitude bounded** |
+| **runaway** | β → 0 at aggressive a_S | orders explode to ±thousands before the clamps catch them |
+
+The boundary between *bounded turbulence* and *runaway* is not a footnote. The
+inflation THESIS's **accommodation / reflexivity** channels (forward price
+expectations, validating the price rise) are precisely what would *remove the
+bound* — turning bounded endogenous turbulence into a runaway spiral. This v0
+measures the conserved, bounded regime; a later ticket adds the channel that breaks
+the bound. So this classification is the hook the next mechanism plugs into.
 
 ## Why it's real and not a bug (the validations)
 
@@ -144,11 +188,17 @@ callable and a flat state vector, knowing nothing about supply chains.
   (we want the attractor, not the approach), record the asymptotic local maxima of
   one observable; scatter (control, samples). period-1 → one point; period-2 → two;
   chaos → a vertical smear.
+* **`linearize.py`** — finite-difference Jacobian, fixed-point finders (iteration for
+  the stable regime, Newton for continuation), and eigenvalue extraction. The
+  instrument that *names* the bifurcation. Self-test recovers the logistic
+  multiplier 2−r and fixed point 1−1/r exactly.
 * **`model.py`** — the CYB-1 conserved 3-tier flow with the anchoring-and-adjustment
   ordering rule and deterministic demand. Exposes `get_state` / `set_state` /
   `step_vector` so the instruments can drive it as a pure map.
 * **`run_v0.py`** — instrument self-test → determinism+conservation → bifurcation →
-  λ-vs-β → sensitive dependence → the two figures.
+  λ-vs-β → sensitive dependence → the chaos figures (proves the chaos).
+* **`run_route.py`** — eigenvalues + hard-onset/bistability + phase portraits + FFT
+  (names the route: border-collision).
 
 ## Literature
 
@@ -159,8 +209,14 @@ callable and a flat state vector, knowing nothing about supply chains.
   the instability here.
 * **Mosekilde, E. & Larsen, E. R. (1988), *Deterministic chaos in the beer
   production–distribution model*, System Dynamics Review 4(1–2): 131–147.** Showed
-  the beer game routes to deterministic chaos; documents the **quasiperiodic /
-  torus / frequency-locking** structure we reproduce, not merely a clean cascade.
+  the beer game routes to deterministic chaos; documents the torus / frequency-locking
+  structure — the rich bifurcation behaviour we also see, not a clean cascade.
+* **Zhusubaliyev, Zh. T. & Mosekilde, E. (2003), *Bifurcations and Chaos in
+  Piecewise-Smooth Dynamical Systems*, World Scientific.** The framework for the
+  actual mechanism here: **border-collision bifurcations**, where an equilibrium or
+  cycle collides with a switching manifold (our `max(0, order)` / stockout clamps)
+  and changes type abruptly — hard onset, coexistence, invariant loops born without a
+  smooth Hopf. This is what the eigenvalue + bistability measurements identify.
 
 ## Scope (v0 deliberately excludes)
 

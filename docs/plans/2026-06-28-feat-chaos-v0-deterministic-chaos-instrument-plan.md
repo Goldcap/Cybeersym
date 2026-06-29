@@ -134,15 +134,26 @@ Canonical regime: `a_S=0.7, L=3, θ=0.25`, σ=0, control = β swept 0.34→0.08.
 - **β is the destabilizing control**, exactly as the behavioural story predicts:
   at high β even aggressive `a_S=1.3` stays stable; underweighting the supply line
   is what tips the chain over.
-- **Route to chaos:** supercritical **Hopf → quasiperiodic → chaos** with embedded
-  periodic / period-doubled windows (incl. a narrow periodic window inside the
-  chaotic band) — the rich structure Mosekilde & Larsen (1988) document, *not* a
-  pristine logistic-style period-doubling cascade.
+- **Route to chaos (named rigorously in `run_route.py`):** a **border-collision
+  bifurcation of a piecewise-smooth map** (Zhusubaliyev & Mosekilde) — the
+  equilibrium collides with the order/shipping saturation manifold while still
+  linearly stable (leading complex pair tops out at |λ|≈0.91 ∠40°, never reaching
+  the unit circle); a frequency-locked invariant loop is born (a hard jump, with
+  bistability), then frequency-locks / period-doubles into a bounded strange
+  attractor (λ>0).
 
-**Spec correction this build earned:** criterion 1 predicted a clean
-period-doubling cascade; the model produced a Hopf/quasiperiodic route instead
-(amplitude grows continuously from zero with λ≈0 at onset — the torus signature,
-not a flip to period-2). The load-bearing claim (bounded + aperiodic + λ>0 +
-deterministic + conserved) is unaffected; the route is more faithful to the
-literature than the first framing. See
-[`../solutions/chaos-route-is-hopf-quasiperiodic-not-clean-period-doubling.md`](../solutions/chaos-route-is-hopf-quasiperiodic-not-clean-period-doubling.md).
+### Route confirmations (criterion 6, added at close-out)
+| confirmation | result |
+|---|---|
+| (a) eigenvalues at physical fixed point | leading complex pair \|λ\|≈0.83→0.91 ∠~40°, **never crosses 1**; FP loses feasibility at β≈0.294 → border collision, not Neimark–Sacker |
+| (b) onset character | amplitude jumps **0 → ~525 over Δβ≈0.003**; **bistable** window β∈[0.295,0.298] (cycle coexists with stable FP) → hard / hysteretic, not soft Hopf |
+| (c) geometry | delay embedding: frequency-locked points → **closed invariant loop** (riding the order≥0 constraint) → **strange attractor**; FFT: single line → subharmonic at f/2 → broadband |
+
+**Two spec corrections this build earned.** Criterion 1 predicted a clean
+period-doubling cascade (refuted). The close-out then predicted a smooth
+**Neimark–Sacker** (discrete Hopf) — *also* refuted by direct measurement: the
+eigenvalue pair never reaches |λ|=1 and the onset is a hard, bistable jump. The
+honest mechanism is a **border-collision** in a piecewise-smooth map. The
+load-bearing chaos claim (bounded + aperiodic + λ>0 + deterministic + conserved) is
+unaffected; the route is sharper and more citable than either framing. See
+[`../solutions/chaos-route-is-border-collision-not-smooth-hopf.md`](../solutions/chaos-route-is-border-collision-not-smooth-hopf.md).

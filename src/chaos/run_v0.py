@@ -20,13 +20,15 @@ Runs, in order:
      diverge exponentially in the chaotic regime and stay together in the stable
      regime — the butterfly. Saved.
 
-THE ROUTE WE ACTUALLY MEASURE (reported honestly, per the project's method): a
-*supercritical Hopf -> quasiperiodic -> chaos* transition with embedded periodic
-and period-doubled windows, NOT a pristine logistic-style period-doubling
-cascade. This is the richer structure Mosekilde & Larsen (1988) document for the
-beer game (quasiperiodicity, torus dynamics, frequency-locking). The load-bearing
-chaos claim — bounded, aperiodic, positive Lyapunov, deterministic, conserved —
-holds; the route is more interesting than the spec's first framing. See README.
+THE ROUTE (named rigorously in `run_route.py`, summarized here): NOT a pristine
+period-doubling cascade and NOT a smooth Neimark–Sacker either. Direct measurement
+(eigenvalues at the physical fixed point + a hard, bistable onset) shows a
+**border-collision bifurcation of a piecewise-smooth map** (Zhusubaliyev &
+Mosekilde): the equilibrium collides with the order/shipping saturation manifold
+while still linearly stable (|λ|≈0.91, never reaching the unit circle), giving an
+invariant loop that frequency-locks / period-doubles into a bounded strange
+attractor. This script proves the chaos (λ>0, bounded, sensitive, deterministic,
+conserved); `run_route.py` proves the route. See README.
 
 Run from inside src/chaos/:  python3 run_v0.py
 """
@@ -194,9 +196,10 @@ def main():
     print("\nRESULT: the conserved 3-tier beer game generates DETERMINISTIC CHAOS "
           "endogenously\n  as supply-line underweighting (β↓) increases — measured "
           "λ>0, bounded, aperiodic,\n  sensitive to initial conditions, goods "
-          f"conserved (residual {resid:.1e}). Route: supercritical\n  Hopf → "
-          "quasiperiodic → chaos (Mosekilde & Larsen 1988), not a pristine "
-          "period-doubling cascade.")
+          f"conserved (residual {resid:.1e}). The route is a\n  BORDER-COLLISION "
+          "bifurcation (piecewise-smooth; Zhusubaliyev & Mosekilde) — run "
+          "`run_route.py`\n  for the eigenvalue / bistability / phase-portrait "
+          "evidence that names it.")
 
 
 if __name__ == "__main__":
