@@ -145,9 +145,9 @@ Canonical regime: `a_S=0.7, L=3, θ=0.25`, σ=0, control = β swept 0.34→0.08.
 ### Route confirmations (criterion 6, added at close-out)
 | confirmation | result |
 |---|---|
-| (a) eigenvalues at physical fixed point | leading complex pair \|λ\|≈0.83→0.91 ∠~40°, **never crosses 1**; FP loses feasibility at β≈0.294 → border collision, not Neimark–Sacker |
-| (b) onset character | amplitude jumps **0 → ~525 over Δβ≈0.003**; **bistable** window β∈[0.295,0.298] (cycle coexists with stable FP) → hard / hysteretic, not soft Hopf |
-| (c) geometry | delay embedding: frequency-locked points → **closed invariant loop** (riding the order≥0 constraint) → **strange attractor**; FFT: single line → subharmonic at f/2 → broadband |
+| (a) eigenvalues at physical fixed point | leading complex pair \|λ\|≈0.83→0.91 ∠~40°, **never crosses 1**; equilibrium undergoes no smooth bifurcation (the \|λ\|=1.13 root was a *virtual* equilibrium on an extrapolated branch — caught) |
+| (b) onset character | amplitude jumps **0 → ~525 over Δβ≈0.003**; the turbulent attractor **coexists** with the still-stable FP (**bistability** → endogenous path-dependence) → hard / hysteretic, not soft Hopf |
+| (c) which border + geometry | dominant active border = **order non-negativity** `max(0,·)` (manufacturer orders 0 **42–56%** of steps), stockout secondary (~24%); delay embedding: points → **closed invariant loop** (riding the order≥0 border) → **strange attractor**; FFT: single line → subharmonic at f/2 → broadband |
 
 **Two spec corrections this build earned.** Criterion 1 predicted a clean
 period-doubling cascade (refuted). The close-out then predicted a smooth

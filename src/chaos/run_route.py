@@ -115,12 +115,43 @@ def spectrum(beta, keep=60000):
     return f, P / P.max()
 
 
+def constraint_activity(beta, n=40000, warm=20000):
+    """Which switching manifold does the developed attractor actually collide with?
+    Re-runs the step inline to flag, per tier per step, whether the order saturated
+    at max(0,·) (order non-negativity — you can't un-order) or shipping was
+    inventory-limited (stockout floor). Returns fraction of steps each is active."""
+    p = ChaosParams(beta=beta, a_S=A_S, L=L, theta=THETA)
+    c = ChaosChain(p)
+    order0 = np.zeros(3); stockout = np.zeros(3); steps = 0
+    for t in range(n):
+        incoming = p.mu
+        for i, tier in enumerate(c.tiers):
+            arr = tier.transit_in.popleft(); tier.inventory += arr; tier.on_order -= arr
+            tier.backlog += incoming
+            so = tier.inventory < tier.backlog - 1e-9
+            shipped = min(tier.inventory, tier.backlog); tier.inventory -= shipped; tier.backlog -= shipped
+            if i == 0: c.consumed += shipped
+            else: c.tiers[i - 1].transit_in.append(shipped)
+            tier.D_hat += p.theta * (incoming - tier.D_hat)
+            ind = (tier.D_hat + p.a_S * (p.S_star - (tier.inventory - tier.backlog))
+                   + p.a_SL * (p.L * tier.D_hat - tier.on_order))
+            o0 = ind < -1e-9
+            order = max(0.0, ind); tier.on_order += order
+            if i == p.n_tiers - 1: tier.transit_in.append(order)
+            else: incoming = order
+            if t >= warm:
+                if o0: order0[i] += 1
+                if so: stockout[i] += 1
+        if t >= warm: steps += 1
+    return order0 / steps, stockout / steps
+
+
 # ----------------------------------------------------------------- figures
 def make_figures(out_dir: Path):
     out_dir.mkdir(parents=True, exist_ok=True)
 
     # ---- Figure 1: route diagnosis (eigenvalues + hard onset + spectra) ----
-    betas_eig = np.round(np.arange(0.45, 0.299, -0.005), 4)
+    betas_eig = np.round(np.arange(0.45, 0.2849, -0.005), 4)
     mods, angs, _ = eigen_track(betas_eig)
     onset = 0.5 * (BETA_ONSET_LO + BETA_ONSET_HI)
 
@@ -132,8 +163,9 @@ def make_figures(out_dir: Path):
     axA.plot(betas_eig, mods, "-o", ms=3, color="#1f77b4", label="leading complex pair |λ|")
     axA.axhline(1.0, color="#d62728", lw=1.2, ls="--", label="unit circle |λ|=1 (never reached)")
     axA.axvline(onset, color="gray", lw=1.0, ls=":")
-    axA.annotate(f"FP loses feasibility\n(border collision)\nβ≈{onset:.3f}, |λ|≈{mods[-1]:.2f}",
-                 xy=(onset, mods[-1]), xytext=(0.34, 0.55),
+    axA.annotate(f"FP stays linearly stable\n(|λ|≈{mods[-1]:.2f} < 1) across onset:\n"
+                 f"no smooth bifurcation —\nturbulence is a COEXISTING attractor",
+                 xy=(betas_eig[-1], mods[-1]), xytext=(0.40, 0.66),
                  fontsize=8, arrowprops=dict(arrowstyle="->", color="gray"))
     axA.set_xlabel("β"); axA.set_ylabel("|λ| of leading complex pair")
     axA.set_title("(a) Eigenvalues at the physical fixed point\n"
@@ -200,35 +232,38 @@ def main():
     (p1, p2, mods, angs, betas_eig, onset,
      betas_amp, amp_small, amp_large, bist) = make_figures(out_dir)
 
-    print("[a] EIGENVALUES at the physical fixed point (linearized one-step map)")
-    print(f"    leading complex pair: |λ| rises only to {mods[-1]:.3f} at ∠{angs[-1]:.1f}° "
-          f"(β={betas_eig[-1]}), then the FP loses feasibility.")
-    print(f"    -> the pair NEVER reaches |λ|=1: not a Neimark–Sacker. The equilibrium")
-    print(f"       collides with a switching manifold while linearly stable "
-          f"(border collision).\n")
+    print("[a] EIGENVALUES at the physical (attracting) fixed point")
+    print(f"    leading complex pair stays at |λ|≈{mods[-1]:.3f} (∠{angs[-1]:.1f}°) across the")
+    print(f"    onset region — it NEVER reaches |λ|=1. The equilibrium does not undergo")
+    print(f"    any smooth local bifurcation: no Neimark–Sacker, no flip.\n")
 
-    print("[b] ONSET — hard jump + bistability")
-    j = np.argmax(amp_small > 1) if (amp_small > 1).any() else -1
+    print("[b] ONSET — hard jump + BISTABILITY (the heart of it)")
     print(f"    net-stock amplitude jumps 0 → {amp_large[bist].max() if bist.any() else amp_small.max():.0f} "
-          f"across Δβ≈0.003 (discontinuous).")
+          f"(discontinuous, history-dependent).")
     if bist.any():
-        print(f"    bistable window β∈[{betas_amp[bist].min():.4f},{betas_amp[bist].max():.4f}]: "
-              f"a large cycle coexists with the stable fixed point.")
-    print("    -> hard transition with hysteresis: subcritical / border-collision, not soft.\n")
+        print(f"    bistable window β∈[{betas_amp[bist].min():.4f},{betas_amp[bist].max():.4f}]: a large "
+              f"constraint-riding attractor COEXISTS with the still-stable fixed point.")
+    print("    -> same economy, same parameters: calm OR turbulent depending on history")
+    print("       (endogenous path-dependence / hysteresis). Born by border-collision, not soft Hopf.\n")
 
-    print("[c] PHASE PORTRAITS + SPECTRA (geometry)")
-    print("    delay embedding: frequency-locked points (β=0.29) → closed invariant loop")
-    print("      (β=0.22, riding the order≥0 constraint) → strange attractor (β=0.15).")
-    print("    spectra: single line → subharmonic at f/2 (period-doubling) → broadband.\n")
+    print("[c] WHICH BORDER + geometry")
+    for beta in (0.22, 0.15):
+        o0, so = constraint_activity(beta)
+        print(f"    β={beta}: manufacturer order=0 (can't un-order) active {o0[-1]:.0%} of steps, "
+              f"stockout {so[-1]:.0%}; wholesaler order=0 {o0[1]:.0%}.")
+    print("    -> the dominant active border is ORDER NON-NEGATIVITY (max(0,·) — order")
+    print("       irreversibility), with the stockout floor secondary. The non-smoothness")
+    print("       is the economics. Geometry: points → invariant loop → strange attractor;")
+    print("       spectra: single line → subharmonic at f/2 → broadband.\n")
 
     print(f"    figure -> {p1}")
     print(f"    figure -> {p2}")
-    print("\nVERDICT: BORDER-COLLISION bifurcation in a piecewise-smooth map "
-          "(Zhusubaliyev & Mosekilde)\n  — the equilibrium collides with the "
-          "order/shipping saturation manifold while still linearly\n  stable; the "
-          "born invariant loop frequency-locks and period-doubles into a bounded\n  "
-          "strange attractor (λ>0). NOT a smooth Neimark–Sacker. The piecewise-smooth "
-          "clamps\n  are not a nuisance — they ARE the bifurcation mechanism.")
+    print("\nVERDICT: a BORDER-COLLISION / piecewise-smooth route (Zhusubaliyev & Mosekilde).\n"
+          "  The equilibrium stays linearly stable (|λ|<1) — NOT a Neimark–Sacker. A bounded\n"
+          "  constraint-riding attractor (λ>0) is born abruptly and COEXISTS with it "
+          "(bistability,\n  endogenous path-dependence). The hard borders — dominantly order "
+          "non-negativity\n  (you can't un-order) — are not a nuisance; they ARE the mechanism.\n"
+          "  Formal normal-form (J_L/J_R → Nusse–Yorke) classification continues in CYB-4.")
 
 
 if __name__ == "__main__":

@@ -48,26 +48,31 @@ The model is a **piecewise-smooth** map: `order = max(0, …)` and
 `ship = min(inventory, backlog)` are kinks (switching manifolds). Three independent
 measurements distinguish a *smooth* bifurcation from a *border-collision*:
 
-- **(a) Eigenvalues at the *physical* fixed point.** Linearize the one-step map
-  (finite-difference Jacobian, `linearize.py`) at the equilibrium and track the
-  leading complex pair as β falls. It climbs only to **|λ|≈0.91 (∠≈40°)** and then
-  the fixed point **loses feasibility** (an inventory / supply line would go
-  negative). A Neimark–Sacker *requires* the pair to reach |λ|=1; here it never does
-  — the equilibrium is **destroyed while still linearly stable**, by colliding with
-  a switching manifold. *Pitfall avoided:* Newton can drive the fixed-point solve
-  *through* a kink into an unphysical branch (negative supply line) that has its own
-  (spurious, |λ|>1) eigenvalues — that virtual equilibrium is NOT the real one. Find
-  the physical fixed point by **iteration in the stable regime**, and check
-  feasibility on any Newton-continued root.
-- **(b) Onset is a hard jump with bistability.** Amplitude jumps **0 → ~525 over
-  Δβ≈0.003** (discontinuous), and just above onset a large cycle **coexists** with
-  the still-globally-stable fixed point (verified by running from small vs large
-  initial conditions). Supercritical Hopf = continuous-from-zero and no coexistence;
-  we see the opposite — hard and hysteretic.
-- **(c) Geometry.** Delay-embedded phase portraits show frequency-locked points → a
-  **closed invariant loop** (whose flat segments ride the `order≥0` constraint — the
-  piecewise-smooth fingerprint) → a **strange attractor**. FFT: a single sharp line
-  → a **subharmonic at f/2** (period-doubling *within* the loop) → broadband.
+- **(a) Eigenvalues at the *physical* fixed point never reach the unit circle.**
+  Linearize the one-step map (finite-difference Jacobian, `linearize.py`) at the
+  *attracting* equilibrium (found by iteration) and track the leading complex pair as
+  β falls: it stays at **|λ|≈0.91 (∠≈40°)** clean through the onset region and
+  **never reaches |λ|=1**. The equilibrium undergoes **no smooth local bifurcation**.
+  *Load-bearing pitfall avoided:* a Newton solve found a root with |λ|=1.13 — but
+  that was a **virtual** equilibrium on the *linear extension* of a piece, outside
+  its region of validity (negative supply line). Mistaking it for real would have
+  *falsely confirmed* a Neimark–Sacker. Find the physical fixed point by **iteration
+  in the stable regime**, and check feasibility/branch-validity on any Newton root.
+- **(b) Onset is a hard jump with bistability — and the equilibrium is NOT
+  destroyed.** Amplitude jumps **0 → ~525 over Δβ≈0.003** (discontinuous), and the
+  turbulent attractor **coexists** with the still-stable equilibrium (verified by
+  running from small vs large initial conditions): a constraint-riding attractor is
+  **born alongside** the stable fixed point, not in place of it. Supercritical Hopf =
+  continuous-from-zero and no coexistence; we see the opposite. The coexistence is
+  **endogenous path-dependence / hysteresis** — same parameters, calm or turbulent
+  depending on history (an anti-equilibrium-uniqueness result).
+- **(c) Which border, and geometry.** Instrumenting the developed attractor: the
+  dominant active constraint is **order non-negativity** (`max(0, order)`, "you can't
+  un-order" — manufacturer orders zero **42–56 %** of steps), with the **stockout**
+  floor (`min`-ship) secondary (~24–27 %). Delay-embedded phase portraits show
+  frequency-locked points → a **closed invariant loop** (flat segments riding the
+  `order≥0` border — the piecewise-smooth fingerprint) → a **strange attractor**.
+  FFT: a single sharp line → a **subharmonic at f/2** → broadband.
 
 The structural reason the original logistic cascade never shows up: this is a ~21-D
 **piecewise-smooth delay** system. Clean period-doubling cascades are a

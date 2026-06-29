@@ -96,32 +96,40 @@ confirmations all point elsewhere:
 
 ![route diagnosis](figures/cybeersym_chaos_v0_route_diagnosis.png)
 
-1. **(a) Eigenvalues at the physical fixed point never reach the unit circle.**
-   Linearizing the one-step map at the equilibrium (`linearize.py`) and tracking the
-   leading complex pair as β falls: it climbs only to **|λ| ≈ 0.91 (∠ ≈ 40°)** and
-   then the fixed point **loses feasibility** (an inventory / supply line would go
-   negative). A Neimark–Sacker *requires* |λ|→1; here the equilibrium is destroyed
-   **while still linearly stable** — it collides with a switching manifold of the
-   piecewise-linear map.
-2. **(b) Onset is a hard jump with bistability.** The attractor amplitude jumps
-   **0 → ~525 over Δβ ≈ 0.003** (discontinuous, not continuous-from-zero), and just
-   above onset a large cycle **coexists** with the still-globally-stable fixed point
-   (β ∈ [0.295, 0.298]). A supercritical Hopf shows neither; these are the hallmarks
-   of a **hard, hysteretic** transition.
-3. **(c) Geometry.** Delay-embedded phase portraits (below) show the closed
-   invariant loop Desktop's intuition called for — but born via (a)+(b), riding the
-   `order ≥ 0` constraint (the flat segments are the piecewise-smooth fingerprint).
-   Spectra: a single sharp line → a **subharmonic at f/2** (period-doubling *within*
-   the loop) → broadband.
+1. **(a) The equilibrium's eigenvalues never reach the unit circle.** Linearizing
+   the one-step map at the *attracting* fixed point (`linearize.py`, fixed point
+   found by honest iteration) and tracking the leading complex pair as β falls: it
+   stays at **|λ| ≈ 0.91 (∠ ≈ 40°)** clean through the onset region and **never
+   reaches |λ| = 1.** The equilibrium undergoes **no smooth local bifurcation** — no
+   Neimark–Sacker, no flip. (The *load-bearing* catch: an earlier Newton solve found
+   a root with |λ|=1.13 — but that was a **virtual** equilibrium on the *linear
+   extension* of a piece, outside its region of validity, with a negative supply
+   line. Mistaking it for real would have *falsely confirmed* a Neimark–Sacker. The
+   physical fixed point, found by iteration, is the |λ|≈0.91 one.)
+2. **(b) Onset is a hard jump with bistability — the heart of the result.** The
+   turbulent attractor amplitude jumps **0 → ~525 over Δβ ≈ 0.003** (discontinuous,
+   not continuous-from-zero), and it **coexists** with the still-stable equilibrium:
+   from a small initial perturbation the economy sits calm at the fixed point; from a
+   large one it lands on the turbulent attractor. The equilibrium is never destroyed
+   — a constraint-riding attractor is simply **born alongside it**.
+3. **(c) Which border, and the geometry.** Instrumenting the developed attractor:
+   the dominant active constraint is **order non-negativity** (`max(0, order)` — the
+   manufacturer orders zero **42–56 %** of steps), with the **stockout** floor
+   (`min`-ship) secondary (~24–27 %). Delay-embedded phase portraits (below) show the
+   closed invariant loop Desktop's intuition called for — its flat segments **riding
+   the `order ≥ 0` border** (the piecewise-smooth fingerprint) — breaking down into a
+   strange attractor. Spectra: a single sharp line → a **subharmonic at f/2**
+   (period-doubling *within* the loop) → broadband.
 
 ![phase portraits](figures/cybeersym_chaos_v0_phase_portraits.png)
 
-**Verdict: a BORDER-COLLISION bifurcation of a piecewise-smooth map**
-(Zhusubaliyev & Mosekilde) — frequency-locked points → invariant loop →
-frequency-locking / period-doubling → bounded **strange attractor** (λ>0). The
-clamps (`max(0, order)`, `ship = min(inventory, backlog)`) are not a numerical
-nuisance; they **are** the bifurcation mechanism. The structural reason a clean
-logistic cascade never appears: this is a ~21-D *piecewise-smooth* delay system —
+**Verdict: a BORDER-COLLISION / piecewise-smooth route** (Zhusubaliyev & Mosekilde).
+The equilibrium stays linearly stable; a bounded, constraint-riding attractor
+(invariant loop → frequency-locking / period-doubling → **strange attractor**, λ>0)
+is **born abruptly and coexists** with it. The clamps (`max(0, order)`,
+`ship = min(inventory, backlog)`) are not a numerical nuisance; they **are** the
+mechanism. The structural reason a clean logistic cascade never appears: this is a
+~21-D *piecewise-smooth* delay system —
 clean period-doubling cascades are a low-dimensional-*smooth*-map phenomenon.
 
 Same discipline as CYB-1's "information sharing suppresses but does not flatten":
@@ -129,6 +137,31 @@ let the data refute the framing — *including a framing handed over by the othe
 agent* — and the correction is the sharper, more citable result. The **load-bearing
 claim is unaffected**: bounded + aperiodic + λ>0 + deterministic + conserved =
 deterministic chaos, measured.
+
+## The economic reading (the distinctive part)
+
+The borders are not numerical kinks — they are **real economic constraints**:
+`max(0, order)` is **order irreversibility** (you can't *un-order* stock already
+requested), and `ship = min(inventory, backlog)` is the **stockout floor** (you
+can't ship what you don't have). The measurement above says the turbulence is born
+**dominantly at the order-irreversibility border** (the manufacturer ordering zero
+42–56 % of the time on the attractor). So the finding, stated plainly:
+
+> **The chaos appears when the chain's trajectory starts colliding with its own
+> hard constraints — most of all the inability to send stock back up the line. The
+> non-smoothness *is* the economics.**
+
+This is exactly what smooth / equilibrium models — and most analytical bullwhip
+treatments — *cannot* see: they linearize these constraint surfaces away, so the
+bifurcation that lives *on* them is invisible to them. Cybeersym keeps the
+constraints exact (conservation + the clamps), so it sees the turbulence they hide.
+
+**Endogenous path-dependence (an anti-equilibrium-uniqueness result, for free).**
+Because the turbulent attractor **coexists** with the stable equilibrium
+(bistability), *the same economy at the same parameters can sit calm or turbulent
+depending only on its history.* The state is **not pinned by the parameters** — a
+direct contradiction of equilibrium-uniqueness, and load-bearing for the THESIS
+(history matters; where the economy *is* depends on where it has *been*).
 
 ## Regime classification (load-bearing for later tickets)
 
@@ -217,6 +250,11 @@ callable and a flat state vector, knowing nothing about supply chains.
   cycle collides with a switching manifold (our `max(0, order)` / stockout clamps)
   and changes type abruptly — hard onset, coexistence, invariant loops born without a
   smooth Hopf. This is what the eigenvalue + bistability measurements identify.
+* **Nusse, H. E. & Yorke, J. A. — border-collision normal form** (the foundational
+  piecewise-linear normal form classifying what is born when an orbit hits a
+  switching manifold). The formal one-sided-Jacobian (J_L/J_R) reduction is deferred
+  to **CYB-4**; v0 establishes the border-collision identity from the eigenvalue,
+  bistability, and constraint-activity evidence.
 
 ## Scope (v0 deliberately excludes)
 

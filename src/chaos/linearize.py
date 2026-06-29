@@ -16,12 +16,14 @@ Model-agnostic on purpose (operates on a callable + a flat state vector), like
 `lyapunov.py` and `bifurcation.py` — the next mechanism reuses it unchanged.
 
 WHY THIS MATTERS FOR CYB-2 (the border-collision finding). Whether the supply
-chain's route to chaos is a smooth Hopf/Neimark–Sacker (eigenvalue pair crosses the
-unit circle) or a *border-collision* (the equilibrium hits a switching manifold of
-the piecewise-linear map while still linearly stable) cannot be read off a
-trajectory — it requires the eigenvalues of the linearization at the physical fixed
-point. This instrument supplies them; the verdict was border-collision (the leading
-pair tops out at |λ|≈0.91 and the fixed point loses feasibility before any crossing).
+chain's route to chaos is a smooth Hopf/Neimark–Sacker (a complex eigenvalue pair
+crosses the unit circle) or a *piecewise-smooth border-collision* (a bounded,
+constraint-riding attractor is born abruptly and coexists with the equilibrium)
+cannot be read off a trajectory — it requires the eigenvalues of the linearization
+at the physical fixed point. This instrument supplies them; the verdict was
+border-collision: the leading pair stays at |λ|≈0.91 and **never reaches the unit
+circle**, so the equilibrium undergoes no smooth bifurcation — the turbulence is a
+coexisting attractor (bistability), not a destabilized fixed point.
 
 CAVEAT — piecewise-smooth maps. The model has kinks (`max(0, order)`,
 `ship=min(inventory, backlog)`). The Jacobian is only meaningful where the fixed
