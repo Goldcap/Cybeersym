@@ -168,6 +168,40 @@ Two non-negotiable properties make this rigorous rather than a pretty machine:
 - **Determinism.** Same inputs → same outputs, guarded as a property. If it breaks, that
   is a bug, not noise.
 
+### What conservation forces — the deepest result so far (CYB-4)
+
+The conserved network's first structural result falls straight out of the conservation
+pillar above, and it is sharper than expected. Stock-flow consistency makes the
+**equilibrium non-hyperbolic by construction, for every parameter value**: the conserved
+supply-line quantities are *exact* left-eigenvectors of the linearized step map with
+eigenvalue +1 (one per tier) — a permanent center subspace that no parameter choice
+removes. The consequence generalizes beyond the toy chain: **a conserved-ledger economy
+does not lose stability the textbook way.** There is no smooth local bifurcation of the
+equilibrium — no eigenvalue drifting out through the unit circle as a parameter turns.
+Instead the instabilities are **global**: a turbulent attractor is *born at finite
+amplitude alongside* the still-stable equilibrium, and the system can jump to it. The very
+rigor that makes the model honest (conservation) is what places its dynamics outside the
+standard local-bifurcation toolkit — a structural claim about SFC models as a *class*, not
+a quirk of one chain. (Measured, and shown inapplicable to the Nusse–Yorke normal form, in
+the chaos module; see `src/chaos/` and `docs/solutions/`.)
+
+This delivers, mechanically, a result the equilibrium tradition assumes away: **bistability
+⇒ endogenous path-dependence.** Same parameters, two coexisting fates — calm equilibrium or
+turbulent attractor — with *history* selecting which. Hysteresis and
+anti-equilibrium-uniqueness that the model *produces* rather than postulates (a
+Keynesian-flavored multiplicity, here earned from the structure).
+
+And the ingredient is **measured, not assumed** (the empirical grounding, CYB-3): the
+supply-line-underweighting bias that drives the instability is a real, near-universal human
+behaviour (Sterman's mean β≈0.34, robust across thirty-five years of beer-game
+experiments), and the measured bias sits right at the model's stable→turbulent edge — a
+*qualitative regime correspondence*, not a fitted coincidence (the exact onset β depends on
+the adjustment rate and lead time). The bias is established by others; what the model
+contributes is the instability that bias *implies*. Consistent with the stance throughout:
+validate the ingredients and the mechanism, stay illustrative-not-predictive, and do **not**
+claim to detect chaos in macro data directly — the honesty firewall, and why that 1980s–90s
+detection program failed, is documented in `docs/empirical_grounding.md`.
+
 ## How to evaluate this (the part a skeptic should hold us to)
 
 The honest worry about any rich simulation: *with enough agents and parameters you can

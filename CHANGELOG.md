@@ -70,6 +70,51 @@ channel on top of the budget-share one).
 
 ---
 
+## Module track — conserved-network instruments (CYB-1…4)
+
+The egg model proved the **method** on a validated commodity. This track carries it onto
+the THESIS recursion channel: a conserved producer network with chaos-measurement tooling
+wrapped around it from day one. Standalone modules (`src/bullwhip/`, `src/chaos/`), same
+conservation + determinism discipline. Specs are canonical in Linear (CYB-N); per-module
+READMEs, `docs/plans/`, and `docs/solutions/` carry the detail.
+
+### CYB-1 — recursion / bullwhip v0  ·  `src/bullwhip/`  ·  `bc8946e`
+A 3-tier chain amplifies order variance from demand-signal processing alone: chain ratio
+**local 36.6× → shared 10.9× → coordinated 2.9×**. The finding — *seeing true demand is
+not enough; you have to act on it*: sharing the forecast only **suppresses** compounding;
+only echelon replenishment against true end-demand **flattens** it. Validated against Chen
+et al. (2000) to ~1%, frozen-forecast regression = 1.000, conservation 3.4e-11. (Spec
+earned a correction: two modes → three.)
+
+### CYB-2 — deterministic chaos, nonsmooth onset  ·  `src/chaos/`  ·  `fb5440d`
+Swap the order-up-to rule for Sterman's anchoring-and-adjustment heuristic (noise OFF) and
+sweep the supply-line weight β: the same conserved chain generates **deterministic chaos**
+— positive largest Lyapunov exponent (λ up to +0.054) on a bounded attractor, sensitive
+dependence, byte-deterministic, goods conserved (4.9e-15 rel). The route is a **nonsmooth /
+border-collision onset**, not a smooth Hopf: the equilibrium stays linearly stable
+(|λ|≈0.91, never crosses 1) while a constraint-riding attractor is born **coexisting** with
+it (bistability); the active border is **order non-negativity**. Reusable instruments:
+`lyapunov` (self-test ln2), `bifurcation`, `linearize`. (Two framing corrections earned:
+period-doubling → Neimark–Sacker → border-collision.)
+
+### CYB-3 — empirical grounding  ·  `docs/empirical_grounding.md`  ·  `d01d522`
+The behavioral spine, every claim source-verified: the supply-line-underweighting bias
+driving β is real and measured (Sterman 1989 mean β=0.34, his β=α_SL/α_s **is** our β;
+robust across Croson–Donohue and 35 years), field signatures (amplification, oscillation)
+reported with their disconfirming caveats, and an honesty firewall on why direct
+chaos-detection in macro series failed (so the claim is illustrative, not predictive).
+
+### CYB-4 — formal border-collision classification  ·  `src/chaos/normal_form.py`  ·  `4511b50`
+A reusable, self-tested Nusse–Yorke / Banerjee–Grebogi classifier, and the structural
+finding it produced: the boundary-equilibrium normal form **does not apply** — the
+equilibrium is interior to both switching manifolds and **non-hyperbolic for all β** (three
+eigenvalues pinned at λ=+1, the supply-line conservation law / stock-flow consistency as a
+permanent center subspace). So the onset is a **global nonsmooth event** (a border-collision
+of the coexisting cycle), not a local bifurcation of the equilibrium. **Conservation is the
+obstruction — load-bearing twice.**
+
+---
+
 ## Current stable engine (unversioned — the validated core)
 - `model.py`   — SFC engine, conservation asserts, 5 income quintiles, supplier/store,
                  seasonal-demand hook, commodity-pricer dispatch.

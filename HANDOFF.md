@@ -14,6 +14,45 @@ hypotheses. Wind tunnel, not crystal ball. Working commodity: **eggs** (2022-23 
 2024-25 US HPAI price spikes). Econometrics is the *referee* (out-of-sample
 validation), never the engine.
 
+## Project board & the conserved-network track (CYB-1…5)
+The egg model (below) proved the **method**. The CYB tickets carry it onto the THESIS's
+**recursion channel** — a conserved producer network — with chaos-measurement tooling
+built alongside. *This section is the current front; the egg material below is the
+still-valid foundation.* Specs are **canonical in Linear** (CYB-N, edited in place); the
+**repo is canonical for code + committed results**; no duplicate spec files live in the
+repo. Per-module detail: `src/bullwhip/README.md`, `src/chaos/README.md`,
+`docs/empirical_grounding.md`, `docs/plans/`, `docs/solutions/`.
+
+**Board.** CYB-1 ✅ recursion/bullwhip · CYB-2 ✅ deterministic chaos (nonsmooth onset) ·
+CYB-3 ✅ empirical grounding · CYB-4 ✅ formal classification · CYB-5 (this) ✅ doc sync.
+**Conflict layer = next mechanism, deliberately unspecced.**
+
+**Validated reusable instrument suite** (model-agnostic — operate on a `step(state)→state`
+callable + a flat state vector, knowing nothing about supply chains; every future mechanism
+runs through these): `lyapunov` (largest Lyapunov, self-test → ln 2), `bifurcation`
+(sweeper), `linearize` (finite-diff Jacobian + fixed-point finders, self-test → multiplier
+2−r), `normal_form` (border-collision classifier, self-test on 3 documented 2-D cases).
+
+**Key findings to date.**
+- **Bullwhip amplification (CYB-1).** A 3-tier chain compounds order variance from
+  demand-signal processing alone (local 36.6× → shared 10.9× → coordinated 2.9×): *seeing*
+  true demand suppresses but does not flatten — only *acting* on it (echelon replenishment)
+  flattens. The standalone **oracle** the integrated SFC version must later reproduce.
+- **Deterministic chaos via a nonsmooth onset (CYB-2).** Sterman's anchoring rule + falling
+  supply-line weight β → measured chaos (λ>0, bounded, deterministic, conserved). The
+  equilibrium **never destabilizes** (|λ|≈0.91, never crosses 1); a constraint-riding
+  attractor is born **coexisting** with it (**bistability**); the active border is **order
+  non-negativity** (you can't un-order).
+- **The conservation finding (CYB-4) — the deepest result so far.** Stock-flow consistency
+  makes the equilibrium **non-hyperbolic for all parameters** (three exact λ=+1
+  supply-line-conservation eigenvectors = a permanent center subspace). So the model's
+  instabilities are **global** (coexisting attractors, bistability, hysteresis), *not*
+  local smooth bifurcations. The rigor (conservation) is what puts the dynamics outside the
+  standard local-bifurcation toolkit — a structural claim about SFC models as a class.
+- **Empirical spine (CYB-3).** The β bias is measured-real (Sterman β≈0.34, near-universal,
+  robust 35 yrs) and sits at the model's stable→turbulent edge; illustrative-not-predictive,
+  with an honesty firewall on why direct chaos-detection in macro data fails.
+
 ## Current validated state (don't re-derive — build on this)
 - **Conservation** holds to <1e-10 (money + egg residuals). This is the crown jewel.
   Every refactor must keep the asserts in `model.py:step()` green. If they ever fire,
@@ -80,6 +119,19 @@ earned the same number honestly). Rules:
   independent episodes, then run *counterfactuals* — not point forecasts.
 
 ## Open threads (named; most blocked on data, not cleverness)
+
+**Conserved-network track (current front):**
+- **Formal global-bifurcation proof.** The chaos onset is a nonsmooth fold of a
+  *coexisting limit cycle*, not a local bifurcation of the equilibrium (CYB-4). Classifying
+  / proving this rigorously — in a ~21-D piecewise-smooth, non-hyperbolic, conserved map —
+  is the prime **external-mathematician validation** candidate (piecewise-smooth /
+  nonsmooth-dynamics specialist). The honest limits are already documented (`docs/solutions/`).
+- **Conflict layer** — the next inflation channel (social transmission; wage-price / share
+  fight). Deliberately unspecced; the next mechanism ticket.
+- **SFC integration of the bullwhip oracle** — fold CYB-1's standalone 3-tier chain into the
+  conserved engine so the integrated model reproduces the measured amplification ratios.
+
+**Egg model (mostly blocked on data, not cleverness):**
 1. **NASS monthly layer-inventory series** → retires the calibrated `replace_lag`, pins
    the 2024-25 deficit. Scattered across monthly Chickens-and-Eggs PDFs + Quick Stats
    API (`quickstats.nass.usda.gov`). Data archaeology, ~1hr. *Now doable from Claude
@@ -103,6 +155,9 @@ earned the same number honestly). Rules:
    amplification in a 3-tier supply chain** — real, industry-measured, absent from
    equilibrium treatment), with the chaos-measurement instrument wrapped around it from
    day one. Prove the instrument on one phenomenon, then grow the economy around it.
+   *Status: the minimal first brick is built — CYB-1 (bullwhip amplification) and CYB-2
+   (deterministic chaos) on a standalone conserved chain, with the Lyapunov / bifurcation /
+   linearize / normal-form instrument suite (CYB-2/4) already validated and reusable.*
 
 ## Suggested immediate next move
 Pull the NASS layer-inventory series (#1). It's the one calibrated assumption left, it's
