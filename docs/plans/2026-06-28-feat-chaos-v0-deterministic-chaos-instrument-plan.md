@@ -56,9 +56,17 @@ possible.
 
 ## Acceptance criteria
 
-1. **Period-doubling cascade.** Deterministic demand (σ=0, perturbed off
-   equilibrium), a bifurcation diagram over the control parameter shows the route
-   to chaos.
+> Criterion 1 was **corrected twice** during the build (off period-doubling, then
+> off smooth Neimark–Sacker → **border-collision in a piecewise-smooth map**). The
+> text below is the *condensed* mirror; the measured route + classification is in
+> **Outcome** at the bottom and in the canonical Linear spec (CYB-2).
+
+1. **A measured route to chaos** (route characterized empirically, not assumed).
+   Deterministic demand (σ=0, perturbed off equilibrium); a bifurcation diagram over
+   β shows a clear route from stable fixed point to chaos, with the λ-sign-change at
+   onset. *Measured route: a **border-collision bifurcation** — the equilibrium stays
+   linearly stable and a constraint-riding attractor is born coexisting with it
+   (bistability); NOT period-doubling, NOT a smooth Neimark–Sacker. See Outcome.*
 2. **Positive Lyapunov in the chaotic regime.** λ<0 stable/periodic, λ>0 chaotic;
    the sign change locates onset. **Load-bearing** — chaos is defined by λ>0.
 3. **Sensitive dependence, shown directly.** ε-separated runs diverge exponentially
