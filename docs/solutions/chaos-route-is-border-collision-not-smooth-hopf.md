@@ -118,6 +118,10 @@ constraints bite at onset (as here), border-collision wins.
    is where that refutation is surfaced and reconciled — not silently overridden.
 
 ## References
+- **Follow-up (CYB-4):** the formal normal-form attempt found the boundary-equilibrium
+  Nusse–Yorke form does *not* apply — the equilibrium is interior to both manifolds and
+  **non-hyperbolic** (a λ=1 supply-line-conservation center subspace, ∀β). See
+  [[conserved-map-equilibrium-is-non-hyperbolic-so-border-collision-normal-form-doesnt-apply]].
 - Code: `src/chaos/` — `lyapunov.py`, `bifurcation.py`, `linearize.py` (all
   self-tested); `model.py` (`step_vector`); `run_v0.py` (proves the chaos);
   `run_route.py` (names the route: eigenvalues + bistability + phase portraits + FFT).

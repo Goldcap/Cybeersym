@@ -20,6 +20,8 @@ python3 bifurcation.py   # instrument self-test: logistic period-doubling cascad
 python3 linearize.py     # instrument self-test: recovers logistic multiplier 2−r
 python3 run_v0.py        # the chaos result (λ>0) + the bifurcation/sensitivity figures
 python3 run_route.py     # names the route: eigenvalues + bistability + phase portraits
+python3 normal_form.py   # instrument self-test: documented border-collision cases
+python3 bcb_classify.py  # CYB-4 formal classification (FP interior + non-hyperbolic)
 ```
 
 ## The nonlinearity (the chaos generator)
@@ -138,6 +140,56 @@ agent* — and the correction is the sharper, more citable result. The **load-be
 claim is unaffected**: bounded + aperiodic + λ>0 + deterministic + conserved =
 deterministic chaos, measured.
 
+## Formal normal-form classification (CYB-4): what the theory can and cannot certify
+
+CYB-2 named the route a border-collision four empirical ways. CYB-4 asks the formal
+question: can we put it in the **Nusse–Yorke piecewise-linear normal form** — compute
+the two one-sided Jacobians `J_L`, `J_R` at the collision and *name* the bifurcation
+type from theory? The honest answer, earned by measurement (`bcb_classify.py`), is
+**no — and we can say exactly why**, which is itself the result:
+
+1. **No boundary equilibrium.** The normal form classifies a fixed point sitting *on*
+   the switching manifold. This model's equilibrium never reaches one: at the FP every
+   tier orders exactly μ=100 (flow balance — far from the `order≥0` border) and the
+   stockout margin stays ≈129 (far from the ship border), for **all β through onset**.
+   The FP is robustly **interior** to both manifolds.
+2. **The equilibrium is non-hyperbolic.** Tracking the *full* 21-D spectrum (CYB-2
+   tracked only the complex pair) reveals **three eigenvalues pinned at λ=+1 for every
+   β** — eps-robust, and identified as the per-tier supply-line conservation functional
+   `on_order − Σ(in-transit)`. That is **stock-flow consistency showing up as a
+   permanent 3-D center subspace.** The rest of the spectrum tops at |λ|≈0.92 and never
+   crosses the unit circle. So the equilibrium undergoes **no local bifurcation at all**
+   at onset — not a smooth Neimark–Sacker/flip/fold, and not a boundary-equilibrium
+   border-collision (it is neither on the border nor hyperbolic). Newton continuation
+   confirms the FP stays **feasible and interior below onset** — iteration fails only
+   because its basin collapses (this *is* the bistability).
+3. **The N-D → 2-D reduction is not sanctioned.** Even setting (1)–(2) aside, reducing
+   the ~21-D map to the 2-D normal form by projecting onto the dominant eigenplane is
+   *not a theorem* — and specifically not when a **complex pair** dominates, as here
+   (Simpson et al. 2025: the only sanctioned N-D robust-chaos reduction is to a 1-D skew
+   tent map, requiring a dominant *real* eigenvalue). The probe makes this concrete: the
+   one-sided Jacobians `J_L`, `J_R` differ in **only two rows** — the manufacturer's
+   `on_order` (the λ=1 conservation direction) and its newest transit slot (a λ=0
+   deadbeat). The **oscillatory plane is identical across the border** (|λ|=0.945 ∠40°
+   on both sides), so a 2-D normal form built on the active mode sees *no collision*;
+   the difference that exists lives in the conservation mode no dissipative normal form
+   admits. A naive dominant-modulus reduction simply locks onto that λ=1 mode and
+   returns a degenerate, spurious verdict.
+
+**Formal verdict.** The onset is **not** a Nusse–Yorke boundary-equilibrium
+border-collision. It is a **global, nonsmooth onset**: a constraint-riding attractor is
+born at finite amplitude and **coexists** with the still-stable equilibrium
+(bistability/hysteresis) — a border-collision (nonsmooth fold) **of the limit cycle**,
+not of the fixed point. This **sharpens** CYB-2 (whose settled framing was already "the
+equilibrium stays linearly stable, the attractor coexists") and bounds it with a
+rigorous statement of what the formal machinery can certify. The reusable 2-D classifier
+(`normal_form.py`) is validated against three documented cases (robust chaos,
+period-doubling, closed invariant curve) before being pointed at the model — the same
+discipline as the other instruments. *Deeper note: that the obstruction is supply-line
+**conservation** — the SFC ledger that makes this model rigorous — is the same property
+that puts its equilibrium outside the standard piecewise-smooth classification. The
+conservation law is load-bearing twice over.*
+
 ## The economic reading (the distinctive part)
 
 The borders are not numerical kinks — they are **real economic constraints**:
@@ -232,6 +284,14 @@ callable and a flat state vector, knowing nothing about supply chains.
   λ-vs-β → sensitive dependence → the chaos figures (proves the chaos).
 * **`run_route.py`** — eigenvalues + hard-onset/bistability + phase portraits + FFT
   (names the route: border-collision).
+* **`normal_form.py`** — reusable Nusse–Yorke / Banerjee–Grebogi border-collision
+  classifier: one-sided `(τ, δ)` pairs → bifurcation type (persistence / nonsmooth fold
+  / period-doubling / closed invariant curve / robust chaos), via Feigin's rules.
+  Self-tested on three documented 2-D cases. The N-D reduction is a flagged heuristic,
+  not a theorem.
+* **`bcb_classify.py`** — CYB-4 formal analysis: proves the equilibrium is interior to
+  both borders and non-hyperbolic (3× λ=1, supply-line conservation) ∀β, so the
+  boundary-equilibrium normal form does not apply; plus the one-sided-Jacobian probe.
 
 ## Literature
 
@@ -250,11 +310,20 @@ callable and a flat state vector, knowing nothing about supply chains.
   cycle collides with a switching manifold (our `max(0, order)` / stockout clamps)
   and changes type abruptly — hard onset, coexistence, invariant loops born without a
   smooth Hopf. This is what the eigenvalue + bistability measurements identify.
-* **Nusse, H. E. & Yorke, J. A. — border-collision normal form** (the foundational
-  piecewise-linear normal form classifying what is born when an orbit hits a
-  switching manifold). The formal one-sided-Jacobian (J_L/J_R) reduction is deferred
-  to **CYB-4**; v0 establishes the border-collision identity from the eigenvalue,
-  bistability, and constraint-activity evidence.
+* **Nusse, H. E. & Yorke, J. A. (1992), *Border-collision bifurcations including
+  "period two to period three"…*, Physica D 57(1–2):39–57; (1995), Int. J. Bifurcation
+  and Chaos 5(1):189–207.** The foundational piecewise-linear normal form for what is
+  born when an orbit hits a switching manifold. **Banerjee & Grebogi (1999), Phys. Rev.
+  E 59(4):4052–4061** give the 2-D trace/determinant classification (with Feigin's
+  rules); **Banerjee, Yorke & Grebogi (1998), Phys. Rev. Lett. 80(14):3049–3052** the
+  robust-chaos region; **Patra & Banerjee (2009)** the closed-invariant-curve
+  (Neimark–Sacker-analogue) regime. `normal_form.py` implements and self-tests this
+  classifier. **CYB-4** applied it and found the formal normal form does *not* apply
+  here — the equilibrium is interior to both manifolds and **non-hyperbolic** (a 3-D
+  λ=1 supply-line-conservation center subspace, ∀β), and the N-D→2-D reduction is
+  unsanctioned for a dominant complex pair (**Simpson et al., *Phys. Lett. A* 2025**;
+  **Simpson, *SIAM Review* 58(2):177–226, 2016** for the N-D normal form). The onset is
+  a coexisting-attractor (cycle) border-collision, not a boundary-equilibrium one.
 
 ## Empirical grounding
 
