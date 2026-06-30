@@ -118,6 +118,11 @@ constraints bite at onset (as here), border-collision wins.
    is where that refutation is surfaced and reconciled — not silently overridden.
 
 ## References
+- **Sibling channel (CYB-6):** the *conflict* transmission channel has the **opposite**
+  dynamical signature — a stable real equilibrium with the instability in the nominal
+  level (not bounded chaos in real quantities), and again a clamp (the nominal-wage
+  floor) is the structural border. See
+  [[conflict-channel-is-nominal-level-instability-not-real-chaos]].
 - **Follow-up (CYB-4):** the formal normal-form attempt found the boundary-equilibrium
   Nusse–Yorke form does *not* apply — the equilibrium is interior to both manifolds and
   **non-hyperbolic** (a λ=1 supply-line-conservation center subspace, ∀β). See
