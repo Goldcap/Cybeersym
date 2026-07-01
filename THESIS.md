@@ -91,9 +91,14 @@ region at a time.
 
 - **Buffering / absorption.** Slack, inventories, imports, spare capacity — a shock can
   be *absorbed* rather than propagated. This is the off-switch on recursion, not a
-  separate pillar. It is not hypothetical here: the egg model's unfittable *saturation*
-  at deep deficits was the +2,040% import surge acting as a buffer that capped the
-  price. Every transmission channel has a corresponding absorption that can null it.
+  separate pillar. The candidate here was the egg price's apparent *saturation* at deep
+  deficits — the +2,040% import surge and demand destruction at $6 eggs plausibly capping
+  the price. Honestly tested, though, that curvature did **not** survive an out-of-sample
+  model comparison on the full price path (CYB-14): it shows only between the two episode
+  peaks and is within-noise at the path level, so the linear pricer is kept. If buffering
+  bent the egg response, two episodes cannot yet resolve it — a plausible mechanism is a
+  hypothesis until the data earns it. Every transmission channel still has a corresponding
+  absorption that can null it; this one is noted, not claimed.
 
 **The 2×2, at a glance**
 
@@ -116,12 +121,108 @@ social   │  CONFLICT                │  REFLEXIVITY             │
 model produces inflation." It is "the *same* trigger dissipates or cascades depending on
 which cells are active and what state the network is in." That is the *"and when"*
 question — the one orthodox framing leaves to judgment — rendered as a controllable
-experiment. The build order follows the table: isolate
-**recursion** first (bullwhip — clean, measured, equilibrium-impossible), prove the
-instrument detects and characterizes it, *then* add **conflict** (a wage-setting layer)
-and see if it amplifies, then the sustaining channels (**reflexivity**, then
-**accommodation**). One mechanism at a time, each validated before the next — the same
-discipline that built the egg model, never the whole tangle at once.
+experiment. The build order follows the table: isolate **recursion** first (bullwhip —
+clean, measured, equilibrium-impossible), prove the instrument detects and characterizes
+it, *then* add **conflict** (a wage-setting layer), *then* couple the two, and only after
+that reach for the sustaining channels (**reflexivity**, then **accommodation**). One
+mechanism at a time, each validated before the next — the same discipline that built the
+egg model, never the whole tangle at once.
+
+Both transmission channels are now built and, as of the coupling, the "and when" is no
+longer a promissory note — the same subthreshold trigger provably dissipates or ignites
+depending on which cells are live. The next section is what that build taught us.
+
+## From map to mechanism — what building the channels revealed
+
+The taxonomy above is a map. Building its first region has begun to turn it into a
+mechanism, and the discoveries came in a definite order, each riding the one
+non-negotiable below all of them: the conserved ledger. That ledger is not bookkeeping
+hygiene. It is load-bearing, and the first thing it taught us is that a stock-flow-consistent
+economy *does not lose stability the way the textbook says* — its equilibrium is
+non-hyperbolic by construction, so its instabilities are global rather than local (the
+conservation result, CYB-4, detailed under "Why a conserved network" below). Everything
+that follows inherits that fact.
+
+**The two transmission channels are dynamical opposites.** Built as isolated modules,
+recursion and conflict did not turn out to be two flavors of the same instability — they
+destabilize orthogonal halves of the economy. Recursion — the input-output supply chain
+(CYB-1/2) — destabilizes the **real** side: given the documented supply-line-underweighting
+bias it generates bounded, deterministic *quantity* chaos while goods stay conserved to
+machine precision, and prices are not yet even in the story. Conflict — the wage-price
+share fight (CYB-6, `015f6e7`) — destabilizes the **nominal** side: the real distribution
+settles to a *stable node* (the realized wage share sits still, strictly between what
+workers and firms each claim) while the price *level* runs away, a sustained spiral whose
+rate matches the Rowthorn–Lavoie conflicting-claims closed form, `π* = (α_w·α_p/(α_w+α_p))·g`,
+to machine precision. Same conserved-ledger discipline, opposite dynamical character. That
+is a structural dichotomy, not two labels on a list — and it is the fact the coupling later
+turns to account.
+
+**Every channel rides a real economic constraint as its switching manifold.** In each
+module, the feature that generates the interesting dynamics is not a smooth nonlinearity
+but a hard constraint — something agents institutionally *cannot* do — acting as a
+switching border. Recursion's chaos rides order non-negativity: you cannot un-order, and
+that clamp (not any smooth term) is the active border at the onset (CYB-2). Conflict's
+inflationary *bias* rides downward nominal wage rigidity: strip it and the mechanism is
+symmetric — inflation for a positive aspiration gap, equal-and-opposite deflation for a
+negative one — and it is precisely the floor (wages don't fall) that suppresses the
+deflation side, converting the symmetric law into a dissipate-below / transmit-above
+*threshold* at gap zero (CYB-6). And CYB-4's non-hyperbolicity rides the conservation
+clamp itself. The pattern is consistent enough to state as a claim: **the constraints ARE
+the dynamical structure.** The economics is not decoration on the mathematics; the
+institutional facts about what agents can't do are exactly where the mathematics lives.
+
+**Real data grounded the egg model — and unmasked an error we hadn't seen.** While the
+channels were being built, the egg foundation was pushed the other way, from model to
+data, and the data returned the favor. Retiring the model's one fitted timing parameter —
+the flock-replacement lag — against the real USDA-NASS monthly layer-inventory series
+*improved* the peak timing with **zero** free timing parameters (CYB-7, `591b364`): the
+timing had been in the flock stock all along. But the same swap exposed something the
+old, apparently-good fit had hidden. The magnitude had been matched by **two canceling
+~2× errors** — a synthetic flock deficit roughly twice too large, multiplied by a pricer
+slope roughly half what the data demands. Feeding the real (smaller) deficit made the
+undershoot visible; recalibrating the slope against it (CYB-9, `c21b2d6`) replaced the
+lucky pair with two independently-correct numbers. A model with many free parameters would
+have silently re-fit and buried the cancellation. The **few-meaningful-parameters-on-a-
+conserved-substrate** design is exactly what let the error surface — and when we then asked
+whether the residual concavity at the two peaks was real, an out-of-sample model comparison
+on the full price path *declined* the extra parameter as within-noise (CYB-14). The
+discipline cuts both ways: it made us fix a hidden error and it stopped us from inventing
+structure the data doesn't support. Parsimony here is not an aesthetic preference; it is
+the property that lets the data refute you.
+
+**The channels compose super-additively — the payoff.** Coupling the two transmission
+channels (CYB-10, `109c998`) is where the taxonomy stops being a catalog. Held apart,
+neither ignites a subthreshold shock: the supply chain has no nominal channel at all, and
+the conflict layer, started below its gap threshold, dissipates. Coupled through a single
+link — the chain's scarcity raising firms' target margin, which widens the distributional
+gap — they ignite a *sustained* wage-price spiral in a region where **neither channel alone
+produces any inflation**. The emergence is not an artifact of gluing two models together:
+at zero coupling the composed system reproduces each part *byte-for-byte* (the decoupling
+regression), so the inflation that appears at positive coupling is genuinely a property of
+the interaction, not of the plumbing. And the mechanism is sharper than "amplification." A
+transient amplified shock, however large, dissipates; only recursion's **endogenous**
+instability — the self-sustaining bullwhip attractor — holds the distributional gap open
+long enough to ignite the spiral. Recursion doesn't merely amplify the trigger, it
+**sustains** it; its bounded real chaos is a *persistent-scarcity generator*, and conflict
+is the machine that converts persistent real scarcity into sustained nominal inflation. The
+real chaos even leaks into the nominal path — the resulting inflation is itself aperiodic.
+The taxonomy's promise — *the same trigger dissipates or cascades depending on which cells
+are live* — is, in the coupled model, a measured fact rather than a hope.
+
+**How these were found, and where the discipline stops.** None of the above was the prior
+we started with. Each finding arrived as the model *refuting* a confident framing — the
+chaos onset was expected to be a period-doubling cascade, then a smooth Hopf, and measured
+to be a nonsmooth border-collision; the coupling was framed as shock-amplification and
+measured to be endogenous sustaining; the pricer was expected to saturate and measured to
+be linear. Every refutation moved the same direction — from *external* to *endogenous*,
+from *local* to *global*, from *smooth* to *nonsmooth* — which is itself a result about
+where the interesting structure of a conserved economy lives. The model tells us; our
+priors don't. And the discipline knows its own boundary: the single genuinely hard formal
+claim — rigorously classifying the global bifurcation on a ~21-dimensional, non-hyperbolic,
+conserved piecewise-smooth map, where the standard normal-form reduction is not even a
+theorem — is **gated for external expert review** (CYB-13), not ground out unsupervised.
+The honesty firewall below is not a disclaimer bolted on at the end; it is how the work was
+done.
 
 ## What this is NOT claiming (the disclaimers that keep it honest)
 

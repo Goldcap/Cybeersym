@@ -68,9 +68,37 @@ caveats: eggs alone are a small absolute burden (but proxy the food-at-home bask
 income range; substitution asymmetry — the poor can't substitute, a second regressive
 channel on top of the budget-share one).
 
+## v0.9 — real flock stock retires `replace_lag`  ·  `v09_real_flock.py`, `data/nass_layers.py`  ·  `591b364` (CYB-7)
+Replaced the model's one fitted timing parameter with the **real USDA-NASS monthly
+table-egg layer-inventory series** (`CHICKENS, LAYERS, TABLE - INVENTORY`, national),
+deseasonalized against the 2020-21 pre-outbreak normal. The deficit peaks land **2023-01
+and 2025-03 — both real price peaks — with zero timing parameters**, and fed through the
+model reproduce both peak months; ep1 is now *exact* (the synthetic lag path peaked a
+month early). The committed fixture was verified byte-for-byte against a live Quick Stats
+pull. Crossing from clean-room to observational data (the CYB-3 honesty firewall now
+load-bearing); claim stays *mechanism reproduces the episode*, not price prediction.
+
+## v0.10 — recalibrate the pricer slope on real deficits  ·  `v10_pricer_recal.py`  ·  `c21b2d6` (CYB-9)
+The real deficits are ~half the synthetic ones, so the frozen slope now undershot. The
+honest split (calibrate on ep1, freeze, validate OOS on ep2): slope **13 → 24.1**, which
+independently matches the raw deficit-price ratio. **Timing survives; magnitude degrades
+honestly and is NOT re-tuned** — the single linear slope overshoots ep2 OOS (+316% vs
++272%). Framed as a **compensating-error pair split into two correct values**: CYB-7 fixed
+the ~2×-too-large deficit, CYB-9 the ~2×-too-small slope. The pre-CYB-7 scripts (v05-v08)
+are pinned to slope=13 to preserve their historical figures.
+
+## v0.11 — does the pricer saturate? (model comparison)  ·  `v11_saturation.py`  ·  `8deba75` (CYB-14)
+The ep2 overshoot hinted mild concavity at the two peaks. Tested honestly as a
+**linear-vs-concave model comparison** — calibrate both on ep1's full monthly *path*,
+freeze, validate OOS on ep2's path. Verdict: **concavity does NOT generalize → keep
+linear.** The nested power form's free exponent lands at α≈1.03 (not concave); the
+forced-concave saturating form is worse OOS. The curvature lives only *between* the two
+peaks, within-noise at the path level. Parsimony as a positive result: the data supports
+one pricer parameter, not two. (The 2015 bonus point wasn't available — NASS series starts 2020.)
+
 ---
 
-## Module track — conserved-network instruments (CYB-1…4)
+## Module track — conserved-network instruments & channels (CYB-1…10)
 
 The egg model proved the **method** on a validated commodity. This track carries it onto
 the THESIS recursion channel: a conserved producer network with chaos-measurement tooling
@@ -113,26 +141,57 @@ permanent center subspace). So the onset is a **global nonsmooth event** (a bord
 of the coexisting cycle), not a local bifurcation of the equilibrium. **Conservation is the
 obstruction — load-bearing twice.**
 
+*(CYB-5 ✅ doc-sync propagated CYB-1…4 into HANDOFF/THESIS/CHANGELOG. CYB-13 🔒 the formal
+global-bifurcation proof is gated for an external mathematician — not a Claude Code build.)*
+
+### CYB-6 — conflict layer, the second transmission channel  ·  `src/conflict/`  ·  `015f6e7`
+Wage-price conflicting claims over a conserved pie (wage share + profit share = 1). The
+**real wage share is a stable node; the instability is purely nominal** (a sustained
+price-level spiral) — the *opposite* dynamical character to CYB-2's bounded real chaos.
+Steady rate matches the Rowthorn–Lavoie closed form `π*=(α_w·α_p/(α_w+α_p))·g` to 6e-17.
+The pure mechanism is symmetric (inflation/deflation ∝ gap); the **nominal-wage floor**
+(downward rigidity) breaks the symmetry, creating the dissipate-below / transmit-above
+threshold at gap=0 — a real constraint as the switching manifold, echoing CYB-2's border.
+First cross-module reuse of the CYB-2 instrument suite, self-tested before use.
+
+### CYB-10 — recursion × conflict coupling, super-additive ignition  ·  `src/coupling/`  ·  `109c998`
+Couple the two transmission channels one-way (chain scarcity `d(t)` raises the aspiration
+gap: `g(t)=g0+κ·d(t)`). A *subthreshold* shock that neither channel alone ignites lights a
+**sustained wage-price spiral** — inflation emergent from a pair whose parts don't inflate.
+The **κ=0 decoupling regression reproduces CYB-2 and CYB-6 byte-for-byte**, so the emergence
+is real, not a composition artifact. Sharpened mechanism: recursion's *endogenous*
+instability is a **persistent-scarcity generator** — a transient shock dissipates, only the
+self-sustaining bullwhip holds `g>0`, so recursion **sustains, doesn't just amplify**; the
+real chaos leaks into the nominal path (π aperiodic — a positive H2 preview). Both
+conservation laws hold simultaneously through the ignited regime (<2e-15).
+
 ---
 
 ## Current stable engine (unversioned — the validated core)
 - `model.py`   — SFC engine, conservation asserts, 5 income quintiles, supplier/store,
                  seasonal-demand hook, commodity-pricer dispatch.
-- `pricers.py` — commodity pricer registry; `EGG_PRICING` (linear_deficit, slope 13);
-                 `### TODO(saturation)` for the next egg property.
+- `pricers.py` — commodity pricer registry; `EGG_PRICING` (linear_deficit, slope **24.1**,
+                 real-deficit-calibrated, CYB-9); `power_deficit`/`saturating_deficit` are
+                 the CYB-14 comparison forms (concavity tested, not adopted).
 - `events.py`  — adverse-event plugin layer: pure supply/demand path-transforms,
                  multiplicative composition, registry, load-time validation.
-- `data/`      — real fixtures: FRED prices, USDA culls + flock transform, seasonality.
+- `data/`      — real fixtures: FRED prices, **NASS monthly layer inventory** (the flock
+                 stock, CYB-7), USDA culls + flock transform, seasonality.
+- `conflict/`, `coupling/` — the two transmission-channel modules (CYB-6, CYB-10),
+                 standalone; reuse the `chaos/` instrument suite unchanged.
 
 ## Open threads (named, mostly blocked on data, not cleverness)
-1. **NASS monthly layer-inventory series** — would retire the calibrated `replace_lag`
-   and pin the 2024-25 deficit (data archaeology: scattered monthly PDFs + a host the
-   sandbox can't reach directly).
-2. **Saturation term** — egg pricer `markup = slope·deficit**alpha` (alpha≈0.65), once
-   (1) lands. An egg-commodity property like `slope`.
-3. **Cost-matrix / third channel** — real feed-cost / natural-gas series into
+1. ~~**NASS layer-inventory series** → retire `replace_lag`.~~ **DONE (CYB-7, v0.9).**
+2. ~~**Saturation term** in the egg pricer.~~ **DONE (CYB-14, v0.11) — tested & rejected;
+   keep linear.**
+3. **Formal global-bifurcation proof (CYB-13)** — 🔒 GATED for an external mathematician
+   (post-July-6); do NOT solo-build.
+4. **Sustaining channels** — reflexivity (expectations), then accommodation (money/credit;
+   the CYB-16 seed / monetarism critique). Plus the **CYB-10 follow-ups**: characterize the
+   H2 chaos-leakage (spectra), and bidirectional coupling.
+5. **Cost-matrix / third channel** — real feed-cost / natural-gas series into
    structural cost accounting (seam marked in `events.py`).
-4. **Distributed virtual economy** — the "Distributive" half of the repo title:
+6. **Distributed virtual economy** — the "Distributive" half of the repo title:
    suppliers/stores as services, an event-sourced ledger as the conserved spine
    (= the MMT state balance sheet), ensemble runs + chaos measurement (Lyapunov,
    attractor stats) for *illustrative-not-predictive* validation. A separate project;
