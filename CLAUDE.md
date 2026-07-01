@@ -42,11 +42,13 @@ python3 v08_wedge.py                   # the distributional wedge
 - **Timing validated out-of-sample**: same model + same params reproduce both the 2022-23
   (peak Jan 2023) and 2024-25 (peak Mar 2025) peaks. 2024-25 was never fit.
 - **Magnitude** bracketed by the single egg slope, ~linear and mildly *saturating* — NOT
-  convex (that was an artifact of pricing off `1/(1-deficit)`). Slope was ~13% price per
-  1% flock deficit *against the synthetic deficit*; on the **real** NASS deficit (~half the
-  synthetic) it re-characterizes to **~24%/pt** and the frozen pricer undershoots (CYB-7) —
-  the pricer-slope recalibration against real deficits is now an open thread, deliberately
-  not re-tuned to preserve the honesty of the `replace_lag` retirement.
+  convex (that was an artifact of pricing off `1/(1-deficit)`). Slope recalibrated against
+  the **real** NASS deficit: **~24%/pt** (`EGG_PRICING["slope"]=24.1`, CYB-9), calibrated on
+  ep1 (2022-23). The old ~13 was calibrated off the ~2×-too-large *synthetic* deficit — a
+  compensating-error pair (too-big deficit × too-small slope); CYB-7 fixed the deficit,
+  CYB-9 the slope. **OOS finding:** the single linear slope *overshoots* ep2 (+316% vs real
+  +272%) — reality is mildly **concave** (ep1 24.7%/pt → ep2 22.5%/pt); a saturating pricer
+  term is the next open thread (deliberately NOT added in CYB-9 — one parameter only).
 - **Distributional wedge**: ~5.5× regressive (poorest vs richest quintile), as a *read-out*
   over the validated price path × real income/egg-share data — not the engine's households.
 
@@ -66,13 +68,15 @@ python3 v08_wedge.py                   # the distributional wedge
   `hpai_culls.flock_deficit_path(replace_lag=…)` remains only for the v09 side-by-side.
 
 ## Next move & open threads (see HANDOFF.md for full detail)
-Done: `replace_lag` retired via the real NASS flock series (CYB-7). Open threads:
-**recursion × conflict coupling** (the two transmission channels interacting); the **formal
-global-bifurcation proof** (external-mathematician candidate, deepens CYB-4); **recalibrate
-the egg pricer slope** against real deficits (~24%/pt, currently undershooting — deliberately
-untouched by CYB-7); then saturation term → cost-matrix third channel → accommodation /
-reflexivity (the sustaining channels) → the distributed virtual economy. Pull real data from
-source APIs (FRED/NASS) directly now — a NASS QuickStats key is required (env `NASS_API_KEY`).
+Done: `replace_lag` retired via the real NASS flock series (CYB-7); egg pricer slope
+recalibrated to ~24/pt on real deficits (CYB-9). Open threads: **saturating (concave) egg
+pricer** — CYB-9's ep2 OOS overshoot measured the concavity, so a `slope·deficit**α` /
+`A(1−e^{−k·deficit})` term is now warranted (its own ticket; not a within-noise over-fit
+anymore); **recursion × conflict coupling** (CYB-10, design-first); the **formal
+global-bifurcation proof** (CYB-12 seed, deepens CYB-4 — Desktop wants this first); then
+cost-matrix third channel → accommodation / reflexivity (the sustaining channels) → the
+distributed virtual economy. Pull real data from source APIs (FRED/NASS) directly now — a
+NASS QuickStats key is required (env `NASS_API_KEY`).
 
 ## Conventions
 - Public repo, MIT: github.com/Goldcap/Cybeersym.

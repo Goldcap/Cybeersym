@@ -15,12 +15,19 @@ with whatever knobs the commodity declares. Milk names its own pricer + slope;
 microchips name theirs. The engine never learns what an egg is.
 
 EMPIRICAL BASIS for the egg pricer (validated across two independent HPAI episodes):
-retail egg price rises ~13% per 1 percentage-point of missing flock capacity,
-roughly LINEAR in the deficit (mildly saturating), NOT convex. See oos_test.py:
-  2022-23 peak: 13% deficit -> +188%  (14.5%/pt)
-  2024-25 peak: 23% deficit -> +272%  (11.8%/pt)
-The earlier convex miss came from pricing off flow_gap = 1/(1-deficit); keying off
-the deficit directly removes that artifact.
+retail egg price rises roughly LINEARLY in the missing-flock fraction (mildly
+SATURATING), NOT convex. The slope is calibrated against the REAL NASS flock deficit
+(CYB-7/CYB-9), out-of-sample discipline preserved (calibrate on ep1, validate on ep2):
+  2022-23 peak (calibration):  7.6% real deficit -> +188%  (~24.7%/pt)
+  2024-25 peak (out-of-sample):12.1% real deficit -> +272% (~22.5%/pt)
+Calibrated on ep1 -> slope ~24.1; on the OOS ep2 the single linear slope OVERSHOOTS
+(+~317% vs +272%), which quantifies the mild saturation (see TODO below).
+NOTE ON THE 13 -> 24 RE-CHARACTERIZATION: the old ~13 was calibrated off the
+synthetic cull-reconstruction deficit, which was ~2x too large (a compensating error:
+too-big deficit x too-small slope ~= right price). CYB-7 fixed the deficit (real, ~half);
+CYB-9 fixed the slope (~24) — two independently-correct values replace the pair. The
+earlier convex miss came from pricing off flow_gap = 1/(1-deficit); keying off the
+deficit directly removes that artifact.
 """
 from typing import Callable, Dict
 
@@ -54,18 +61,18 @@ PRICER_REGISTRY: Dict[str, Callable] = {
 # --------------------------------------------------------------------------- #
 EGG_PRICING = {
     "pricer": "linear_deficit",
-    "slope":  13.0,     # ~13% retail rise per 1% flock deficit (validated 2 episodes)
+    "slope":  24.1,     # % retail rise per 1% REAL flock deficit; calibrated on ep1 (CYB-9)
     "hi":     40.0,
 }
-### TODO(saturation): a single LINEAR slope can't fit both episodes exactly —
-### reality is mildly CONCAVE in the deficit (13% deficit -> 14.5%/pt; 23% -> 11.8%/pt).
-### At extreme scarcity the response flattens: demand destruction ($6+ eggs) and an
-### import surge (Jan-Mar 2025 egg imports +2,040% YoY) cap the price. A saturating
-### form (markup = slope * deficit**alpha, alpha~0.65, or A*(1-exp(-k*deficit)))
-### would capture it — alpha is then an egg-commodity property like slope. Deferred:
-### the ep2 deficit rests partly on ESTIMATED 2025 cull months, so the curvature is
-### within data uncertainty; not worth over-fitting two points until the real NASS
-### monthly layer-inventory series pins the ep2 deficit down.
+### TODO(saturation): a single LINEAR slope calibrated on ep1 OVERSHOOTS ep2 out-of-sample
+### (+~317% vs real +272%) — reality is mildly CONCAVE in the deficit (ep1 7.6% -> ~24.7%/pt;
+### ep2 12.1% -> ~22.5%/pt). At extreme scarcity the response flattens: demand destruction
+### ($6+ eggs) and an import surge (Jan-Mar 2025 egg imports +2,040% YoY) cap the price. A
+### saturating form (markup = slope * deficit**alpha, or A*(1-exp(-k*deficit))) would capture
+### it — alpha then an egg-commodity property like slope. Now that the REAL NASS deficit pins
+### both episodes down (CYB-7), the concavity is measured, not within-noise — a real (small)
+### effect. Deferred as its own ticket; CYB-9 deliberately fit ONE parameter (the slope) and
+### reported the overshoot rather than adding alpha to absorb it.
 
 
 def resolve(spec: dict) -> Callable:

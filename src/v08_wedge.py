@@ -19,7 +19,10 @@ from data.eggs_fred import window
 P = Params(store_up=0.06, store_hi=2.5)
 deficit = flock_deficit_path(DEPOP_FULL, replace_lag=12)
 f = seasonal_factor(); demand = [f[k % 12] for k in range(len(deficit))]
-e = run(P, warmup=24, cull_path=deficit, demand_path=demand)
+# historical (pre-CYB-7): synthetic replace_lag=12 deficit + slope=13, pinned so this
+# frozen wedge figure reproduces after CYB-9 recalibrated EGG_PRICING's slope to 24.1.
+e = run(P, warmup=24, cull_path=deficit, demand_path=demand,
+        pricing={"pricer": "linear_deficit", "slope": 13.0, "hi": 40.0})
 labels, _ = window((2022,1),(2025,12))
 midx = [(int(l[:4])-2022)*12 + (int(l[5:7])-1) for l in labels]
 price_idx = (np.array(e.hist["retail"][24:24+len(deficit)]) / e.p0)[midx]   # 2021=1

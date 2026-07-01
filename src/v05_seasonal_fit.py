@@ -12,8 +12,12 @@ deficit6  = flock_deficit_path(replace_lag=6)    # naive: recovers too fast
 deficit12 = flock_deficit_path(replace_lag=12)   # data-plausible effective lag
 
 # data-foundational model: real culls + seasonal demand + 12mo effective lag
+# historical (pre-CYB-7): synthetic-deficit path + slope=13 (the compensating-error
+# pair, superseded by the real-data pipeline v09/v10). Pinned so this frozen figure
+# still reproduces after EGG_PRICING's slope was recalibrated to 24.1 in CYB-9.
 e = run(Params(supp_up=8.0, store_up=0.06, store_hi=2.5, supp_hi=30.0),
-        warmup=24, cull_path=deficit12, demand_path=demand_path)
+        warmup=24, cull_path=deficit12, demand_path=demand_path,
+        pricing={"pricer": "linear_deficit", "slope": 13.0, "hi": 40.0})
 m = np.array(e.hist["retail"][24:48])/e.p0
 corr = np.corrcoef(m, r)[0,1]
 

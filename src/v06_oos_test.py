@@ -8,7 +8,11 @@ from data.eggs_fred import window
 P = Params(supp_up=8.0, store_up=0.06, store_hi=2.5, supp_hi=30.0)
 deficit = flock_deficit_path(DEPOP_FULL, replace_lag=12)
 f = seasonal_factor(); demand = [f[k%12] for k in range(len(deficit))]
-e = run(P, warmup=24, cull_path=deficit, demand_path=demand)
+# historical (pre-CYB-7): synthetic replace_lag=12 deficit + slope=13, pinned so this
+# frozen figure reproduces after CYB-9 recalibrated EGG_PRICING's slope to 24.1.
+# Superseded by v09 (real NASS deficit) + v10 (recalibrated slope).
+e = run(P, warmup=24, cull_path=deficit, demand_path=demand,
+        pricing={"pricer": "linear_deficit", "slope": 13.0, "hi": 40.0})
 model = np.array(e.hist["retail"][24:24+len(deficit)])/e.p0
 labels, real_all = window((2022,1),(2025,12)); _, b21 = window((2021,1),(2021,12))
 real = np.array(real_all)/np.mean(b21)

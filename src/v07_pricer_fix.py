@@ -16,7 +16,10 @@ midx=[(int(l[:4])-2022)*12+(int(l[5:7])-1) for l in labels]
 e_old=run(P,warmup=24,cull_path=deficit,demand_path=demand,
           pricing={"pricer":"proportional_flowgap","slope":8.0,"hi":40.0})
 m_old=(np.array(e_old.hist["retail"][24:24+len(deficit)])/e_old.p0)[midx]
-e_new=run(P,warmup=24,cull_path=deficit,demand_path=demand)   # default = EGG_PRICING slope 13
+# historical (pre-CYB-7): pinned to slope=13 (was the EGG_PRICING default) so this frozen
+# figure reproduces after CYB-9 recalibrated EGG_PRICING to 24.1. Superseded by v09/v10.
+e_new=run(P,warmup=24,cull_path=deficit,demand_path=demand,
+          pricing={"pricer":"linear_deficit","slope":13.0,"hi":40.0})
 m_new=(np.array(e_new.hist["retail"][24:24+len(deficit)])/e_new.p0)[midx]
 x=np.arange(len(labels))
 
