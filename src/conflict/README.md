@@ -61,23 +61,52 @@ goods residual and CYB-2's, and the conserved quantity is again load-bearing
 `ω_f = 0.65` (markup `m ≈ 0.538`), `α_w = α_p = 0.30`, `dt = 1`, one-off price
 trigger `+10%`.
 
-### 1. Transmission threshold (the headline)
+### 1. The order parameter — a symmetric mechanism, and the rigidity that breaks it (the headline)
 
-A one-off price trigger (the egg/HPAI cost-shock analog) either dies or ignites,
-depending only on the aspiration gap:
+**The pure mechanism is symmetric.** Strip the floor and the sustained rate is a
+signed, symmetric function of the aspiration gap — a straight line through the origin:
 
-| gap `g` | claims | one-off trigger → | steady inflation `π*` |
-|--------:|--------|-------------------|----------------------:|
-| `−0.10` | compatible   | **dissipates** | `0.000` |
-| `0`     | borderline   | dissipates     | `0.000` |
-| `+0.06` | incompatible | **transmits**  | `+0.009` |
-| `+0.10` | incompatible | transmits      | `+0.015` |
-| `+0.12` | incompatible | transmits      | `+0.018` |
+```
+π* = k·g        inflation for g > 0,  deflation for g < 0,  exactly 0 at g = 0
+```
 
-**`g = 0` is the dissipation→transmission border.** *A trigger becomes inflation
-only if it is transmitted; conflict is the transmitter.* The realised wage share
-settles strictly **between** `ω_w` and `ω_f` — neither side gets its claim, and the
-gap is paid as perpetual inflation.
+There is *no dissipation asymmetry* in the pure conflict mechanism. Compatible-and-
+then-some claims (`g < 0`) do not "dissipate" — they run a **sustained deflation**,
+the exact signed mirror of the `g > 0` inflation. Inflation and deflation are the same
+mechanism with the sign of the gap flipped.
+
+**The nominal-wage floor breaks the symmetry.** Wages are downward-rigid —
+`ŵ = max(0, α_w·(ω_w − ω))` — so the deflation side is suppressed: when claims are
+compatible (`g ≤ 0`) the floor binds, wages stop falling at `ω_f`, and inflation
+dissipates to **exactly 0** instead of going negative; when claims are incompatible
+(`g > 0`) the floor is slack and never binds, so that side is unchanged. That single
+one-sided clamp is what converts the symmetric signed line into a **transmission
+threshold with an inflationary bias**:
+
+| gap `g` | claims | pure mechanism `π*` | with wage floor → |
+|--------:|--------|--------------------:|-------------------|
+| `−0.12` | compatible   | `−0.018` (deflation) | **dissipates** to `0.000` |
+| `−0.10` | compatible   | `−0.015` (deflation) | dissipates to `0.000` |
+| `0`     | borderline   | `0.000`              | `0.000` (the border) |
+| `+0.06` | incompatible | `+0.009`             | `+0.009` (floor slack) |
+| `+0.10` | incompatible | `+0.015`             | `+0.015` (unchanged) |
+| `+0.12` | incompatible | `+0.018`             | `+0.018` (unchanged) |
+
+**`g = 0` is the dissipation→transmission border** — and it is a *piecewise-smooth*
+border (a kink in the multiplier at `g = 0`, see §3), **created by the floor**, in
+the same spirit as CYB-2's order-non-negativity border and CYB-4's conservation
+clamp. *A one-off price trigger (the egg/HPAI cost-shock analog) becomes sustained
+inflation only if it is transmitted (`g > 0`); the floor is what turns the `g ≤ 0`
+side from deflation into dissipation.* The realised wage share settles strictly
+**between** `ω_w` and `ω_f` — neither side gets its claim, and the gap is paid as
+perpetual inflation.
+
+The floor is a **named, load-bearing economic feature**, not a modeling default:
+**downward nominal wage rigidity** — Tobin's "greasing the wheels" case that a little
+inflation lubricates real-wage adjustment (Tobin 1972), and the Akerlof, Dickens &
+Perry (1996) near-rational model of it. Naming its specific marginal contribution —
+it *is* the asymmetry, and therefore the inflationary bias — is the **second finding**
+of this module, not a footnote to the first.
 
 ### 2. Steady rate = the conflicting-claims closed form (to machine precision)
 
@@ -93,7 +122,7 @@ across **36** `(g, α_w, α_p)` combinations, **max |measured − closed form| =
 `π* = α_p·(ω*−ω_f)`.) This is the conflict layer's Chen-et-al.: an independent
 analytic target the simulation reproduces exactly.
 
-### 3. What the dynamics actually are (measured, not assumed)
+### 3. What the dynamics actually are — a stable real node, an unstable nominal level (measured, not assumed)
 
 Run through the reused instruments, the verdict is **the opposite of CYB-2**:
 
@@ -109,18 +138,31 @@ at the constant rate `π*` while `ω` sits still. Recursion (CYB-2) makes the *r
 quantities chaotic and bounded; conflict makes the *nominal* level unstable and the
 real quantity calm. Two transmission channels, two opposite dynamical signatures.
 
-### The nominal-wage floor is load-bearing (a piecewise-smooth finding)
+### The through-line — the real economic constraints are the switching manifolds
 
-With the floor **OFF**, the rule is symmetric and `g < 0` produces steady
-**deflation** (the mirror of `g > 0` inflation) — the closed form is signed. The
-spec's criterion 1 ("`g ≤ 0` dissipates") is delivered specifically by the
-**nominal-wage floor**: when claims are compatible the floor binds, wages stop
-falling at `ω_f`, and inflation dissipates to **exactly 0** instead of going
-negative; when claims are incompatible the floor is slack and never binds, so `g > 0`
-is unchanged. The floor therefore *creates* the `g = 0` threshold as a genuine
-**nonsmooth border** (a kink in the multiplier at `g = 0`, visible in the dynamics
-figure) — in the same spirit as CYB-2's order-non-negativity border. A clamp that
-looks like hygiene is, again, the structural feature.
+Across every module built so far, the piecewise-smooth border that governs the
+dynamics is a **real economic constraint**, not numerical hygiene:
+
+| module | switching manifold | the real constraint |
+|--------|--------------------|---------------------|
+| CYB-2 (recursion) | `order = max(0, ·)` | you can't un-order — orders are non-negative |
+| CYB-4 (recursion, formal) | conservation clamp | goods/money don't leak |
+| CYB-6 (conflict, here) | `ŵ = max(0, ·)` | wages don't fall — downward nominal rigidity |
+
+Each clamp *looks* like a modeling convenience and is in fact the structural feature
+that shapes the bifurcation. It's a pattern a referee notices, and it says these
+mechanisms are ruled by their frictions, not by their smooth interiors.
+
+### Forward link — accommodation is what would bound the nominal runaway
+
+Conflict, unaccommodated, produces an **unbounded nominal runaway**: sustained
+inflation is the price level growing without limit while the real wage share sits
+still. What decides whether that runaway *sustains* or *chokes* is whether money and
+credit **ratify** the rising claims — i.e. the **accommodation** channel. That is
+precisely why accommodation is the natural next sustaining channel after the two
+transmission channels are in: conflict *sets* the nominal spiral, accommodation
+*decides its fate*. (Coupling conflict to recursion — the two transmission channels
+interacting — is the other near-term integration.)
 
 ![transmission threshold](figures/cybeersym_conflict_v0_transmission.png)
 ![closed-form match](figures/cybeersym_conflict_v0_closed_form.png)
@@ -142,9 +184,12 @@ The conflicting-claims / wage-price-spiral tradition: **Rowthorn (1977)**,
 *Post-Keynesian Economics: New Foundations* (the canonical textbook treatment). The
 2021–23 revival — "sellers' inflation" and unit-profit-vs-unit-labor-cost
 decompositions: **Weber & Wasner (2023)**, *Sellers' inflation, profits and
-conflict*, Rev. Keynesian Econ.; **ECB/IMF** unit-profit decompositions. As with
-CYB-3, every figure gets source-verified when the grounding ticket is built; here we
-only register the anchor.
+conflict*, Rev. Keynesian Econ.; **ECB/IMF** unit-profit decompositions. The
+symmetry-breaker — **downward nominal wage rigidity**: **Tobin (1972)**, *Inflation
+and unemployment*, Am. Econ. Rev. 62(1):1–18 ("greasing the wheels"); **Akerlof,
+Dickens & Perry (1996)**, *The macroeconomics of low inflation*, Brookings Papers on
+Economic Activity 1996(1):1–76. As with CYB-3, every figure gets source-verified when
+the grounding ticket is built; here we only register the anchor.
 
 ## Scope (v0 deliberately excludes)
 

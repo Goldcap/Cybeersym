@@ -97,5 +97,9 @@ spec as a finding, not silently absorbed.
   ([[conserved-map-equilibrium-is-non-hyperbolic-so-border-collision-normal-form-doesnt-apply]]).
 - Rowthorn, R. E. (1977), *Conflict, inflation and money*, Cambridge J. Econ.
   1(3):215–239. Lavoie, M., *Post-Keynesian Economics: New Foundations*.
+- The symmetry-breaker (downward nominal wage rigidity): Tobin, J. (1972),
+  *Inflation and unemployment*, Am. Econ. Rev. 62(1):1–18 ("greasing the wheels");
+  Akerlof, G., Dickens, W. & Perry, G. (1996), *The macroeconomics of low inflation*,
+  Brookings Papers on Economic Activity 1996(1):1–76.
 - Weber, I. & Wasner, E. (2023), *Sellers' inflation, profits and conflict*,
   Rev. Keynesian Econ. (empirical anchor for the later grounding ticket).

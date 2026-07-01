@@ -55,8 +55,13 @@ not — both grow at the common rate `π*`).
 
 ## Acceptance criteria (all met — see outcome)
 
-1. Transmission threshold: sweep `g` through 0; dissipate (`g ≤ 0`) vs transmit
-   (`g > 0`); `g = 0` the border.
+1. Order parameter (amended): report BOTH curves. The **pure mechanism is symmetric**
+   — `π* = k·g` through the origin (`g<0` → sustained *deflation*, not dissipation).
+   The **nominal-wage floor breaks the symmetry**, suppressing the deflation side —
+   which is what *creates* the dissipate-below/transmit-above threshold, the
+   inflationary bias, and the piecewise-smooth `g = 0` border. The floor is a named,
+   load-bearing feature (downward nominal wage rigidity; Tobin, Akerlof–Dickens–Perry),
+   not a silent default.
 2. Conserved shares: wage + profit = 1 (`< 1e-9`, scale-relative), incl. mid-spiral.
 3. Steady rate matches the closed form `π* = (α_w·α_p/(α_w+α_p))·g`.
 4. Dynamics characterized empirically (`linearize`/`bifurcation`/`lyapunov`), not
