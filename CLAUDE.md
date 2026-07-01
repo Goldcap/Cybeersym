@@ -41,8 +41,12 @@ python3 v08_wedge.py                   # the distributional wedge
   fix — a leak invalidates everything downstream.
 - **Timing validated out-of-sample**: same model + same params reproduce both the 2022-23
   (peak Jan 2023) and 2024-25 (peak Mar 2025) peaks. 2024-25 was never fit.
-- **Magnitude** bracketed by the single egg slope (~13% price per 1% flock deficit), ~linear
-  and mildly *saturating* — NOT convex (that was an artifact of pricing off `1/(1-deficit)`).
+- **Magnitude** bracketed by the single egg slope, ~linear and mildly *saturating* — NOT
+  convex (that was an artifact of pricing off `1/(1-deficit)`). Slope was ~13% price per
+  1% flock deficit *against the synthetic deficit*; on the **real** NASS deficit (~half the
+  synthetic) it re-characterizes to **~24%/pt** and the frozen pricer undershoots (CYB-7) —
+  the pricer-slope recalibration against real deficits is now an open thread, deliberately
+  not re-tuned to preserve the honesty of the `replace_lag` retirement.
 - **Distributional wedge**: ~5.5× regressive (poorest vs richest quintile), as a *read-out*
   over the validated price path × real income/egg-share data — not the engine's households.
 
@@ -55,14 +59,20 @@ python3 v08_wedge.py                   # the distributional wedge
 - **Determinism is guarded**: same inputs → same outputs. If it breaks, that's a bug.
 - Forecasting stance: **illustrative, not predictive.** Validate the *mechanism* across
   independent episodes, then run *counterfactuals* — not point forecasts.
-- `replace_lag=12` is calibrated-but-provisional (the one soft spot); don't fit new curves
-  on top of it while it rests on estimated cull months.
+- `replace_lag` is **retired** (CYB-7): the egg model is now driven by the **real NASS
+  monthly table-egg layer-inventory** deficit (`data/nass_layers.py`, deseasonalized vs the
+  2020-21 pre-outbreak normal) — no fitted timing parameter. Timing survived and improved
+  (both peaks land, ep1 exact); magnitude *degraded* honestly (see the slope note above).
+  `hpai_culls.flock_deficit_path(replace_lag=…)` remains only for the v09 side-by-side.
 
 ## Next move & open threads (see HANDOFF.md for full detail)
-Suggested immediate move: pull the **NASS monthly layer-inventory series** (now reachable
-with real network access) to retire the calibrated `replace_lag`. Then: saturation term in
-the egg pricer → cost-matrix third channel → the distributed virtual economy. Pull real data
-from source APIs (FRED/NASS) directly now — the prior sandbox couldn't, hence the scraped fixtures.
+Done: `replace_lag` retired via the real NASS flock series (CYB-7). Open threads:
+**recursion × conflict coupling** (the two transmission channels interacting); the **formal
+global-bifurcation proof** (external-mathematician candidate, deepens CYB-4); **recalibrate
+the egg pricer slope** against real deficits (~24%/pt, currently undershooting — deliberately
+untouched by CYB-7); then saturation term → cost-matrix third channel → accommodation /
+reflexivity (the sustaining channels) → the distributed virtual economy. Pull real data from
+source APIs (FRED/NASS) directly now — a NASS QuickStats key is required (env `NASS_API_KEY`).
 
 ## Conventions
 - Public repo, MIT: github.com/Goldcap/Cybeersym.
