@@ -12,8 +12,26 @@ Standalone; **reuses both modules unchanged** plus the CYB-2 instrument suite.
 
 ```bash
 cd src/coupling
-python3 run_v0.py     # decoupling regression → ignition map → mechanism → dynamics → figures
+python3 run_v0.py     # decoupling regression → ignition map → mechanism → transient-vs-persistent → dynamics → figures
 ```
+
+## Two headline findings
+
+1. **Super-additive ignition.** The coupled system produces a *sustained wage–price
+   spiral* in a regime where **neither channel alone produces any inflation** —
+   emergent from the pair, not present in either ingredient.
+2. **Recursion SUSTAINS the shock; it doesn't just amplify it.** Ignition is set by
+   the amplification *regime* (β), **not** the shock size — because the bullwhip
+   deficit is a self-sustaining *attractor*. A transient amplified shock dissipates;
+   only recursion's **endogenous** instability supplies the *persistent* scarcity that
+   holds `g > 0`. This supersedes the spec-of-record's `(shock, κ)` framing with a
+   measured `(β, κ)` one.
+
+Together they give a clean mechanistic through-line for the whole taxonomy: **CYB-2's
+bounded chaos IS the persistent-scarcity generator, and conflict is the machine that
+converts persistent real scarcity into sustained nominal inflation.** Recursion
+destabilizes the real and keeps it destabilized; conflict rectifies that persistent
+real disturbance through its `g=0` threshold into an unbounded nominal spiral.
 
 ## The coupling (one-way, recursion → conflict; exactly one interaction)
 
@@ -60,14 +78,16 @@ The chain's amplified deficit `d(t)` drives `g(t) = g0 + κ·d(t)` **repeatedly 
 cumulative price climbs. Conflict alone (`κ=0`) sits flat.
 ![mechanism](figures/cybeersym_coupling_v0_mechanism.png)
 
-The key refinement of the spec's framing: **ignition is set by the amplification
-*regime* (β), not by the shock size.** Across a 20× range of initial shock the
-sustained rate barely moves (`≈0.33–0.38 %/step`) — because the bullwhip deficit is a
-self-sustaining *attractor*, not a decaying transient. So a one-off amplified shock
-(stable chain) **dissipates**; only recursion's **endogenous instability** supplies
-the *persistent* scarcity that holds `g>0`. Recursion doesn't just amplify the
-trigger — it **sustains** it. (This is why the ignition axis is `(β, κ)`, a
-measured refinement of the spec's `(shock, κ)` — surfaced, not absorbed.)
+**Ignition is set by the amplification *regime* (β), not by the shock size** (the
+second headline). Across a 20× range of initial shock the sustained rate barely moves
+(`≈0.33–0.38 %/step`), because the bullwhip deficit is a self-sustaining *attractor*.
+The cleanest proof is the **matched-peak contrast**: a big one-off shock on a *stable*
+chain and an ordinary shock on an *unstable* chain both reach the same peak deficit
+(`d→1.0`), but the transient one **decays and dissipates** while the endogenous one
+**self-sustains and ignites**. So recursion doesn't just amplify the trigger — it
+**sustains** it; a transient amplified shock is not enough. (This is why the ignition
+axis is `(β, κ)`, a measured refinement that **supersedes** the spec's `(shock, κ)`.)
+![transient vs persistent](figures/cybeersym_coupling_v0_transient_vs_persistent.png)
 
 ### 3. Dynamics — the real chaos pervades the nominal path (an H2 preview)
 
@@ -102,9 +122,11 @@ Run through the reused instruments:
 * **One-way coupling only** (`recursion → conflict`). Bidirectional
   (`inflation → nominal ordering`) is a follow-up ticket.
 * **Exactly one interaction** (`d → ω_f → g`). Nothing else couples.
-* **H2 (chaos-leakage)** is only *previewed* here (π(t) is aperiodic); a dedicated
-  characterization (does conflict's stable node partially filter the chaos? spectra?)
-  is the natural next ticket.
+* **H2 (chaos-leakage)** — the *binary* is already answered here: yes, real chaos
+  leaks into the nominal path (π(t) aperiodic; conflict's stable node does NOT filter
+  it out). So the follow-up ticket is to **characterize** the leakage (spectra; is
+  there *partial* filtering — does the nominal path damp any frequency band?), not to
+  ask whether it happens.
 * Deterministic; **reflexivity** (expectations) and **accommodation** (money/credit)
   stay OUT — still a transmission-channels model. Accommodation is what would *bound*
   the nominal runaway (cf. CYB-6).

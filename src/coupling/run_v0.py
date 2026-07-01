@@ -95,6 +95,22 @@ def shock_independence(beta=BETA_AMP, kappa=0.20, perturbs=(0.25, 0.5, 1.0, 2.0,
     return [(s, tail_pi(beta, kappa, perturb=s)[0]) for s in perturbs]
 
 
+# ---- 3b. transient vs persistent — "recursion SUSTAINS, it doesn't amplify" --
+TRANSIENT_PERTURB = 20.0     # a LARGE one-off shock on a STABLE chain (d spikes to 1, then decays)
+def transient_vs_persistent(kappa=0.20):
+    """Matched-PEAK contrast: a big transient shock on a STABLE chain vs the
+    same-peak but PERSISTENT deficit of an UNSTABLE chain. Both reach d≈1; only the
+    unstable (endogenous) case sustains it, and only it ignites."""
+    def trace(beta, perturb):
+        c = make(beta, kappa, perturb=perturb); d = np.empty(N); lp = np.empty(N); P = 1.0
+        for k in range(N):
+            c.step(); d[k] = c.last_d; P *= (1 + c.conflict.last_pi); lp[k] = np.log(P)
+        return d, lp
+    d_t, lp_t = trace(BETA_STABLE, TRANSIENT_PERTURB)   # transient: stable chain, huge shock
+    d_p, lp_p = trace(BETA_AMP, 1.0)                    # persistent: unstable chain, ordinary shock
+    return d_t, lp_t, d_p, lp_p
+
+
 # ---- 4. dynamics: Lyapunov, π aperiodicity, active border -------------------
 def dynamics(beta=BETA_AMP, kappa=0.20):
     # coupled largest Lyapunov (does the chain's real chaos pervade the coupled system?)
@@ -121,7 +137,7 @@ def dynamics(beta=BETA_AMP, kappa=0.20):
 
 # ============================================================ figures + main
 INK="#1e2327"; ACC="#c0392b"; GRN="#27ae60"; BLU="#2c6fbb"; MUT="#7f8c8d"; GRID="#e8e6e1"; ORG="#d68910"
-def make_figures(out, betas, kappas, Z, tw, dyn):
+def make_figures(out, betas, kappas, Z, tw, dyn, tvp):
     plt.rcParams.update({"font.size":10,"axes.edgecolor":INK,"axes.linewidth":0.8,
                          "figure.facecolor":"white","axes.facecolor":"white"})
     # ---- Fig 1: ignition map (headline) ----
@@ -186,6 +202,23 @@ def make_figures(out, betas, kappas, Z, tw, dyn):
             transform=b2.transAxes, ha="center", fontsize=8, color=INK)
     fig.tight_layout(rect=[0,0,1,0.95]); fig.savefig(out/"cybeersym_coupling_v0_dynamics.png", dpi=140, bbox_inches="tight"); plt.close(fig)
 
+    # ---- Fig 4: transient vs persistent — recursion SUSTAINS, it doesn't amplify ----
+    d_t, lp_t, d_p, lp_p = tvp; x = np.arange(N)
+    fig, (c1, c2) = plt.subplots(2, 1, figsize=(12, 7.6), height_ratios=[1, 1])
+    fig.suptitle("CYB-10 — recursion SUSTAINS the shock, it doesn't just amplify it: same peak deficit, opposite fate",
+                 fontsize=12, fontweight="bold", y=0.98)
+    c1.plot(x, d_t, color=MUT, lw=1.4, label=f"TRANSIENT: big one-off shock on a STABLE chain (β={BETA_STABLE}) — decays")
+    c1.plot(x, d_p, color=BLU, lw=1.2, label=f"PERSISTENT: ordinary shock on an UNSTABLE chain (β={BETA_AMP}) — self-sustains")
+    c1.set_ylabel("chain deficit d(t)"); c1.legend(frameon=False, fontsize=9, loc="upper right")
+    c1.grid(True, color=GRID, lw=0.7); c1.set_axisbelow(True)
+    c1.set_title("both reach the SAME peak (d→1.0); only the endogenous instability holds the deficit up", fontsize=9.5)
+    c2.plot(x, lp_t, color=MUT, lw=1.8, ls=":", label="TRANSIENT → dissipates (price returns flat)")
+    c2.plot(x, lp_p, color=GRN, lw=2, label="PERSISTENT → ignites (sustained price rise)")
+    c2.set_xlabel("step"); c2.set_ylabel("cumulative log price")
+    c2.legend(frameon=False, fontsize=9, loc="upper left"); c2.grid(True, color=GRID, lw=0.7); c2.set_axisbelow(True)
+    c2.set_title("a transient amplified shock is NOT enough — sustained inflation needs persistent scarcity (the (β,κ) headline)", fontsize=9.5)
+    fig.tight_layout(rect=[0,0,1,0.96]); fig.savefig(out/"cybeersym_coupling_v0_transient_vs_persistent.png", dpi=140, bbox_inches="tight"); plt.close(fig)
+
 
 def main():
     out = Path(__file__).resolve().parent / "figures"; out.mkdir(exist_ok=True)
@@ -218,6 +251,15 @@ def main():
     print(f"    spread across a 20× shock range = {spread:.3f}%/step -> ignition is set by the")
     print("    amplification REGIME (β), not the shock size (spec's (shock,κ) → (β,κ) refinement).")
 
+    tvp = transient_vs_persistent()
+    d_t, lp_t, d_p, lp_p = tvp
+    print("\n[3b] transient vs persistent (matched peak deficit d→1.0):")
+    print(f"     TRANSIENT (stable chain, shock={TRANSIENT_PERTURB:g}): tail d≈{d_t[-300:].mean():.3f} "
+          f"-> log-price {lp_t[-1]:+.2f} (DISSIPATES)")
+    print(f"     PERSISTENT (unstable chain, shock=1): tail d≈{d_p[-300:].mean():.3f} "
+          f"-> log-price {lp_p[-1]:+.2f} (IGNITES)")
+    print("     -> recursion SUSTAINS the shock; a transient amplified shock is not enough.")
+
     dyn = dynamics()
     lam_c, lam_ch, floor_frac, stock_frac, aper = dyn
     print(f"\n[4] dynamics: coupled λ={lam_c:+.3f}, chain-alone λ={lam_ch:+.3f} (both >0 — real chaos pervades)")
@@ -225,8 +267,8 @@ def main():
     print(f"    borders: wage-floor binds {floor_frac*100:.0f}%, chain stockout {stock_frac*100:.0f}% — both live")
 
     print(f"\nboth conservation substrates: worst residual across the map = {leak:.0e} (goods AND shares, <1e-9)")
-    make_figures(out, betas, kappas, Z, tw, dyn)
-    print("\nsaved 3 figures to coupling/figures/.")
+    make_figures(out, betas, kappas, Z, tw, dyn, tvp)
+    print("\nsaved 4 figures to coupling/figures/.")
 
 
 if __name__ == "__main__":
