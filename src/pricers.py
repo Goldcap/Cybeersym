@@ -41,6 +41,24 @@ def linear_deficit(flow_gap, prev_markup, *, deficit=0.0, slope=11.0, hi=30.0,
     return float(min(slope * max(0.0, deficit), hi))
 
 
+def power_deficit(flow_gap, prev_markup, *, deficit=0.0, slope=11.0, alpha=1.0, hi=30.0,
+                  demand_signal=None, horizon: int = 0) -> float:
+    """Eggs, CONCAVE variant: markup = slope·deficit**alpha. `alpha < 1` saturates
+    (the per-point slope falls with depth); `alpha = 1` recovers `linear_deficit`
+    exactly, so this nests the linear model — the clean form for the CYB-14
+    linear-vs-concave OOS model comparison. Stateless, like `linear_deficit`."""
+    return float(min(slope * (max(0.0, deficit) ** alpha), hi))
+
+
+def saturating_deficit(flow_gap, prev_markup, *, deficit=0.0, A=3.0, k=8.0, hi=30.0,
+                       demand_signal=None, horizon: int = 0) -> float:
+    """Eggs, SATURATING variant: markup = A·(1−e^{−k·deficit}). A second concave
+    family (bounded as deficit→∞) used only as a robustness check in the CYB-14
+    model comparison — its per-point slope also falls with depth."""
+    import math
+    return float(min(A * (1.0 - math.exp(-k * max(0.0, deficit))), hi))
+
+
 def proportional_flowgap(flow_gap, prev_markup, *, deficit=0.0, slope=8.0, hi=30.0,
                          demand_signal=None, horizon: int = 0) -> float:
     """The v0.5 pricer: markup proportional to flow-gap shortage. Convex in deficit
@@ -51,6 +69,8 @@ def proportional_flowgap(flow_gap, prev_markup, *, deficit=0.0, slope=8.0, hi=30
 
 PRICER_REGISTRY: Dict[str, Callable] = {
     "linear_deficit":      linear_deficit,
+    "power_deficit":        power_deficit,
+    "saturating_deficit":   saturating_deficit,
     "proportional_flowgap": proportional_flowgap,
 }
 
@@ -64,15 +84,15 @@ EGG_PRICING = {
     "slope":  24.1,     # % retail rise per 1% REAL flock deficit; calibrated on ep1 (CYB-9)
     "hi":     40.0,
 }
-### TODO(saturation): a single LINEAR slope calibrated on ep1 OVERSHOOTS ep2 out-of-sample
-### (+~317% vs real +272%) — reality is mildly CONCAVE in the deficit (ep1 7.6% -> ~24.7%/pt;
-### ep2 12.1% -> ~22.5%/pt). At extreme scarcity the response flattens: demand destruction
-### ($6+ eggs) and an import surge (Jan-Mar 2025 egg imports +2,040% YoY) cap the price. A
-### saturating form (markup = slope * deficit**alpha, or A*(1-exp(-k*deficit))) would capture
-### it — alpha then an egg-commodity property like slope. Now that the REAL NASS deficit pins
-### both episodes down (CYB-7), the concavity is measured, not within-noise — a real (small)
-### effect. Deferred as its own ticket; CYB-9 deliberately fit ONE parameter (the slope) and
-### reported the overshoot rather than adding alpha to absorb it.
+### RESOLVED(saturation) — CYB-14: the ep1-peak concavity (24.7 %/pt at 7.6% -> 22.5 %/pt at
+### 12.1%) does NOT generalize. A linear-vs-concave model comparison calibrated on ep1's FULL
+### monthly path and validated OOS on ep2's path (see v11_saturation.py) found: the power form
+### markup=slope*deficit**alpha lands at alpha~=1.03 (NOT concave) with an OOS RMSE tie to
+### linear (~0.3%), and the forced-concave saturating form A*(1-exp(-k*deficit)) is strictly
+### WORSE. The concavity lives only BETWEEN the two peaks; on the path it's swamped by the
+### shoulder months (a concave curve overshoots low-deficit prices). Verdict: within-noise at
+### the path level -> KEEP THE LINEAR PRICER; don't carry an unearned second parameter. The
+### `power_deficit` / `saturating_deficit` forms below are the comparison harness (not adopted).
 
 
 def resolve(spec: dict) -> Callable:

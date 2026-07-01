@@ -47,8 +47,11 @@ python3 v08_wedge.py                   # the distributional wedge
   ep1 (2022-23). The old ~13 was calibrated off the ~2×-too-large *synthetic* deficit — a
   compensating-error pair (too-big deficit × too-small slope); CYB-7 fixed the deficit,
   CYB-9 the slope. **OOS finding:** the single linear slope *overshoots* ep2 (+316% vs real
-  +272%) — reality is mildly **concave** (ep1 24.7%/pt → ep2 22.5%/pt); a saturating pricer
-  term is the next open thread (deliberately NOT added in CYB-9 — one parameter only).
+  +272%) — a mild **concavity at the two peaks** (ep1 24.7%/pt → ep2 22.5%/pt). **CYB-14
+  tested it and it does NOT generalize:** a linear-vs-concave model comparison on the full
+  monthly path (OOS on ep2) found the free power exponent lands at α≈1.03 (not concave) and
+  the forced-concave form is worse → within-noise at the path level → **keep the linear
+  pricer** (don't carry an unearned 2nd parameter). The saturation thread is closed.
 - **Distributional wedge**: ~5.5× regressive (poorest vs richest quintile), as a *read-out*
   over the validated price path × real income/egg-share data — not the engine's households.
 
@@ -69,14 +72,14 @@ python3 v08_wedge.py                   # the distributional wedge
 
 ## Next move & open threads (see HANDOFF.md for full detail)
 Done: `replace_lag` retired via the real NASS flock series (CYB-7); egg pricer slope
-recalibrated to ~24/pt on real deficits (CYB-9). Open threads: **saturating (concave) egg
-pricer** — CYB-9's ep2 OOS overshoot measured the concavity, so a `slope·deficit**α` /
-`A(1−e^{−k·deficit})` term is now warranted (its own ticket; not a within-noise over-fit
-anymore); **recursion × conflict coupling** (CYB-10, design-first); the **formal
-global-bifurcation proof** (CYB-12 seed, deepens CYB-4 — Desktop wants this first); then
-cost-matrix third channel → accommodation / reflexivity (the sustaining channels) → the
-distributed virtual economy. Pull real data from source APIs (FRED/NASS) directly now — a
-NASS QuickStats key is required (env `NASS_API_KEY`).
+recalibrated to ~24/pt on real deficits (CYB-9); **saturation tested & rejected** (CYB-14 —
+concavity within-noise at the path level, keep linear); **recursion × conflict coupling**
+built (CYB-10 — super-additive ignition). Open threads: the **formal global-bifurcation
+proof** is **gated** on an external mathematician (CYB-13, post-July-6 — do NOT solo-build);
+**H2 chaos-leakage characterization** and **bidirectional coupling** (CYB-10 follow-ups);
+then cost-matrix third channel → **accommodation / reflexivity** (the sustaining channels;
+accommodation seed CYB-16) → the distributed virtual economy. Pull real data from source APIs
+(FRED/NASS) directly now — a NASS QuickStats key is required (env `NASS_API_KEY`).
 
 ## Conventions
 - Public repo, MIT: github.com/Goldcap/Cybeersym.
