@@ -124,13 +124,17 @@ question — the one orthodox framing leaves to judgment — rendered as a contr
 experiment. The build order follows the table: isolate **recursion** first (bullwhip —
 clean, measured, equilibrium-impossible), prove the instrument detects and characterizes
 it, *then* add **conflict** (a wage-setting layer), *then* couple the two, and only after
-that reach for the sustaining channels (**reflexivity**, then **accommodation**). One
-mechanism at a time, each validated before the next — the same discipline that built the
-egg model, never the whole tangle at once.
+that reach for the sustaining channels — in the event **accommodation** first (it was the
+one with a live financing question to press, and it opened the whole crunch/default arc),
+with **reflexivity** still ahead. One mechanism at a time, each validated before the next —
+the same discipline that built the egg model, never the whole tangle at once.
 
-Both transmission channels are now built and, as of the coupling, the "and when" is no
-longer a promissory note — the same subthreshold trigger provably dissipates or ignites
-depending on which cells are live. The next section is what that build taught us.
+Both transmission channels are now built and coupled, and the first sustaining channel —
+accommodation, with its Minsky credit-crunch and default extensions — is built on top of them;
+the "and when" is no longer a promissory note, and the arc now runs from a relative-price shock
+all the way to credit ratification, crisis, and default. The next section is what that build
+taught us. (Reflexivity, the expectational sustaining channel, is the one major cell still
+ahead.)
 
 ## From map to mechanism — what building the channels revealed
 
@@ -209,15 +213,116 @@ real chaos even leaks into the nominal path — the resulting inflation is itsel
 The taxonomy's promise — *the same trigger dissipates or cascades depending on which cells
 are live* — is, in the coupled model, a measured fact rather than a hope.
 
+**The first sustaining channel arrives — and its headline result was a hidden assumption.**
+With both transmission channels built and coupled, the project reached the first *sustaining*
+channel: accommodation, the money/credit that a sustained rise in the nominal level must be
+financed by (CYB-17, `src/accommodation/`). Attaching a financing loop to the conflict layer —
+the wage bill borrowed at a policy rate `i` before revenue arrives — immediately revealed that
+conflict's marquee result, the *unbounded* nominal runaway for any positive aspiration gap, had
+never been a law of the mechanism. It was the **full-accommodation limit** hiding as a law: the
+corner of parameter space where financing is costless and unconstrained. Name the financing
+constraint and the runaway becomes *conditional*. This is the switching-manifold move run in
+reverse — a result that looked *unbounded* was concealing a real constraint (finance) whose
+absence, set to its costless value, is what produced the unboundedness. And once the wage bill
+must be financed, the policy rate acts through **three channels at once, pulling in opposite
+directions**: cost (interest is a cost of production; firms defend margin *net* of interest, so a
+higher rate *feeds* the spiral — the neo-Fisherian sign), symmetric demand (rate-induced slack
+damps both sides' claims equally, cooling the rate but leaving the distribution untouched), and
+distributional (the same slack breaks *labor's* side, cooling by moving the gap toward capital).
+The decomposition — not any one channel — is the deliverable: the net is a **tug-of-war whose
+winner is a parameter, not a verdict**. Only the distributional channel drives inflation cleanly
+to zero, by closing the gap — at which point it *exhausts*, and the cost channel takes over (a
+restraint-insufficient region where a high enough rate feeds the very spiral it was meant to
+quell). Building fewer than three channels would have rigged the answer. (A monetarist
+money-growth cap, put physically in the room rather than asserted dead, came out *inert as a
+lever but real as a crunch*: it bounds a cost-fed spiral only by rationing credit — the
+horizontalist point, shown not stated.)
+
+**On the faithful egg stack, the rate stops being able to zero inflation.** Dropping that same
+accommodation machinery, unchanged, onto the coupled recursion×conflict substrate (CYB-18,
+`src/accommodation_coupled/`) changed the distributional channel's fate. On the bare conflict
+layer it *exhausted* — closed the static gap, then died, ceding to cost. Under coupling it
+**cannot exhaust**: recursion re-supplies the gap every period, so the distributional channel
+floors at a positive inflation rate ≈ `k·κ·⟨d⟩` that no rate reaches through any channel, and the
+whole `π*(i)` surface lifts — so **no rate drives coupled inflation to zero**. Descriptively, on
+the faithful stack the rate reads more as a *redistributive* instrument than a stabilizing one: it
+can cool the spiral but not extinguish it while recursion keeps re-supplying scarcity. (What the
+rate *does* is in scope; what it *ought* to be — the normative reading — is a separate, gated
+question the firewall below keeps out.)
+
+**Firing the financing border: the crunch bounds without curing.** The solvency ceiling
+accommodation added — lenders won't finance a wage bill above a creditworthiness limit — was so
+far a static clamp. Making it *fire* turns it into a Minsky credit-crunch cascade (CYB-19 Phase 1,
+`src/crunch/`): classify the aggregate financing regime from the model's own flows (hedge →
+speculative → Ponzi, where **Ponzi is exactly the accommodation layer already capitalizing
+uncovered interest** — a switch named, not new dynamics), and when the aggregate tips Ponzi at the
+border, contract credit at a rate. The outcome is not designed in but *discovered*: over the
+deleverage rate and the trigger leverage, the crunch either **bounds** the spiral or merely
+**fizzles** — both reachable, so neither is rigged. But even a hard crunch **bounds without
+curing** — it converts the runaway into a *grinding limit cycle* that chokes inflation only to
+~12% of baseline through a fire→cut→recover→re-lever oscillation on the border, never cleanly to
+zero. Two things it revealed about its own substrate: Ponzi was already there, and
+**leverage-at-trigger is pinned by the policy rate**. That last point needs stating carefully:
+in the dynamics the economy sits at a rate-selected leverage `ρ(i)`, so the trigger-vs-deleverage
+outcome map *sweeps the trigger leverage as a policy counterfactual* — where a lender places the
+border — and the physically-occupied locus is the single rate-selected curve `L = ρ(i)`, not the
+whole swept plane.
+
+**And the grind worsens on the egg stack.** The same crunch on the coupled substrate (CYB-22,
+`src/crunch_coupled/`) bounds *less*: recursion re-ignites the spiral in the crunch's recover
+phase before the next cut lands, so the achievable choke floor rises (7% → 12% of baseline) and
+the limit-cycle amplitude roughly triples. A cut-then-recover stabilizer is defeated by a
+substrate that continuously re-supplies the disturbance — the same lesson the distributional
+channel taught, now at the crunch.
+
+**Default is both the cure and the contagion vector — and which wins is a contest.** Letting the
+grind terminate in *default*, and making the lender *impairable* — it takes the capital loss — is
+the one genuine structural extension of the balance sheet, and the stock-flow payoff of the whole
+thread (CYB-19 Phase 2, `src/contagion/`). Default cures the borrower (clears the debt feeding the
+cost channel) but impairs the lender; whether that heals or detonates was **swept, not assumed**.
+Along the *impairment horizon* — how strongly the impaired lender feeds back — both a **clean
+cure** (the loss absorbed, the grind bounded) and a **contagion-collapse** (the impaired lender's
+risk premium spiralling into hyperinflation) are reachable, on a **ragged frontier** — ragged for
+a real reason: two feedbacks compete, impairment→premium→more-Ponzi against inflation eroding the
+real value of the impairment before it can detonate. The counterintuitive finding: a **bigger
+haircut is *more* stabilizing** — clearing more debt per default cures the borrower faster than
+the extra impairment detonates, while a stingy haircut keeps the borrower defaulting until the
+premium spiral ignites. And the honesty firewall runs *inside* the mechanism here: the wired
+collapse is a credit-quantity, *inflationary* spiral — deliberately **not** the price-level Fisher
+debt-deflation, which is gated off precisely so a collapse cannot be mislabeled as the thing it
+isn't (the gate's prerequisite check came back usefully negative — the existing demand channel
+disinflates but never deflates — which tells the next build what it must strengthen). Throughout,
+the write-off is handled as a **stock** event and the capital-account identity — every financial
+asset is someone's liability (Godley–Lavoie) — closes to machine precision through defaults and
+collapses alike. The flow ledger that opened the project became a full balance sheet, and it held.
+
+**The signature move, stated plainly: the real constraint is the load-bearing feature.** Read the
+arc back and one move repeats at every rung. Each time a result looked *unbounded* or *smooth* or
+*lawlike*, it was concealing a real economic constraint — something agents institutionally *cannot
+do* — that, once named, becomes the switching manifold driving the dynamics: **order
+non-negativity** (you can't un-order — recursion's chaos), the **nominal wage floor** (wages don't
+fall — conflict's inflationary bias and its gap-zero threshold), the **full-accommodation limit /
+financing constraint** (the spiral must be financed — accommodation's conditional runaway), the
+**solvency ceiling** (credit isn't unlimited — the crunch's border), and the **capitalized-interest
+/ Ponzi tipping** (uncovered interest can't compound forever — default's terminus). This is the
+project's signature: the economics is not decoration on the mathematics; the institutional facts
+about what agents can't do are exactly where the mathematics lives, and *finding the hidden
+constraint behind an "unbounded" or "smooth" result* is how each module advanced. The conserved
+ledger is the one non-negotiable beneath all of them; these constraints are the borders it rides.
+
 **How these were found, and where the discipline stops.** None of the above was the prior
 we started with. Each finding arrived as the model *refuting* a confident framing — the
 chaos onset was expected to be a period-doubling cascade, then a smooth Hopf, and measured
 to be a nonsmooth border-collision; the coupling was framed as shock-amplification and
 measured to be endogenous sustaining; the pricer was expected to saturate and measured to
-be linear. Every refutation moved the same direction — from *external* to *endogenous*,
-from *local* to *global*, from *smooth* to *nonsmooth* — which is itself a result about
-where the interesting structure of a conserved economy lives. The model tells us; our
-priors don't. And the discipline knows its own boundary: the single genuinely hard formal
+be linear; a *headline* unbounded runaway turned out to be a hidden full-accommodation limit;
+the distributional channel's exhaustion, taken as a property, was measured to be erased once
+recursion reloads the gap; the crunch, hoped to stabilize, was measured to bound *without*
+curing; and a bigger haircut, expected to spread contagion, was measured to contain it. Every
+refutation moved the same direction — from *external* to *endogenous*, from *local* to *global*,
+from *smooth* to *nonsmooth*, from *lawlike* to *a limit with a named hidden constraint* — which
+is itself a result about where the interesting structure of a conserved economy lives. The model
+tells us; our priors don't. And the discipline knows its own boundary: the single genuinely hard formal
 claim — rigorously classifying the global bifurcation on a ~21-dimensional, non-hyperbolic,
 conserved piecewise-smooth map, where the standard normal-form reduction is not even a
 theorem — is **gated for external expert review** (CYB-13), not ground out unsupervised.
@@ -242,6 +347,17 @@ done.
   not asserted.
 - **Not** a claim that any single number (a correlation, a fitted slope) validates the
   model. See "how to evaluate," below.
+- **Not** a claim about what policy *should* do. The accommodation and crunch modules
+  characterize what the interest rate *does* — that it acts through three offsetting
+  channels, that on the coupled substrate it reads redistributive more than stabilizing,
+  that firing the financing border bounds without curing. That descriptive result is in
+  scope. The *normative* reading — "the rate is misaimed / punitive," the monetarism
+  critique — is a separate claim held behind a firewall (its build, CYB-16, is gated on
+  external economic buy-in and not made here). And "the orthodox tool is distributional
+  rather than allocative" (which the models can illuminate) is kept strictly apart from
+  "heterodox tools work better" (a different, unbuilt model this project does *not* imply).
+  The descriptive results persuade precisely because they are refutable and do not depend
+  on the normative conclusion.
 
 ## Why a conserved network, and not the standard tools
 

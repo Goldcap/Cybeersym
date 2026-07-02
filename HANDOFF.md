@@ -34,10 +34,11 @@ CYB-19 ✅ Minsky credit-crunch cascade Phase 1 (bounding-vs-fizzle is an outcom
 doesn't cure) · CYB-22 ✅ crunch on the coupled egg stack (the grind worsens under reloading) ·
 CYB-23 ✅ Phase 2 default + impairable rentier (the impairment horizon: cure↔contagion-collapse,
 a bigger haircut stabilizes; Engine-1 credit-quantity contagion is hyper-inflationary, NOT
-Fisher; capital-account balance sheet closes). **Gated:** CYB-13 🔒 formal global-bifurcation
-proof (external mathematician, post-July-6 — do NOT solo-build); CYB-16 🔒 the monetarism critique
-(normative; external buy-in). **Live next:** CYB-24 THESIS re-weave (gated on 22+23) · Phase 2b
-(switch Engine-2/Fisher on, after strengthening the price channel) · Phase-2-on-coupled · CYB-20
+Fisher; capital-account balance sheet closes) · CYB-24 ✅ doc-sync: THESIS.md re-woven for the
+accommodation→crunch arc (switching-manifold through-line stated as the meta-thesis). **Gated:**
+CYB-13 🔒 formal global-bifurcation proof (external mathematician, post-July-6 — do NOT solo-build);
+CYB-16 🔒 the monetarism critique (normative; external buy-in). **Live next:** Phase 2b (switch
+Engine-2/Fisher on, after strengthening the price channel) · Phase-2-on-coupled · CYB-20
 reflexivity / expectations · CYB-21 supply-chain financing (the rate's 4th channel). **Parked
 seed:** CYB-8 austerity. Nearer-term: the CYB-10 follow-ups (H2 chaos-leakage; bidirectional coupling).
 

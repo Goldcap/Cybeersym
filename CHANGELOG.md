@@ -220,6 +220,16 @@ Phase 2b). The SFC payoff: write-offs as **STOCK events**, capital-account ident
 firm liability, Godley–Lavoie) closes `≤4e-12` through defaults AND collapses. Nested `CYB-17 ⊂ P1 ⊂
 P2` byte-exact at each shell.
 
+### CYB-24 — doc-sync: THESIS.md re-woven for the accommodation→crunch arc  ·  `THESIS.md`
+Successor to CYB-15 (which stopped at CYB-10). Extends the "From map to mechanism" narrative
+through CYB-14 (concavity rejected — the null result, kept), CYB-17/18/19/22/23 as one continuous
+argument, and **states the switching-manifold through-line explicitly as the meta-thesis**: order
+non-negativity → wage floor → full-accommodation limit → solvency ceiling → capitalized-interest/
+Ponzi — *the real constraint is the load-bearing switching feature, hiding in plain sight*. The
+descriptive/normative firewall is reinforced (report what the rate does; the monetarism/CYB-16
+conclusion stays out; "orthodox tool is distributional" kept apart from "heterodox tools work
+better"). Narrative, not changelog; cross-refs each module README.
+
 ---
 
 ## Current stable engine (unversioned — the validated core)
