@@ -199,6 +199,14 @@ there" notes: **Ponzi ≡ CYB-17 capitalizing uncovered interest** (renamed, not
 **Fisher debt-deflation basin is deliberately UNWIRED** (no default/impairment) — Phase 2. Crunch-
 off recovers CYB-17 byte-exact; conservation `≤1e-16` through the deleveraging transient.
 
+### CYB-22 — the credit-crunch on the coupled egg stack  ·  `src/crunch_coupled/`
+Pure inheritance: CYB-19 Phase 1's crunch on CYB-18's coupled substrate. **The
+bounds-without-curing grind gets WORSE under reloading** — recursion re-ignites the spiral in
+the crunch's recover phase, so the achievable choke floor rises (bare 7% → coupled 12% of
+baseline), the limit-cycle amplitude ~3×s (1.02 → 2.93 %/step), and the crunch is uniformly
+less effective. The solvency border stays dominant (73%→63%) but chokes less per bind. TWO
+byte-exact anchors (crunch-off → CYB-18; κ=0 → Phase 1); conservation `1e-15` through the transient.
+
 ---
 
 ## Current stable engine (unversioned — the validated core)
@@ -217,6 +225,8 @@ off recovers CYB-17 byte-exact; conservation `≤1e-16` through the deleveraging
                  on the coupled stack (CYB-18); compose the above modules unchanged.
 - `crunch/`    — the Minsky credit-crunch cascade, Phase 1 (CYB-19); fires the CYB-17
                  solvency border; composes `accommodation/` unchanged.
+- `crunch_coupled/` — the Phase-1 crunch on the coupled egg stack (CYB-22); composes
+                 `chaos/` + `crunch/` unchanged via the CYB-18 reload.
 
 ## Open threads (named, mostly blocked on data, not cleverness)
 1. ~~**NASS layer-inventory series** → retire `replace_lag`.~~ **DONE (CYB-7, v0.9).**
@@ -226,11 +236,12 @@ off recovers CYB-17 byte-exact; conservation `≤1e-16` through the deleveraging
    (post-July-6); do NOT solo-build.
 4. **Sustaining channels** — accommodation (money/credit) **DONE** on bare CYB-6 (CYB-17)
    and on the coupled stack (CYB-18); the **Minsky credit-crunch cascade Phase 1** (CYB-19)
-   **DONE** (bounding-vs-fizzle; Fisher basin unwired). Live next: **CYB-19 Phase 2** (default +
-   impairable rentier → the debt-deflation basin, closing the Fisher loop), **CYB-19-on-coupled**
-   (the crunch on the egg stack), and **reflexivity / expectations** (CYB-20). Seeds: **CYB-21**
-   supply-chain financing (the rate's 4th channel). The monetarism critique (CYB-16) stays gated.
-   Plus the **CYB-10 follow-ups**: H2 chaos-leakage spectra, and bidirectional coupling.
+   **DONE** (bounding-vs-fizzle); the **crunch on the coupled egg stack** (CYB-22) **DONE** (the
+   grind worsens under reloading). Live next: **CYB-19 Phase 2 = CYB-23** (default + impairable
+   rentier → the impairment horizon: cure vs contagion-collapse; Fisher gated), and **reflexivity
+   / expectations** (CYB-20). Seeds: **CYB-21** supply-chain financing (the rate's 4th channel).
+   The monetarism critique (CYB-16) stays gated. Plus the **CYB-10 follow-ups**: H2 chaos-leakage
+   spectra, and bidirectional coupling.
 5. **Cost-matrix / third channel** — real feed-cost / natural-gas series into
    structural cost accounting (seam marked in `events.py`).
 6. **Distributed virtual economy** — the "Distributive" half of the repo title:
