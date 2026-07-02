@@ -186,6 +186,19 @@ also **gates super-additive ignition both ways** (cost-push lowers the coupling 
 disinflation raises it). Three nonsmooth borders live at once — the **solvency ceiling dominates
 and pre-empts the wage floor**. All three conservation laws green (<1e-15).
 
+### CYB-19 (Phase 1) — Minsky credit-crunch cascade  ·  `src/crunch/`
+Fire the solvency border (static in CYB-17/18): a financing-regime classifier
+(hedge→speculative→Ponzi, from CYB-17's existing flows) + a deleveraging-rate cascade that
+arms at **Ponzi ∧ border**. Headline: **bounding vs fizzle is an OUTCOME the parameters pick,
+not a design choice** — over (leverage-at-trigger, deleverage rate δ), fast/early deleveraging
+**bounds** the spiral (→12% of baseline), slow/late **fizzles** (→85%), above the rate-set
+baseline leverage it never fires. But the crunch **bounds without curing** — even a hard crunch
+only chokes via a grinding **limit cycle at the border**, never to zero. Two "reveal what was
+there" notes: **Ponzi ≡ CYB-17 capitalizing uncovered interest** (renamed, not new), and
+**leverage-at-trigger is set by the policy rate** (hiking tips the aggregate into Ponzi). The
+**Fisher debt-deflation basin is deliberately UNWIRED** (no default/impairment) — Phase 2. Crunch-
+off recovers CYB-17 byte-exact; conservation `≤1e-16` through the deleveraging transient.
+
 ---
 
 ## Current stable engine (unversioned — the validated core)
@@ -202,6 +215,8 @@ and pre-empts the wage floor**. All three conservation laws green (<1e-15).
                  standalone; reuse the `chaos/` instrument suite unchanged.
 - `accommodation/`, `accommodation_coupled/` — the sustaining channel (CYB-17) and it
                  on the coupled stack (CYB-18); compose the above modules unchanged.
+- `crunch/`    — the Minsky credit-crunch cascade, Phase 1 (CYB-19); fires the CYB-17
+                 solvency border; composes `accommodation/` unchanged.
 
 ## Open threads (named, mostly blocked on data, not cleverness)
 1. ~~**NASS layer-inventory series** → retire `replace_lag`.~~ **DONE (CYB-7, v0.9).**
@@ -210,10 +225,12 @@ and pre-empts the wage floor**. All three conservation laws green (<1e-15).
 3. **Formal global-bifurcation proof (CYB-13)** — 🔒 GATED for an external mathematician
    (post-July-6); do NOT solo-build.
 4. **Sustaining channels** — accommodation (money/credit) **DONE** on bare CYB-6 (CYB-17)
-   and on the coupled stack (CYB-18). Live next: the **Minsky credit-crunch cascade** off the
-   CYB-18 solvency border (CYB-19), and **reflexivity / expectations** (CYB-20, the other
-   sustaining channel). The normative monetarism critique (CYB-16) stays gated on external
-   buy-in. Plus the **CYB-10 follow-ups**: H2 chaos-leakage spectra, and bidirectional coupling.
+   and on the coupled stack (CYB-18); the **Minsky credit-crunch cascade Phase 1** (CYB-19)
+   **DONE** (bounding-vs-fizzle; Fisher basin unwired). Live next: **CYB-19 Phase 2** (default +
+   impairable rentier → the debt-deflation basin, closing the Fisher loop), **CYB-19-on-coupled**
+   (the crunch on the egg stack), and **reflexivity / expectations** (CYB-20). Seeds: **CYB-21**
+   supply-chain financing (the rate's 4th channel). The monetarism critique (CYB-16) stays gated.
+   Plus the **CYB-10 follow-ups**: H2 chaos-leakage spectra, and bidirectional coupling.
 5. **Cost-matrix / third channel** — real feed-cost / natural-gas series into
    structural cost accounting (seam marked in `events.py`).
 6. **Distributed virtual economy** — the "Distributive" half of the repo title:

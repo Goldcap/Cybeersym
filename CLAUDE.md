@@ -78,13 +78,16 @@ built (CYB-10 — super-additive ignition); **accommodation** — the first *sus
 built on bare CYB-6 (CYB-17 — the rate is a three-channel tug-of-war; the distributional
 channel *self-exhausts*) and on the coupled stack (CYB-18 — under recursion's reloading the
 distributional exhaustion is deferred and recursion pins an inflation floor the rate can't
-reach; the rate gates ignition both ways; two byte-exact anchors). Open threads: the **formal
-global-bifurcation proof** is **gated** on an external mathematician (CYB-13, post-July-6 — do
-NOT solo-build); the **Minsky credit-crunch cascade** off the CYB-18 solvency border (CYB-19)
-and **reflexivity / expectations** (CYB-20) are the live sustaining-channel follow-ups;
-**H2 chaos-leakage characterization** and **bidirectional coupling** (CYB-10 follow-ups); the
-monetarism critique (CYB-16) stays gated; then cost-matrix third channel → the distributed
-virtual economy. Pull real data from source APIs (FRED/NASS) directly now — a NASS QuickStats
+reach; the rate gates ignition both ways; two byte-exact anchors); **Minsky credit-crunch
+cascade Phase 1** (CYB-19 — bounding-vs-fizzle is an outcome the params pick; the crunch bounds
+but doesn't cure; Ponzi ≡ CYB-17 capitalizing interest; Fisher/debt-deflation basin deliberately
+unwired). Open threads: the **formal global-bifurcation proof** is **gated** on an external
+mathematician (CYB-13, post-July-6 — do NOT solo-build); **CYB-19 Phase 2** (default + impairable
+rentier → the debt-deflation basin, closing the Fisher loop) and **CYB-19-on-coupled** are the
+live crunch follow-ups; **reflexivity / expectations** (CYB-20, the other sustaining channel);
+**supply-chain financing** (CYB-21, the rate's 4th channel); **H2 chaos-leakage characterization**
+and **bidirectional coupling** (CYB-10 follow-ups); the monetarism critique (CYB-16) stays gated;
+then cost-matrix third channel → the distributed virtual economy. Pull real data from source APIs (FRED/NASS) directly now — a NASS QuickStats
 key is required (env `NASS_API_KEY`).
 
 ## Conventions

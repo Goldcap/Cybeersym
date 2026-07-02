@@ -29,12 +29,15 @@ CYB-6 ✅ conflict layer · CYB-7 ✅ retire replace_lag (real NASS flock) · CY
 pricer slope · CYB-10 ✅ recursion×conflict coupling · CYB-14 ✅ saturation tested→rejected ·
 CYB-15 ✅ doc sync · CYB-17 ✅ accommodation (the first *sustaining* channel; the rate as a
 three-channel tug-of-war) · CYB-18 ✅ accommodation on the coupled stack (distributional
-exhaustion deferred; recursion pins an inflation floor; rate gates ignition both ways).
-**Gated:** CYB-13 🔒 formal global-bifurcation proof (external mathematician, post-July-6 —
-do NOT solo-build); CYB-16 🔒 the monetarism critique (normative; external buy-in). **Live
-next:** CYB-19 the Minsky credit-crunch cascade off the CYB-18 solvency border · CYB-20
-reflexivity / expectations (the other sustaining channel). **Parked seed:** CYB-8 austerity.
-Nearer-term: the CYB-10 follow-ups (H2 chaos-leakage characterization; bidirectional coupling).
+exhaustion deferred; recursion pins an inflation floor; rate gates ignition both ways) ·
+CYB-19 ✅ Minsky credit-crunch cascade Phase 1 (bounding-vs-fizzle is an outcome; the crunch
+bounds but doesn't cure; Fisher/debt-deflation basin deliberately unwired). **Gated:** CYB-13 🔒
+formal global-bifurcation proof (external mathematician, post-July-6 — do NOT solo-build);
+CYB-16 🔒 the monetarism critique (normative; external buy-in). **Live next:** CYB-19 Phase 2
+(default + impairable rentier → the debt-deflation/Fisher basin) · CYB-19-on-coupled (the crunch
+on the egg stack) · CYB-20 reflexivity / expectations (the other sustaining channel) · CYB-21
+supply-chain financing (the rate's 4th channel). **Parked seed:** CYB-8 austerity. Nearer-term:
+the CYB-10 follow-ups (H2 chaos-leakage characterization; bidirectional coupling).
 
 **Validated reusable instrument suite** (model-agnostic — operate on a `step(state)→state`
 callable + a flat state vector, knowing nothing about supply chains; every future mechanism
@@ -89,7 +92,17 @@ runs through these): `lyapunov` (largest Lyapunov, self-test → ln 2), `bifurca
   both ways** (cost-push lowers the coupling threshold, disinflation raises it). Composition
   proven by **two** byte-exact anchors (`κ=0`→CYB-17; full-accommodation→CYB-10); three
   nonsmooth borders live at once, the **solvency ceiling dominating and pre-empting the wage
-  floor**. The Minsky crunch off that solvency border is CYB-19 (deferred).
+  floor**. The Minsky crunch off that solvency border is CYB-19 (below).
+- **Minsky credit-crunch cascade — Phase 1 (CYB-19).** Fire the solvency border: a financing-
+  regime classifier (hedge→speculative→Ponzi, from CYB-17's *existing* flows — **Ponzi ≡ CYB-17
+  capitalizing uncovered interest**, renamed not new) + a deleveraging-rate cascade armed at
+  **Ponzi ∧ border**. Headline: **bound vs fizzle is an OUTCOME the parameters pick** — fast/early
+  deleveraging bounds the spiral (→12% of baseline), slow/late fizzles (→85%), above the rate-set
+  baseline leverage it never fires. But the crunch **bounds without curing** (only via a grinding
+  **limit cycle at the border**, never to zero), and **leverage-at-trigger is set by the policy
+  rate** (hiking tips you into Ponzi). The **Fisher/debt-deflation basin is deliberately UNWIRED**
+  (no default/impairment) — that's Phase 2; do NOT read Phase 1 as "the crunch stabilizes."
+  Crunch-off recovers CYB-17 byte-exact; conservation `≤1e-16` through the deleveraging transient.
 
 ## Current validated state (don't re-derive — build on this)
 - **Conservation** holds to <1e-10 (money + egg residuals). This is the crown jewel.
@@ -220,12 +233,14 @@ earned the same number honestly). Rules:
 The egg foundation is on real data end-to-end (NASS flock + linear pricer, both episodes
 OOS-clean); both transmission channels are built and coupled (CYB-6/10); and the first
 **sustaining** channel — accommodation — is built on bare CYB-6 (CYB-17) and on the coupled
-stack (CYB-18). The natural next moves: (a) **CYB-19** — the Minsky credit-crunch cascade, the
-*dynamic* deleveraging that fires off CYB-18's now-static solvency border (flagged "the big
-one"); (b) **CYB-20** — reflexivity / expectations / indexation, the other sustaining channel;
-or (c) a **CYB-10 follow-up** — characterize the H2 chaos-leakage (spectra), or add
-bidirectional coupling. The formal proof (CYB-13) and the monetarism critique (CYB-16) wait on
-external buy-in — do not pick them up solo. Cost-matrix / distributed economy sequence after.
+stack (CYB-18), and the **Minsky crunch Phase 1** (CYB-19) fires that solvency border. The
+natural next moves: (a) **CYB-19 Phase 2** — default + an impairable rentier pool → the
+debt-deflation / Fisher basin, closing the loop Phase 1 deliberately left open (the genuine
+extension of CYB-17's balance sheet); (b) **CYB-19-on-coupled** — the crunch on the egg stack,
+where CYB-18 showed it's central; (c) **CYB-20** — reflexivity / expectations, the other
+sustaining channel; (d) **CYB-21** — supply-chain financing (the rate's 4th channel); or (e) a
+**CYB-10 follow-up** (H2 chaos-leakage spectra / bidirectional coupling). The formal proof
+(CYB-13) and the monetarism critique (CYB-16) wait on external buy-in — do not pick them up solo.
 
 ## Repo / run notes
 - All code lives under `src/`. Engine modules (`model.py`, `pricers.py`, `events.py`)
