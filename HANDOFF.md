@@ -30,14 +30,16 @@ pricer slope · CYB-10 ✅ recursion×conflict coupling · CYB-14 ✅ saturation
 CYB-15 ✅ doc sync · CYB-17 ✅ accommodation (the first *sustaining* channel; the rate as a
 three-channel tug-of-war) · CYB-18 ✅ accommodation on the coupled stack (distributional
 exhaustion deferred; recursion pins an inflation floor; rate gates ignition both ways) ·
-CYB-19 ✅ Minsky credit-crunch cascade Phase 1 (bounding-vs-fizzle is an outcome; the crunch
-bounds but doesn't cure; Fisher/debt-deflation basin deliberately unwired). **Gated:** CYB-13 🔒
-formal global-bifurcation proof (external mathematician, post-July-6 — do NOT solo-build);
-CYB-16 🔒 the monetarism critique (normative; external buy-in). **Live next:** CYB-19 Phase 2
-(default + impairable rentier → the debt-deflation/Fisher basin) · CYB-19-on-coupled (the crunch
-on the egg stack) · CYB-20 reflexivity / expectations (the other sustaining channel) · CYB-21
-supply-chain financing (the rate's 4th channel). **Parked seed:** CYB-8 austerity. Nearer-term:
-the CYB-10 follow-ups (H2 chaos-leakage characterization; bidirectional coupling).
+CYB-19 ✅ Minsky credit-crunch cascade Phase 1 (bounding-vs-fizzle is an outcome; bounds but
+doesn't cure) · CYB-22 ✅ crunch on the coupled egg stack (the grind worsens under reloading) ·
+CYB-23 ✅ Phase 2 default + impairable rentier (the impairment horizon: cure↔contagion-collapse,
+a bigger haircut stabilizes; Engine-1 credit-quantity contagion is hyper-inflationary, NOT
+Fisher; capital-account balance sheet closes). **Gated:** CYB-13 🔒 formal global-bifurcation
+proof (external mathematician, post-July-6 — do NOT solo-build); CYB-16 🔒 the monetarism critique
+(normative; external buy-in). **Live next:** CYB-24 THESIS re-weave (gated on 22+23) · Phase 2b
+(switch Engine-2/Fisher on, after strengthening the price channel) · Phase-2-on-coupled · CYB-20
+reflexivity / expectations · CYB-21 supply-chain financing (the rate's 4th channel). **Parked
+seed:** CYB-8 austerity. Nearer-term: the CYB-10 follow-ups (H2 chaos-leakage; bidirectional coupling).
 
 **Validated reusable instrument suite** (model-agnostic — operate on a `step(state)→state`
 callable + a flat state vector, knowing nothing about supply chains; every future mechanism
@@ -103,6 +105,17 @@ runs through these): `lyapunov` (largest Lyapunov, self-test → ln 2), `bifurca
   rate** (hiking tips you into Ponzi). The **Fisher/debt-deflation basin is deliberately UNWIRED**
   (no default/impairment) — that's Phase 2; do NOT read Phase 1 as "the crunch stabilizes."
   Crunch-off recovers CYB-17 byte-exact; conservation `≤1e-16` through the deleveraging transient.
+- **Crunch on the coupled stack (CYB-22) + Phase 2 default/impairment (CYB-23).** CYB-22: the
+  crunch's grind gets WORSE on the egg stack — recursion re-ignites in the recover phase, so the
+  choke floor rises (bare 7% → coupled 12%) and amplitude ~3×s (two byte-exact anchors). CYB-23:
+  default terminates the grind and the rentier becomes impairable; the **impairment horizon** (sweep
+  the impairment→premium elasticity) has **cure and contagion-collapse both reachable on a RAGGED
+  frontier** (contagion vs an inflation-erodes-the-real-impairment self-cure). **Counterintuitive: a
+  bigger haircut (lower recovery) is MORE stabilizing.** The wired collapse is a hyper-INFLATIONARY
+  risk-premium spiral (Engine 1) — **NOT** Fisher debt-deflation (Engine 2, gated OFF; CYB-17's
+  demand channel disinflates but never deflates → Fisher needs a strengthened price channel, Phase
+  2b). SFC payoff: write-offs are STOCK events; the capital-account identity (rentier asset ≡ firm
+  liability) closes `≤4e-12` through defaults AND collapses. Nested `CYB-17 ⊂ P1 ⊂ P2` byte-exact.
 
 ## Current validated state (don't re-derive — build on this)
 - **Conservation** holds to <1e-10 (money + egg residuals). This is the crown jewel.
