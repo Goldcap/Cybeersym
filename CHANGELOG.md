@@ -165,6 +165,27 @@ self-sustaining bullwhip holds `g>0`, so recursion **sustains, doesn't just ampl
 real chaos leaks into the nominal path (π aperiodic — a positive H2 preview). Both
 conservation laws hold simultaneously through the ignited regime (<2e-15).
 
+### CYB-17 — accommodation: credit ratification + the rate's channel decomposition  ·  `src/accommodation/`  ·  `64fe816`
+The first **sustaining** channel. Finance the wage bill at a policy rate `i` (working-capital
+finance); the rate acts through **three channels at once** — cost (+, feeds), symmetric-demand
+(−), distributional (−, breaks labor). Two findings: CYB-6's "unbounded" runaway was the
+**full-accommodation limit** hiding as a law (name the financing constraint and it becomes
+*conditional*); and the financed rate is a **tug-of-war whose winner is a parameter, not a
+verdict** — only the distributional channel drives `π*` to zero (it *exhausts* once labor's
+gap is closed → cost then dominates → the restraint-insufficient region). Solvency ceiling
+completes the switching-manifold set. `i→0`, cost-off regression reproduces CYB-6 byte-exact.
+
+### CYB-18 — accommodation on the coupled substrate  ·  `src/accommodation_coupled/`
+CYB-17's machinery **unchanged** on the CYB-10 coupled stack (recursion re-loads the gap
+`g=g0+κ·d`). Inheritance build, **two** byte-exact anchors (`κ=0`→CYB-17; full-accommodation
+→CYB-10). Headline: the distributional channel **no longer self-exhausts** (recursion re-supplies
+its target every period) — but it also **never wins**: recursion pins a positive inflation floor
+`≈k·κ·⟨d⟩` the rate can't reach through any channel, so the rate turns **redistributive, not
+stabilising** (no rate drives `π` to 0; the cost-flip region survives and is hotter). The rate
+also **gates super-additive ignition both ways** (cost-push lowers the coupling threshold `κ*`,
+disinflation raises it). Three nonsmooth borders live at once — the **solvency ceiling dominates
+and pre-empts the wage floor**. All three conservation laws green (<1e-15).
+
 ---
 
 ## Current stable engine (unversioned — the validated core)
@@ -179,6 +200,8 @@ conservation laws hold simultaneously through the ignited regime (<2e-15).
                  stock, CYB-7), USDA culls + flock transform, seasonality.
 - `conflict/`, `coupling/` — the two transmission-channel modules (CYB-6, CYB-10),
                  standalone; reuse the `chaos/` instrument suite unchanged.
+- `accommodation/`, `accommodation_coupled/` — the sustaining channel (CYB-17) and it
+                 on the coupled stack (CYB-18); compose the above modules unchanged.
 
 ## Open threads (named, mostly blocked on data, not cleverness)
 1. ~~**NASS layer-inventory series** → retire `replace_lag`.~~ **DONE (CYB-7, v0.9).**
@@ -186,9 +209,11 @@ conservation laws hold simultaneously through the ignited regime (<2e-15).
    keep linear.**
 3. **Formal global-bifurcation proof (CYB-13)** — 🔒 GATED for an external mathematician
    (post-July-6); do NOT solo-build.
-4. **Sustaining channels** — reflexivity (expectations), then accommodation (money/credit;
-   the CYB-16 seed / monetarism critique). Plus the **CYB-10 follow-ups**: characterize the
-   H2 chaos-leakage (spectra), and bidirectional coupling.
+4. **Sustaining channels** — accommodation (money/credit) **DONE** on bare CYB-6 (CYB-17)
+   and on the coupled stack (CYB-18). Live next: the **Minsky credit-crunch cascade** off the
+   CYB-18 solvency border (CYB-19), and **reflexivity / expectations** (CYB-20, the other
+   sustaining channel). The normative monetarism critique (CYB-16) stays gated on external
+   buy-in. Plus the **CYB-10 follow-ups**: H2 chaos-leakage spectra, and bidirectional coupling.
 5. **Cost-matrix / third channel** — real feed-cost / natural-gas series into
    structural cost accounting (seam marked in `events.py`).
 6. **Distributed virtual economy** — the "Distributive" half of the repo title:

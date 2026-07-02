@@ -27,11 +27,14 @@ repo. Per-module detail: `src/bullwhip/README.md`, `src/chaos/README.md`,
 CYB-3 ✅ empirical grounding · CYB-4 ✅ formal classification · CYB-5 ✅ doc sync ·
 CYB-6 ✅ conflict layer · CYB-7 ✅ retire replace_lag (real NASS flock) · CYB-9 ✅ recalibrate
 pricer slope · CYB-10 ✅ recursion×conflict coupling · CYB-14 ✅ saturation tested→rejected ·
-CYB-15 (this) ✅ doc sync. **Gated:** CYB-13 🔒 formal global-bifurcation proof (external
-mathematician, post-July-6 — do NOT solo-build). **Parked seeds:** CYB-8 austerity ·
-CYB-16 accommodation + the monetarism critique. **Next:** the sustaining channels
-(reflexivity, then accommodation); nearer-term, the CYB-10 follow-ups (H2 chaos-leakage
-characterization; bidirectional coupling).
+CYB-15 ✅ doc sync · CYB-17 ✅ accommodation (the first *sustaining* channel; the rate as a
+three-channel tug-of-war) · CYB-18 ✅ accommodation on the coupled stack (distributional
+exhaustion deferred; recursion pins an inflation floor; rate gates ignition both ways).
+**Gated:** CYB-13 🔒 formal global-bifurcation proof (external mathematician, post-July-6 —
+do NOT solo-build); CYB-16 🔒 the monetarism critique (normative; external buy-in). **Live
+next:** CYB-19 the Minsky credit-crunch cascade off the CYB-18 solvency border · CYB-20
+reflexivity / expectations (the other sustaining channel). **Parked seed:** CYB-8 austerity.
+Nearer-term: the CYB-10 follow-ups (H2 chaos-leakage characterization; bidirectional coupling).
 
 **Validated reusable instrument suite** (model-agnostic — operate on a `step(state)→state`
 callable + a flat state vector, knowing nothing about supply chains; every future mechanism
@@ -75,6 +78,18 @@ runs through these): `lyapunov` (largest Lyapunov, self-test → ln 2), `bifurca
   bullwhip holds `g>0` — so recursion **sustains, doesn't merely amplify**; and the real
   chaos leaks into the nominal path (π aperiodic; a positive answer to the H2 preview). Both
   conservation laws hold simultaneously through the ignited regime.
+- **Accommodation — the first *sustaining* channel (CYB-17), and it on the coupled stack
+  (CYB-18).** Finance the wage bill at a policy rate `i`; the rate acts through **three
+  channels at once** (cost +, symmetric-demand −, distributional −) — a **tug-of-war whose
+  winner is a parameter, not a verdict**. CYB-6's "unbounded" runaway was the **full-
+  accommodation limit** hiding as a law. On the coupled stack the distributional channel
+  **stops self-exhausting** (recursion re-loads its target every period) but also **never
+  wins**: recursion pins a positive inflation floor `≈k·κ·⟨d⟩` **no rate can reach** → the
+  rate turns *redistributive, not stabilising*; and the rate **gates super-additive ignition
+  both ways** (cost-push lowers the coupling threshold, disinflation raises it). Composition
+  proven by **two** byte-exact anchors (`κ=0`→CYB-17; full-accommodation→CYB-10); three
+  nonsmooth borders live at once, the **solvency ceiling dominating and pre-empting the wage
+  floor**. The Minsky crunch off that solvency border is CYB-19 (deferred).
 
 ## Current validated state (don't re-derive — build on this)
 - **Conservation** holds to <1e-10 (money + egg residuals). This is the crown jewel.
@@ -202,12 +217,15 @@ earned the same number honestly). Rules:
    linearize / normal-form instrument suite (CYB-2/4) already validated and reusable.*
 
 ## Suggested immediate next move
-The egg foundation is now on real data end-to-end (NASS flock + linear pricer, both
-episodes OOS-clean) and both transmission channels are built and coupled. The natural
-next moves: (a) a **CYB-10 follow-up** — characterize the H2 chaos-leakage (spectra), or
-add bidirectional coupling; or (b) start the first **sustaining channel**, reflexivity,
-then accommodation (CYB-16 seed). The formal proof (CYB-13) waits on the external
-mathematician — do not pick it up solo. Cost-matrix / distributed economy sequence after.
+The egg foundation is on real data end-to-end (NASS flock + linear pricer, both episodes
+OOS-clean); both transmission channels are built and coupled (CYB-6/10); and the first
+**sustaining** channel — accommodation — is built on bare CYB-6 (CYB-17) and on the coupled
+stack (CYB-18). The natural next moves: (a) **CYB-19** — the Minsky credit-crunch cascade, the
+*dynamic* deleveraging that fires off CYB-18's now-static solvency border (flagged "the big
+one"); (b) **CYB-20** — reflexivity / expectations / indexation, the other sustaining channel;
+or (c) a **CYB-10 follow-up** — characterize the H2 chaos-leakage (spectra), or add
+bidirectional coupling. The formal proof (CYB-13) and the monetarism critique (CYB-16) wait on
+external buy-in — do not pick them up solo. Cost-matrix / distributed economy sequence after.
 
 ## Repo / run notes
 - All code lives under `src/`. Engine modules (`model.py`, `pricers.py`, `events.py`)

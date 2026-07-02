@@ -74,12 +74,18 @@ python3 v08_wedge.py                   # the distributional wedge
 Done: `replace_lag` retired via the real NASS flock series (CYB-7); egg pricer slope
 recalibrated to ~24/pt on real deficits (CYB-9); **saturation tested & rejected** (CYB-14 —
 concavity within-noise at the path level, keep linear); **recursion × conflict coupling**
-built (CYB-10 — super-additive ignition). Open threads: the **formal global-bifurcation
-proof** is **gated** on an external mathematician (CYB-13, post-July-6 — do NOT solo-build);
-**H2 chaos-leakage characterization** and **bidirectional coupling** (CYB-10 follow-ups);
-then cost-matrix third channel → **accommodation / reflexivity** (the sustaining channels;
-accommodation seed CYB-16) → the distributed virtual economy. Pull real data from source APIs
-(FRED/NASS) directly now — a NASS QuickStats key is required (env `NASS_API_KEY`).
+built (CYB-10 — super-additive ignition); **accommodation** — the first *sustaining* channel —
+built on bare CYB-6 (CYB-17 — the rate is a three-channel tug-of-war; the distributional
+channel *self-exhausts*) and on the coupled stack (CYB-18 — under recursion's reloading the
+distributional exhaustion is deferred and recursion pins an inflation floor the rate can't
+reach; the rate gates ignition both ways; two byte-exact anchors). Open threads: the **formal
+global-bifurcation proof** is **gated** on an external mathematician (CYB-13, post-July-6 — do
+NOT solo-build); the **Minsky credit-crunch cascade** off the CYB-18 solvency border (CYB-19)
+and **reflexivity / expectations** (CYB-20) are the live sustaining-channel follow-ups;
+**H2 chaos-leakage characterization** and **bidirectional coupling** (CYB-10 follow-ups); the
+monetarism critique (CYB-16) stays gated; then cost-matrix third channel → the distributed
+virtual economy. Pull real data from source APIs (FRED/NASS) directly now — a NASS QuickStats
+key is required (env `NASS_API_KEY`).
 
 ## Conventions
 - Public repo, MIT: github.com/Goldcap/Cybeersym.
