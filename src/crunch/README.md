@@ -81,6 +81,17 @@ And even a hard bound only cuts inflation to ~12% via a **grinding limit cycle a
 never cleanly to zero — the crunch bounds but does not *cure* (and the genuinely dangerous
 basin, debt-deflation, is the unwired Phase-2 direction).
 
+> **Reading the map correctly — swept plane vs occupied locus.** `L_trig` is *not* a state the
+> system freely visits: in the dynamics leverage settles to a rate-pinned ratio `ρ(i)` (≈0.65 at
+> `i=0.55` → ≈0.75 at `i=0.70`; ≈0.67 at the `i=0.60` shown). The map **sweeps `L_trig` as a
+> counterfactual** — "where does the lender place the credit border?" — not as something the
+> economy dials on its own. So the physically-occupied locus is the **single vertical line
+> `L_trig = ρ(i)`** (one point per rate); the crunch fires only in the half-plane `L_trig < ρ(i)`
+> (border below where leverage wants to sit), and the `L_trig ≳ ρ(i)` no-op wall is exactly
+> "border above the occupied leverage." Move `i` and that whole occupied line moves. Read the
+> plane as a policy counterfactual over border placement, with the rate selecting which column is
+> real.
+
 ## Border dynamics — the solvency border, static in CYB-17/18, now fires a cascade
 
 The solvency ceiling that merely *clamped* in CYB-17/18 now **recurs as a limit cycle**:

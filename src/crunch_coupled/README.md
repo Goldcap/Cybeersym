@@ -41,6 +41,14 @@ So the achievable choke floor **rises** (7% → 12%), the crunch is *uniformly* 
 every deleverage rate `δ`, and the bounding/fizzle boundary shifts toward "harder to bound." The
 crunch still can't cure on bare CYB-17; on the egg stack it bounds even less.
 
+> **Reading the map correctly — swept plane vs occupied locus** (inherited from CYB-19 P1). The
+> `(L_trig, δ)` map sweeps `L_trig` as a **counterfactual** border placement, *not* a state the
+> economy visits: leverage settles to a rate-pinned ratio `ρ(i)` (recursion lifts the coupled
+> baseline but the pinning is still the rate's). The physically-occupied locus is the single line
+> `L_trig = ρ(i)`; the crunch fires only for `L_trig < ρ(i)`, and the no-op wall is `L_trig ≳ ρ(i)`.
+> Coupling shifts *where the map is greenest* (harder to bound), but the plane is still a policy
+> counterfactual with the rate selecting the real column.
+
 The limit cycle tells the same story — clean and deep-troughed when bare, chaotic and
 shallow-troughed (higher floor) when coupled:
 
