@@ -7,43 +7,51 @@ same version of the paper. Merge a PR only when every substantive objection is e
 
 ## Comment classification
 
-Every review comment is tagged with exactly one type:
-
 - **CORRECTNESS** — the stated claim is false / the map or invariant is misstated.
-- **RIGOR** — the claim exceeds its evidence; a proved/numerical/conjectural row is
-  mis-tiered (§6 of the note).
+- **RIGOR** — the claim exceeds its evidence, or a proved/numerical/conjectural label is wrong.
 - **CLARITY** — the claim is right but ambiguously or misleadingly stated.
 - **STYLE** — presentation, notation, wording.
 - **OPEN QUESTION** — a genuine unknown surfaced for the record (not a defect).
 
-## How a row moves
-
-A CORRECTNESS or RIGOR comment on a claim `Pn / Nn / Cn` (the §6 ledger IDs) either
-(a) gets the note edited and the row updated, or (b) is logged OPEN below with a one-line
-rationale. Nothing merges with an unlogged substantive objection outstanding.
-
 ---
 
-## Round 1 — initial draft (PR: CYB-25 initial bifurcation note draft)
+## Round 0 — internal referee pass (Claude, against `src/chaos/` at commit on this branch)
 
-Reviewers: Prof. Hu (external) · Claude (referee proxy) · Desktop.
+The note's every quantitative claim was checked by re-running the instruments
+(`linearize.py`, `bcb_classify.py`) and reading `model.py`. Findings:
 
-| # | Reviewer | Type | Target (§/claim) | Comment | Status |
-|---|----------|------|------------------|---------|--------|
-| _ | _ | _ | _ | _(none yet — draft just opened)_ | — |
+| # | Type | Target | Finding | Status |
+|---|------|--------|---------|--------|
+| R0-1 | CLARITY | §3.3 | The "0.91–0.95" range conflated **two different objects**: the equilibrium's transverse modulus (≈0.91–0.92 through onset, from the FP linearization / full 21-D spectrum) and the **one-sided border Jacobian** oscillatory plane (0.945 ∠39.5°, evaluated on the attractor at β=0.22, `bcb_classify.py`). Not a discrepancy — distinct evaluation points. | **RESOLVED** — §3.3 rewritten to separate the two; the note's own "must be resolved before circulation" flag is discharged. |
+| R0-2 | CORRECTNESS | §1 | Map definition matches `model.py` exactly: 21-D CPA map, Gauss–Seidel downstream→upstream sweep, `d_{i+1}=R_i`, `Y_{i+1}` into tier i's delay line, `max(0,·)` order and `min(·,·)` ship borders. | CONFIRMED |
+| R0-3 | CORRECTNESS | §2.1 | Interior equilibrium: every tier orders exactly μ=100 (far from order border), stockout margin ≈129 (far from ship border), ∀β through onset (β=0.40→0.28 verified). | CONFIRMED |
+| R0-4 | RIGOR | §2.2 | The three λ=+1 eigenvalues are correctly labelled **proved** (the `C_i = O_i − ΣQ_i` first-integral argument is exact and structural), and confirmed numerically ε-robust (`#(λ=+1)=3` ∀β). | CONFIRMED (labelling correct) |
+| R0-5 | CORRECTNESS | §3.1–3.4 | Λ_max≈0.054, amplitude jump 0→~525 over Δβ≈0.003, order clamp 42–56 %, ship clamp 24–27 %, hyperbolic |λ| tops ≈0.92 — all reproduced. | CONFIRMED |
+| R0-6 | OPEN QUESTION | Figures | The note references `[Figure 1]` (bifurcation diagram) and `[Figure 2]` (transverse-spectrum-vs-β). The repo has `figures/` copied from `src/chaos/figures/`, but a dedicated Figure 2 (transverse modulus vs β) is **not yet a generated artifact** — it would need a small plotting run before circulation. | OPEN |
 
 ### Open questions carried forward
 
-_(none yet)_
+- **R0-6** — generate a matching Figure 2 (transverse-spectrum-vs-β) before the note circulates.
 
 ### Resolved this round
 
-_(none yet)_
+- **R0-1** — the 0.91–0.95 ambiguity (see above).
 
 ---
 
-*Standing invitations to the reviewer, from the note §0/§6: (1) verify the §2 recurrence
-against `src/chaos/model.py`; (2) challenge the §3 conservation / center-subspace argument
-(claim N6 / C4); (3) challenge every use of "attractor / invariant / chaos /
-border-collision / bifurcation"; (4) adjudicate the §5 open classification problem
-(claim C2 / C5); (5) move any §6 row between tiers, or refute it.*
+## Round 1 — external review (PR: CYB-25)
+
+Reviewers: Prof. Hu (external) · Claude (referee proxy) · Desktop.
+
+| # | Reviewer | Type | Target (§) | Comment | Status |
+|---|----------|------|------------|---------|--------|
+| _ | _ | _ | _ | _(awaiting external review)_ | — |
+
+---
+
+*Standing invitations to the reviewer (note §0 / §5): (1) verify the §1 recurrence against
+`src/chaos/model.py`; (2) is restriction to the conservation leaf 𝓛_c the correct first
+reduction (§2.2)?; (3) challenge every use of "attractor / invariant / chaos /
+border-collision / bifurcation"; (4) adjudicate the §4.4 / §5 open classification — is
+"global nonsmooth bifurcation of a coexisting oscillatory attractor" an appropriate
+provisional characterization?*
