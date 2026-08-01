@@ -27,15 +27,16 @@ The note's every quantitative claim was checked by re-running the instruments
 | R0-3 | CORRECTNESS | §2.1 | Interior equilibrium: every tier orders exactly μ=100 (far from order border), stockout margin ≈129 (far from ship border), ∀β through onset (β=0.40→0.28 verified). | CONFIRMED |
 | R0-4 | RIGOR | §2.2 | The three λ=+1 eigenvalues are correctly labelled **proved** (the `C_i = O_i − ΣQ_i` first-integral argument is exact and structural), and confirmed numerically ε-robust (`#(λ=+1)=3` ∀β). | CONFIRMED (labelling correct) |
 | R0-5 | CORRECTNESS | §3.1–3.4 | Λ_max≈0.054, amplitude jump 0→~525 over Δβ≈0.003, order clamp 42–56 %, ship clamp 24–27 %, hyperbolic |λ| tops ≈0.92 — all reproduced. | CONFIRMED |
-| R0-6 | OPEN QUESTION | Figures | The note references `[Figure 1]` (bifurcation diagram) and `[Figure 2]` (transverse-spectrum-vs-β). The repo has `figures/` copied from `src/chaos/figures/`, but a dedicated Figure 2 (transverse modulus vs β) is **not yet a generated artifact** — it would need a small plotting run before circulation. | OPEN |
+| R0-6 | OPEN QUESTION | Figures | The note references `[Figure 1]` (bifurcation diagram) and `[Figure 2]` (transverse-spectrum-vs-β). A dedicated Figure 2 was **not yet a generated artifact**. | **RESOLVED** — both figures generated deterministically by `src/chaos/outreach_figures.py` (Fig 1 = down/up hysteresis sweep showing finite-amplitude onset + coexistence; Fig 2 = transverse |λ| vs β, ≈0.86→0.93, crosses onset β≈0.29 at ≈0.91, never reaching 1), embedded in the note with captions, and rendered to `bifurcation-note.pdf` (7 pp, MathJax). |
 
 ### Open questions carried forward
 
-- **R0-6** — generate a matching Figure 2 (transverse-spectrum-vs-β) before the note circulates.
+- _(none)_
 
 ### Resolved this round
 
 - **R0-1** — the 0.91–0.95 ambiguity (see above).
+- **R0-6** — both figures generated, embedded, and rendered to PDF.
 
 ---
 
