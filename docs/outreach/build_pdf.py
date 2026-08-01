@@ -21,7 +21,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 SRC = HERE / "bifurcation-note.md"
 HTML = HERE / "bifurcation-note.html"
-PDF = HERE / "bifurcation-note.pdf"
+PDF = HERE / "Madsen-bifurcation-note.pdf"
 
 CSS = """
 @page { size: Letter; margin: 22mm 20mm 22mm 20mm; }
