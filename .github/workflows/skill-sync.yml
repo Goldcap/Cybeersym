@@ -1,0 +1,18 @@
+# Backstop for the skill drift-guard: the cybeersym-research skill is discovered by two
+# runtimes at two paths (.claude/skills/ and .agents/skills/) and MUST stay byte-identical.
+# The local pre-commit hook (githooks/) only fires for contributors who ran
+# `git config core.hooksPath githooks`; this job catches drift for everyone else.
+name: skill-sync
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check-skill-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check cybeersym-research skill copies are byte-identical
+        run: bash scripts/check-skill-sync.sh
