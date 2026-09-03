@@ -35,12 +35,15 @@ doesn't cure) · CYB-22 ✅ crunch on the coupled egg stack (the grind worsens u
 CYB-23 ✅ Phase 2 default + impairable rentier (the impairment horizon: cure↔contagion-collapse,
 a bigger haircut stabilizes; Engine-1 credit-quantity contagion is hyper-inflationary, NOT
 Fisher; capital-account balance sheet closes) · CYB-24 ✅ doc-sync: THESIS.md re-woven for the
-accommodation→crunch arc (switching-manifold through-line stated as the meta-thesis). **Gated:**
-CYB-13 🔒 formal global-bifurcation proof (external mathematician, post-July-6 — do NOT solo-build);
-CYB-16 🔒 the monetarism critique (normative; external buy-in). **Live next:** Phase 2b (switch
-Engine-2/Fisher on, after strengthening the price channel) · Phase-2-on-coupled · CYB-20
-reflexivity / expectations · CYB-21 supply-chain financing (the rate's 4th channel). **Parked
-seed:** CYB-8 austerity. Nearer-term: the CYB-10 follow-ups (H2 chaos-leakage; bidirectional coupling).
+accommodation→crunch arc (switching-manifold through-line stated as the meta-thesis) ·
+**Phase 2b** ✅ the genuine Fisher debt-deflation loop → the two-basin map (`src/fisher/`): the
+"inflationary, not Fisher" collapse shown CONDITIONAL, not a refutation of the canon. **Gated:**
+CYB-13 🔒 formal global-bifurcation proof (external mathematician, post-July-6 — do NOT solo-build;
+Dr Hu / CUNY-Brooklyn declined, so this stays parked until another expert is engaged);
+CYB-16 🔒 the monetarism critique (normative; external buy-in). **Live next:** Phase-2b-on-coupled ·
+Phase-2-on-coupled · CYB-20 reflexivity / expectations · CYB-21 supply-chain financing (the rate's
+4th channel). **Parked seed:** CYB-8 austerity. Nearer-term: the CYB-10 follow-ups (H2
+chaos-leakage; bidirectional coupling).
 
 **Validated reusable instrument suite** (model-agnostic — operate on a `step(state)→state`
 callable + a flat state vector, knowing nothing about supply chains; every future mechanism
@@ -117,6 +120,23 @@ runs through these): `lyapunov` (largest Lyapunov, self-test → ln 2), `bifurca
   demand channel disinflates but never deflates → Fisher needs a strengthened price channel, Phase
   2b). SFC payoff: write-offs are STOCK events; the capital-account identity (rentier asset ≡ firm
   liability) closes `≤4e-12` through defaults AND collapses. Nested `CYB-17 ⊂ P1 ⊂ P2` byte-exact.
+- **The genuine Fisher debt-deflation loop — the two-basin map (Phase 2b).** CYB-23 gated Engine 2
+  (price-level Fisher) OFF *with evidence* — CYB-17's demand channel is a **symmetric multiplicative
+  damper** that drives π→0 **from above** and can't flip sign (min tail π = −0.000%/step), so
+  deflation was unreachable by construction. Phase 2b strengthens the price channel into a real,
+  self-reinforcing Fisher loop (excess real burden `D/P` → distress selling cuts `P` → higher real
+  burden → more selling) and produces the headline **two-basin map**: **one debt-distress signal,
+  two collapse engines, opposite sign** — Engine 2 (φ, deflation, direct price cuts) vs Engine 1
+  (ε, inflation, the CYB-23 premium/cost spiral fed by the *same* falling `P` raising `i·D/P` and
+  `impairment/P`). Which **collapse basin** you fall into is set by **φ vs ε = the strength of the
+  price channel**. All three outcomes reachable (bounded · inflation-collapse · deflation-collapse),
+  ragged contested frontier; deflation is a **threshold** (φ*≈1.63 at ε=0); the collapse is
+  genuinely the **loop** (frozen-leverage regression stays bounded — a CYB-10-style anchor);
+  conservation `1e-16` through the deflation because the nominal capital-account identity is
+  **P-independent** (debt-deflation is a **real-burden runaway** under an exact balance sheet — the
+  SFC payoff). **This resolves the CYB-23 caveat: the "inflationary, not Fisher" result is
+  CONDITIONAL** (holds at the shipped φ=0; the Fisher basin opens past φ*), *not* a refutation of
+  debt-deflation. Nested `CYB-17 ⊂ P1 ⊂ P2 ⊂ P2b` byte-exact.
 
 ## Current validated state (don't re-derive — build on this)
 - **Conservation** holds to <1e-10 (money + egg residuals). This is the crown jewel.
@@ -247,14 +267,17 @@ earned the same number honestly). Rules:
 The egg foundation is on real data end-to-end (NASS flock + linear pricer, both episodes
 OOS-clean); both transmission channels are built and coupled (CYB-6/10); and the first
 **sustaining** channel — accommodation — is built on bare CYB-6 (CYB-17) and on the coupled
-stack (CYB-18), and the **Minsky crunch Phase 1** (CYB-19) fires that solvency border. The
-natural next moves: (a) **CYB-19 Phase 2** — default + an impairable rentier pool → the
-debt-deflation / Fisher basin, closing the loop Phase 1 deliberately left open (the genuine
-extension of CYB-17's balance sheet); (b) **CYB-19-on-coupled** — the crunch on the egg stack,
-where CYB-18 showed it's central; (c) **CYB-20** — reflexivity / expectations, the other
-sustaining channel; (d) **CYB-21** — supply-chain financing (the rate's 4th channel); or (e) a
-**CYB-10 follow-up** (H2 chaos-leakage spectra / bidirectional coupling). The formal proof
-(CYB-13) and the monetarism critique (CYB-16) wait on external buy-in — do not pick them up solo.
+stack (CYB-18); the **Minsky crunch Phase 1** (CYB-19) fires that solvency border; **Phase 2**
+(CYB-23) adds default + the impairable rentier (Engine-1 contagion); and **Phase 2b**
+(`src/fisher/`) wires the genuine Fisher loop (Engine 2) → the **two-basin map** (the
+"inflationary, not Fisher" result shown CONDITIONAL). The natural next moves: (a)
+**Phase-2b-on-coupled** — the two-basin map on CYB-22's recursion substrate (recursion re-loading
+the gap should shift φ* and thicken the contested frontier); (b) **CYB-19-on-coupled** — the crunch
+on the egg stack, where CYB-18 showed it's central; (c) **CYB-20** — reflexivity / expectations,
+the other sustaining channel; (d) **CYB-21** — supply-chain financing (the rate's 4th channel); or
+(e) a **CYB-10 follow-up** (H2 chaos-leakage spectra / bidirectional coupling). The formal proof
+(CYB-13, now parked after Dr Hu declined) and the monetarism critique (CYB-16) wait on external
+buy-in — do not pick them up solo.
 
 ## Repo / run notes
 - All code lives under `src/`. Engine modules (`model.py`, `pricers.py`, `events.py`)
