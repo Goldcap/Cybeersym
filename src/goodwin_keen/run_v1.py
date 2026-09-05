@@ -1,5 +1,5 @@
 """
-Goodwin–Keen v1 (CYB-35) — a genuine LOCAL Hopf, recovered two ways.
+Goodwin–Keen v1 (CYB-35) — a genuine LOCAL Hopf, recovered on two independent objects (flow & map).
 
 v0 (CYB-33) passed as the instrument self-test rung but found that with a linear Phillips curve
 the (ω,λ) block is a structural zero-trace centre, so Keen breakdown there is only a *global*
@@ -8,15 +8,19 @@ the instrument against a KNOWN analytic threshold.
 
 The known answer (derived, not guessed): at the Keen good equilibrium ∂ω̇/∂ω = ∂λ̇/∂λ = 0 for ANY
 Phillips shape, and the 3×3 Routh–Hurwitz Hopf condition a₁a₂=a₃ reduces EXACTLY to
-J₁₂·J₂₃·J₃₁ = 0. Since J₁₂ = ω*φ'(λ*) ≠ 0 and J₂₃ = −λ*rκ'/ν ≠ 0, the Hopf is where **J₃₁ = 0**,
-i.e. **κ'(π*) = ν/(ν−d*)** — a closed-form locus, INDEPENDENT of the Phillips curve (φ' cancels).
-So the local Hopf is an investment-sensitivity (κ', swept via `ksharp`) / debt-coupling phenomenon,
-not a Phillips-convexity one. We add the canonical convex Phillips (flagged) and demo with it on,
-but the control parameter is `ksharp` and the locus is Phillips-independent — reported honestly.
+J₁₂·J₂₃·J₃₁ = 0 (verified symbolically). Since J₁₂ = ω*φ'(λ*) ≠ 0 and J₂₃ = −λ*rκ'/ν ≠ 0, the Hopf
+is where **J₃₁ = 0**, i.e. **κ'(π*) = ν/(ν−d*)** — a closed-form locus. So the Hopf's THRESHOLD
+LOCATION is INDEPENDENT of the Phillips curve (φ' cancels from J₃₁): it is set by investment
+sensitivity (κ', swept via `ksharp`) × the debt coupling, not by Phillips convexity. **But φ' is
+not irrelevant** — φ'>0 is what makes the crossing *oscillatory* (the imaginary pair is ±i√a₂ with
+a₂ = ω*λ*φ'κ'/ν, so φ' sets the cycle's existence and frequency, not its location). We add the
+canonical convex Phillips (flagged) and demo with it on; the control parameter is `ksharp`.
 
   0. Nesting — phillips_convex=False leaves v0 (CYB-33) byte-exact.
-  1. The Hopf, two ways — analytic (continuous-Jacobian Re→0, and the closed-form κ'=ν/(ν−d*))
-     vs instrument (RK4-map |μ|→1). Same ksharp*, crossing pair complex ⇒ Neimark–Sacker (D1).
+  1. The Hopf on two INDEPENDENT objects — the continuous FLOW (analytic Re→0, equivalently the
+     closed-form κ'=ν/(ν−d*)) and the discrete MAP (instrument RK4 |μ|→1). Same ksharp*, crossing
+     pair complex ⇒ Neimark–Sacker (D1). (The two analytic forms are the same condition, so their
+     agreement is by construction; the load-bearing cross-check is flow vs map.)
   2. Both sides reachable — stable focus (spirals in) vs Hopf-born limit cycle.
   3. Determinism.
 """
@@ -94,21 +98,22 @@ def nesting():
 def hopf_two_ways():
     lo, hi = 12.0, 26.0
     ks_analytic = _bisect(_analytic_re, lo, hi)              # continuous Re(complex) → 0
-    ks_closed   = _bisect(hopf_locus_residual and (lambda k: hopf_locus_residual(_p(k))), lo, hi)
+    ks_closed   = _bisect(lambda k: hopf_locus_residual(_p(k)), lo, hi)
     ks_instr    = _bisect(lambda k: _instrument_absmu(k)[0] - 1.0, lo, hi)
     # confirm the crossing pair is complex (Neimark–Sacker, not a real eigenvalue through 1)
     p = _p(ks_instr); x, _r = _lin.fixed_point_newton(step_fn(p), np.array(keen_good_equilibrium(p)))
     mu_c = _lin.leading_complex(_lin.jacobian(step_fn(p), x))
     eq = keen_good_equilibrium(p)
     gap = abs(ks_instr - ks_analytic) / ks_analytic * 100.0
-    print(f"[1] the local Hopf, two ways (control parameter = ksharp; convex Phillips ON):")
+    print(f"[1] the local Hopf on two INDEPENDENT objects — flow & map (control = ksharp; convex Phillips ON):")
     print(f"      analytic  ksharp* = {ks_analytic:.3f}   (continuous-Jacobian Re[complex pair] → 0)")
     print(f"      closed-form ksharp* = {ks_closed:.3f}   (κ'(π*) = ν/(ν−d*), i.e. J₃₁ = 0)")
     print(f"      instrument ksharp* = {ks_instr:.3f}   (RK4-map |μ| → 1, via jacobian/eigs)   Δ={gap:.2f}%")
     print(f"      crossing eigenvalue μ = {mu_c.real:+.5f}{mu_c.imag:+.5f}i  (COMPLEX ⇒ Neimark–Sacker,")
     print(f"      a genuine local Hopf — taxonomy D1). good eq (ω,λ,d)=({eq[0]:.3f},{eq[1]:.3f},{eq[2]:.3f}).")
-    print(f"      NB the locus κ'(π*)=ν/(ν−d*) is Phillips-INDEPENDENT: the Hopf is investment-")
-    print(f"      sensitivity (κ' via ksharp) × debt coupling, not Phillips convexity (φ' cancels).")
+    print(f"      NB the THRESHOLD LOCATION κ'(π*)=ν/(ν−d*) is Phillips-INDEPENDENT (φ' cancels from")
+    print(f"      J₃₁): driven by investment sensitivity (κ' via ksharp) × debt coupling. φ'>0 still")
+    print(f"      sets the OSCILLATORY character & cycle frequency (±i√a₂, a₂=ω*λ*φ'κ'/ν), not location.")
     return ks_analytic, ks_instr, ks_closed
 
 
@@ -129,7 +134,9 @@ def _lambda_amp(ksharp, n, lo, hi):
 # ---- 2. both sides reachable --------------------------------------------------
 def both_sides(ks_star):
     ks_stable = ks_star + 6.0                                # above ksharp* — stable focus (well damped)
-    ks_cycle  = ks_star - 3.0                                # below — Hopf-born limit cycle
+    ks_cycle  = ks_star - 1.3                                # below — Hopf-born limit cycle, kept in
+                                                             # the PHYSICAL window (d*>0; d* crosses 0
+                                                             # at ksharp≈16.9, so stay above it)
     # stable: the focus CONTRACTS (final |s−eq| < initial), and its late-window amplitude decays
     d0_s, df_s, amp_s = _lambda_amp(ks_stable, 150000, 130000, 150000)
     # cycle: sustained oscillation — compare an early tail window to a late one (non-decaying)

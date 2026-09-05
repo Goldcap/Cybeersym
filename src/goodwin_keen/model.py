@@ -227,7 +227,8 @@ def hopf_locus_residual(p: GKParams) -> float:
     """The closed-form Hopf condition at the good equilibrium: Routh–Hurwitz a₁a₂−a₃ reduces
     EXACTLY to J₁₂·J₂₃·J₃₁, and J₁₂,J₂₃ ≠ 0, so the Hopf is where J₃₁ = 0, i.e.
     κ′(π*) = ν/(ν−d*). Returns κ′(π*) − ν/(ν−d*): zero at the Hopf, sign = which side.
-    NB independent of the Phillips curve (φ' cancels) — the Hopf is investment-sensitivity/debt."""
+    NB the threshold LOCATION is Phillips-independent (φ' cancels from J₃₁) — investment-sensitivity
+    × debt; φ'>0 still sets the oscillatory character (the crossing pair is ±i√a₂, a₂=ω*λ*φ'κ'/ν)."""
     omega, lam, d = keen_good_equilibrium(p)
     pi = 1.0 - omega - p.r * d
     return kappa_prime(pi, p) - p.nu / (p.nu - d)

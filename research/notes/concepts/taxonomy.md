@@ -134,10 +134,14 @@ the instances it cites may be independently validated.
 - **Defining property.** A qualitative change produced by an eigenvalue crossing the stability
   boundary **smoothly** (fold / Hopf–Neimark–Sacker / period-doubling).
 - **Diagnostic.** The dominant spectrum crosses the unit circle at the border; a normal form applies.
-- **Instance.** `benchmark` — logistic period-doubling (self-test). **Tested-and-rejected as the
-  mechanism** in CYB-2/4: the hyperbolic spectrum tops out at `|λ|≈0.92` and **never crosses** while
-  chaos exists — a *negative result* (support for `refuted`, per the principles), and the reason the
-  onset is not this class.
+- **Instance.** `validated-instance` — **GK-v1 (CYB-35): a genuine Neimark–Sacker (Hopf)** in the
+  Keen model, where the `linearize` instrument's map `|μ|→1` crossing lands (to ~1e-3%) on the
+  analytic Hopf threshold (continuous `Re→0`, equivalently the closed-form `κ'(π*)=ν/(ν−d*)`), the
+  crossing pair genuinely complex. `benchmark` — logistic period-doubling (self-test).
+  **Tested-and-rejected as the *chaos-core* onset mechanism** in CYB-2/4: there the hyperbolic
+  spectrum tops out at `|λ|≈0.92` and **never crosses** while chaos exists — a *negative result*,
+  and why that onset is D2 not D1 (the class itself is real; GK-v1 exhibits it, the chaos core does
+  not).
 
 ### D2 — Global / nonsmooth bifurcation (border collision, active constraint)
 - **Defining property.** A qualitative change produced by trajectory **contact with a switching
@@ -221,7 +225,7 @@ the instances it cites may be independently validated.
 | A2 | structurally non-hyperbolic equilibrium | conserved 3-tier chain | CYB-2/4 | numerical; formal gated (CYB-13) |
 | B1 | bounded (deflationary) limit cycle | Fisher on markup-defense | CYB-30 | structural (α_p, φ sweep) |
 | C1 | coexisting attractors, hysteresis | finite-amplitude turbulence | CYB-2/4 | numerical |
-| D1 | local bifurcation — **rejected** here | spectrum never crosses | CYB-2/4 | numerical (negative result) |
+| D1 | local bifurcation (Hopf / Neimark–Sacker) | GK-v1: instrument \|μ\|→1 on the analytic Hopf; chaos core: *rejected* (spectrum never crosses) | CYB-35 · CYB-2/4 | structural (GK-v1) / numerical |
 | D2 | global border-collision | cycle border-collision | CYB-2/4 | numerical; formal gated |
 | D3 | threshold ignition | Ponzi / ε / φ-vs-α_p | CYB-19/23/30 | structural |
 | E1 | nominal (hyperinflation) escape | credit-quantity contagion | CYB-23 | structural |

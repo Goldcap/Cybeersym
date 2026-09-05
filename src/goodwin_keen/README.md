@@ -69,7 +69,7 @@ economic claim (see "not empirical" below).*
 
 ![Keen bistability](figures/cybeersym_goodwin_keen_v0_keen_breakdown.png)
 
-## v1 (CYB-35) — a genuine LOCAL Hopf, recovered two ways (`run_v1.py`)
+## v1 (CYB-35) — a genuine LOCAL Hopf, recovered on two independent objects (flow & map) (`run_v1.py`)
 
 v0 caught centres (`|μ|=1`) and a *global* basin; it had no *local* bifurcation for `linearize` to
 catch. v1 supplies one — a genuine **Hopf** (Neimark–Sacker on the RK4 map) with a **closed-form**
@@ -81,7 +81,7 @@ to `J₁₂·J₂₃·J₃₁ = 0`. Since `J₁₂ = ω*φ'(λ*) ≠ 0` and `J�
 **`J₃₁ = 0`, i.e. `κ'(π*) = ν/(ν − d*)`** — a closed-form locus. Sweeping the **investment
 sensitivity `ksharp`** (κ' ∝ ksharp):
 
-| threshold, three independent ways | value |
+| threshold — two independent objects (flow & map); analytic side in two equivalent forms | value |
 |---|---|
 | analytic — continuous-Jacobian `Re[complex pair] → 0` | ksharp\* = **18.591** |
 | closed-form — `κ'(π*) = ν/(ν − d*)` (`J₃₁ = 0`) | ksharp\* = **18.591** |
@@ -95,11 +95,14 @@ byte-exact) and determinism hold.
 ![local Hopf](figures/cybeersym_goodwin_keen_v1_hopf.png)
 ![focus vs cycle](figures/cybeersym_goodwin_keen_v1_focus_vs_cycle.png)
 
-**Honest finding — the Hopf is *not* a Phillips-convexity effect.** The locus `κ'(π*) = ν/(ν−d*)`
-is **independent of the Phillips curve** (`φ'` cancels in `a₁a₂−a₃`). The local Hopf is driven by
+**Honest finding — the Hopf's *threshold location* is not set by Phillips convexity.** The locus
+`κ'(π*) = ν/(ν−d*)` fixing *where* the Hopf occurs is **independent of the Phillips curve** (`φ'`
+cancels from `J₃₁` in `a₁a₂−a₃ = J₁₂·J₂₃·J₃₁`, verified symbolically): the threshold is set by
 **investment sensitivity (`κ'`, i.e. `ksharp`) × the debt coupling** — Minsky, not the wage curve.
-The convex Phillips is added (flagged) as Keen's canonical form and the demo runs with it on, but
-the mechanism, honestly, is `ksharp`. **Taxonomy:** this is a **validated instance of class D1
+**But `φ'` is not irrelevant:** `φ'>0` is what makes the crossing *oscillatory* (the pair is
+`±i√a₂` with `a₂ = ω*λ*φ'κ'/ν`), so the Phillips curve sets the cycle's *existence and frequency* —
+just not its *location*. The convex Phillips is added (flagged) as Keen's canonical form; the swept
+control parameter is `ksharp`. **Taxonomy:** this is a **validated instance of class D1
 (local bifurcation)** — which the registry previously held only as *tested-and-rejected* (the chaos
 core) plus the logistic benchmark — complementing v0's A2 centre and handing off, past the cycle,
 to v0's C1→E breakdown basin ([registry](../../research/notes/concepts/taxonomy.md)).
