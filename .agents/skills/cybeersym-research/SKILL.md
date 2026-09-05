@@ -22,7 +22,7 @@ description: >-
 
 ## Three layers — know which one you're touching
 
-- **`research/`** — ideation (local, git-excluded). Ideas, conversations, concepts, questions.
+- **`research/`** — ideation. Ideas, concepts, questions. The distilled notes/schemas/reviews are versioned in the repo; raw conversation exports (`conversations/`) and bulk/licensed data (`data/`) stay local & git-excluded.
 - **`docs/` + code** — compound engineering (committed). The referee: real data decides here.
 - **`memory/`** — collaboration continuity. Preferences/procedures/mechanics only.
   **Never evidence, never authority** — it says where to look and how to work, not what is true

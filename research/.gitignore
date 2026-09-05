@@ -1,0 +1,14 @@
+# Regenerable bulk data — NOT versioned here.
+# These are reproducible byte-for-byte from data/wid/PROVENANCE.md
+# (source URL + sha256). We version the manifest + loaders/notes, not the blobs.
+data/wid/raw/
+data/wid/extracted/
+
+# Any other large frozen exports live under their own provenance manifest;
+# add explicit ignores here if a multi-hundred-MB blob lands.
+
+# OS / editor cruft
+.DS_Store
+*.swp
+__pycache__/
+*.pyc
