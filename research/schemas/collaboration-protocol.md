@@ -3,6 +3,14 @@
 > **Research proposes. Tickets authorize crossing the boundary. The repository tests.
 > Evidence decides. The notebook remembers the path — including the failures.**
 
+*"The repository tests / evidence decides" is enforced by **the reviewer gate**: a **fresh,
+independent reviewer** re-runs and re-derives a result — checking every stated number against
+output, attacking the headline, confirming guards are green and not vacuous — before it is called
+done or crosses into a PR. **Builder ≠ reviewer; if unsure, HOLD.** The gate is a floor that
+escalates when misses persist (measured escaped-defect log → cross-model → red-team → `../tandem`
+→ external expert), and labels what cannot be self-verified. Operational spec: `CLAUDE.md` §"The
+reviewer gate" + **CYB-34**.*
+
 The cross-system layer above the notebook's node/graph schemas: **who does what, where truth
 lives, and how an idea becomes validated work.** The other schemas (`graph-model.md`,
 `research-record.schema.md`) formalize the notebook's *internals*; this formalizes its
