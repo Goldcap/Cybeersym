@@ -1,29 +1,32 @@
-# Phase 2b — the genuine Fisher debt-deflation loop: the two-basin map
+# Phase 2b — the genuine Fisher debt-deflation loop: PROVING the basin
 
 > Ticket: **CYB-19 Phase 2b** (Linear ticket number to be assigned; referenced here as Phase 2b).
 > Successor to CYB-23 (Phase 2). Standalone; **reuses CYB-23 (`contagion/`) unchanged**
 > (`fisher_phi=0` ⇒ byte-exact CYB-23 ⇒ Phase 1 ⇒ CYB-17).
 
-CYB-23 wired **Engine 1** (credit-quantity contagion — the impaired rentier's risk premium →
-dearer credit → more Ponzi → **hyper-INFLATIONARY** collapse) and **gated Engine 2 (the
-price-level Fisher loop) OFF** — honestly, with evidence. CYB-23's AC6 verified that CYB-17's
-demand channel is a *symmetric multiplicative damper* (`damp = max(0, 1 − demand_b·slack)` scales
-**both** `α_w` and `α_p` toward zero), so it drives inflation toward 0 **from above** and can
-never flip sign (min tail π = **−0.000%/step** even at `demand_b=10`). Deflation was therefore
-**unreachable by construction**, and CYB-23 said so: *"Engine 2 needs a strengthened price
-mechanism (Phase 2b), not a simple switch-on."* This module is that strengthened mechanism, and
-it answers the question CYB-23 deferred: **is the "inflationary, not Fisher" result conditional?**
+> **⚠️ This supersedes the first-cut v0 headline (a "two-basin map" with a deflation threshold
+> φ\*≈1.63). That was a DETECTOR ARTIFACT** — it froze a bounded oscillation at a down-swing and
+> called it a collapse. The proper-proof pass below refutes it and replaces it with a stronger,
+> honest finding. The refutation trail is kept deliberately (repo methodology: *"every version
+> that shaped an input to fit an output got refuted by the next"*).
+
+CYB-23 wired **Engine 1** (credit-quantity contagion → **hyper-INFLATIONARY** collapse) and
+**gated Engine 2 (the price-level Fisher loop) OFF** — honestly: CYB-17's demand channel is a
+*symmetric multiplicative damper*, so it drives inflation toward 0 **from above** and can never
+flip sign. Deflation was **unreachable by construction**, and CYB-23 said *"Engine 2 needs a
+strengthened price mechanism (Phase 2b), not a switch-on."* This module builds that mechanism and
+asks the question CYB-23 deferred: **is "inflationary, not Fisher" conditional, or does something
+structural prevent debt-deflation?**
 
 ```bash
 cd src/fisher
-python3 run_v0.py   # nested regression → φ* threshold → two-basin map → loop anchor → conservation → resolution
+python3 run_v0.py   # nested regression → the refutation → the (α_p,φ) map → loop anchor → conservation → resolution
 ```
 
 ## The one new mechanism — a genuine, self-reinforcing Fisher loop
 
-Everything else is CYB-23, reused unchanged. The crude fixed-decrement `fisher_on` switch that
-`ContagionEconomy` carries stays **OFF**; Phase 2b supersedes it with a real feedback loop keyed
-off the **real debt burden**:
+Everything else is CYB-23, reused unchanged. The crude `fisher_on` switch stays **OFF**; Phase 2b
+supersedes it with a real feedback loop keyed off the **real debt burden**:
 
 ```
 pressure = max(0, leverage − b_ref)      # excess real debt burden D/P = distress
@@ -31,66 +34,78 @@ P ← P · (1 − φ · pressure)               # distress selling cuts the pric
 # next period: leverage = D/P rises (D nominal, unchanged) ⇒ pressure rises ⇒ a bigger cut
 ```
 
-That is Fisher 1933's *"the more they pay, the more they owe"* — a closed, self-reinforcing loop,
-not a mechanical decrement. The pivot is `φ` (Engine-2 price-channel strength); `φ=0` recovers
+That is Fisher 1933's *"the more they pay, the more they owe."* The pivot is `φ`; `φ=0` recovers
 CYB-23 byte-for-byte.
 
-## The headline — two engines on one signal, opposite sign (the two-basin map)
+## How to attack a debt-deflation claim — and what breaks
 
-![two-basin map](figures/cybeersym_fisher_v0_two_basin_map.png)
+The skeptic's test (the one a Minsky/Keen-orbit economist would run): **lift the collapse
+detectors and see whether the price level actually runs away.** It does not.
 
-A falling `P` does **two opposite things at once**:
+Composed on the conflict layer, the Fisher cut is a *self-limiting* feedback: a falling `P` raises
+the wage share `ω = W/P`, so the next tick the conflict layer's markup-defense pushes `P` back up.
+The two forces settle into a **bounded limit cycle** — the running-min `log P` is byte-identical
+across the first and last 1000 steps of a 5000-step run **for every φ up to 20** (non-secular ⇒ no
+divergence). The old `φ*≈1.63` was merely where that cycle's down-swing first breaches −25%/step;
+unfrozen, **φ=1.8 sits at P≈0.9 forever.**
 
-* **Engine 2 (φ, deflationary):** cuts prices directly (this module) → raises the real burden.
-* **Engine 1 (ε, inflationary):** raises `i·D/P` (cost channel) and `impairment/P` (the rentier's
-  risk premium, CYB-23) → **more** inflation.
+## The headline (CORRECTED) — the markup-defense is a *structural price floor*
 
-So the **same debt-distress** routes to inflation OR deflation, and which **collapse basin** you
-fall into is set by **φ vs ε — the strength of the price channel**, exactly the pivot CYB-23
-named. Over a (φ, ε) grid all three outcomes are reachable — **bounded grind · Engine-1
-inflation-collapse · Engine-2 debt-deflation collapse** — with a **ragged contested frontier**
-between the two collapse basins (the two feedbacks fight step-by-step, the same raggedness CYB-23
-found on the impairment horizon). **Both collapse basins reachable ⇒ not rigged.**
+![the (α_p, φ) genuine-divergence map](figures/cybeersym_fisher_v0_two_basin_map.png)
 
-## AC1 — deflation is a *threshold* phenomenon (φ* ≈ 1.63)
+Classify honestly — by **genuine divergence** (`D/P → ∞` / `P → 0`), detectors lifted — over the
+`(α_p, φ)` plane, where **α_p is the conflict-layer markup-defense strength (the stabilizer)**:
 
-![threshold and anchor](figures/cybeersym_fisher_v0_threshold_and_anchor.png)
+* **Genuine Fisher debt-deflation appears ONLY on the `α_p → 0` edge** (and there for `φ ≳ 2`).
+* For **any working markup layer** (`α_p ≥ 0.025` tested) it is a **bounded limit cycle at every
+  φ** up to 8.
 
-Isolating Engine 2 (ε=0) and sweeping φ: below **φ\* ≈ 1.63** the grind stays bounded (the Fisher
-cut is overpowered by the conflict layer's markup-defense response — a falling `P` raises the wage
-share `ω=W/P`, which makes firms want to raise `P`); above φ* the loop wins and debt-deflation
-collapses. You have to **strengthen the price channel past φ\*** to reach deflation — CYB-17's
-symmetric damper never could.
+The mechanism is exact: the **isolated** Fisher map is *always* unstable — linearize
+`u ← u·(1 + φ·b_ref)`, multiplier `> 1` for any `φ > 0` — so a runaway is the default, and the
+**only** thing that stops it is the markup-defense. It acts as a structural price floor. **The
+stabilizer, not φ, is the pivot.**
 
-## AC3 — the collapse is the LOOP, not the mechanical cut (the honesty anchor)
+> **"Bounded" ≠ benign.** At large φ (with the floor present) `P` settles to a very *depressed*
+> finite level — a severe one-off deflation — but the real burden `D/P` stays **finite**; it is
+> not the unbounded `D/P → ∞` Fisher runaway.
 
-A **frozen-leverage regression** (the `pressure` term reads a *held-constant* leverage — same cut
-magnitude, no feedback) stays **BOUNDED** (1.17%/step grind) at φ = 2, 4, 8 where the live loop
-deflation-collapses. So the collapse is genuinely the self-reinforcing `D/P` feedback, not the
-price decrement alone (cf. CYB-10's `κ=0` decoupling anchor).
+## AC — the collapse is the LOOP, not the mechanical cut (the honesty anchor)
 
-## AC4 — conservation through the deflationary transient: the SFC payoff
+Where the loop *is* genuine (`α_p = 0`), a **frozen-leverage regression** (the `pressure` term
+reads a *held-constant* leverage — same cut magnitude, no `D/P` feedback) stays **bounded**
+(log-P span ≈ 0) at φ = 2, 4, 8 where the live loop diverges. So the divergence is genuinely the
+self-reinforcing `D/P` feedback, not the price decrement alone (cf. CYB-10's `κ=0` anchor).
+
+## AC — conservation through a GENUINE deflationary runaway: the SFC payoff
 
 ![real-burden runaway](figures/cybeersym_fisher_v0_real_burden_runaway.png)
 
-The nominal capital-account identity (rentier asset ≡ firm liability, Godley–Lavoie) is
-**P-independent**, so the Fisher price cut *cannot* break it — worst residual **1e-16** through a
-full deflationary collapse. And **that is the SFC point of debt-deflation**: it is a **REAL-burden
-runaway** (`D/P` climbs and the per-step deflation accelerates through the −25%/step freeze; left
-unfrozen `P→0`, `D/P→∞`) while the **nominal accounting stays exact**. Debt-deflation is not an
-accounting failure — it is the real burden diverging under a consistent balance sheet.
+On a genuine divergence (`α_p=0, φ=4`): `D/P` runs `1 → 1.4×10⁶` in 6 steps (`P → 0`), yet the
+nominal capital-account identity (rentier asset ≡ firm liability, Godley–Lavoie) is
+**P-independent**, so the Fisher price cut *cannot* break it — worst residual **1e-16**. **That is
+the SFC point of debt-deflation:** a **real-burden runaway** under an *exact* balance sheet — now
+demonstrated on a real divergence, not a frozen swing.
 
-## AC5 — the resolution of CYB-23's caveat
+## AC — the corrected resolution of CYB-23's caveat
 
-* **φ=0 (shipped CYB-23 config):** deflation **unreachable** — exactly as CYB-23's AC6 reported.
-  CYB-23 was **right for that config**.
-* **φ > φ\* ≈ 1.63:** the Fisher **deflationary basin opens.**
+* **At the shipped α_p (0.30):** deflation is **unreachable at every φ** — a bounded limit cycle;
+  the markup-defense floors `P`. CYB-23's "inflationary, not Fisher" was **right for this config**.
+* **Genuine Fisher debt-deflation** opens only as **α_p → 0** (the stabilizer suppressed).
 
-**Verdict:** the *"inflationary, not Fisher"* result is **CONDITIONAL** — it holds for the shipped
-(weak-price-channel) configuration and is **NOT a refutation of debt-deflation.** Two engines,
-opposite sign, one distress signal; the price-channel strength picks the basin. This is the honest
-characterization to carry into any outreach to a Minsky/Keen-orbit economist: we did **not** ignore
-the Fisher condition — we built it, and mapped the boundary between the two engines.
+**Verdict:** *"inflationary, not Fisher"* is **STRUCTURAL** — the conflict-economy's wage-price
+restoration mechanism structurally prevents a Fisher debt-deflation *runaway* — **not** merely
+"conditional on a weak price channel," and **not** a refutation of debt-deflation itself (which is
+alive and well once the stabilizer is removed). This is the honest characterization to carry into
+any outreach to a Minsky/Keen-orbit economist: we did **not** ignore the Fisher condition — we
+built it, tried hard to make it ignite, and found *why* it doesn't in a conflict economy.
+
+## The refutation figure
+
+![the refutation](figures/cybeersym_fisher_v0_threshold_and_anchor.png)
+
+Left: at the shipped `α_p`, the Fisher loop is a **bounded limit cycle** (detectors lifted) — `P`
+swings but never runs away. Right: **genuine** Fisher debt-deflation once the markup-defense is
+suppressed (`α_p=0`) — `P → 0` monotonically for `φ ≳ 2`.
 
 ## Nested regression — byte-exact at each shell
 
@@ -99,29 +114,34 @@ the Fisher condition — we built it, and mapped the boundary between the two en
 
 ## Scope / forward-links
 
-* **Bare-CYB-17 substrate** (as CYB-23). Phase-2b-on-coupled (the CYB-22 recursion territory) is
-  a later cell — recursion re-loading the gap should shift φ* and thicken the contested frontier.
+* **Bare-CYB-17 substrate** (as CYB-23). Phase-2b-on-coupled (the CYB-22 recursion territory) is a
+  later cell — recursion re-loading the gap changes the stabilizer balance and could move the
+  `α_p → 0` edge inward.
+* The obvious next question: **is there a partial-stabilizer regime** (small but nonzero α_p, or a
+  weakened markup-defense under stress) where genuine divergence appears at finite α_p? The map
+  says not for α_p ≥ 0.025 up to φ=8; a finer/higher-φ sweep and a structural output-gap price
+  mechanism (real activity, not just leverage) is the natural v1.
 * **Aggregate only** — no unit-level / network default topology.
-* The Fisher engagement `b_ref` and the linear `pressure` map are v0 choices; a structural
-  output-gap price mechanism (real activity, not just leverage) is the natural v1.
-* Feeds the **monetarism critique (CYB-16, gated)** and the **formal bifurcation program
-  (CYB-13, gated)**: the inflation/deflation basin boundary is a new switching structure a
-  piecewise-smooth specialist could formalize.
+* Feeds the **monetarism critique (CYB-16, gated)** and the **formal bifurcation program (CYB-13,
+  gated)**: the `α_p → 0` divergence edge is a switching structure a piecewise-smooth specialist
+  could formalize. The **linear-stability sketch here is local and corroborative — NOT the gated
+  global proof.**
 
 ## Files
 
 - `model.py` — `FisherEconomy`: composes an unchanged `ContagionEconomy` + the genuine Fisher
-  debt-deflation loop (excess-real-burden → distress-selling price cut → higher real burden) +
-  symmetric blow-down detection + the frozen-leverage honesty switch.
-- `run_v0.py` — nested regression → φ* threshold (AC1) → two-basin map (AC2, headline) → the
-  loop-not-cut anchor (AC3) → capital-account conservation through deflation (AC4) → the CYB-23
-  resolution (AC5) → determinism (AC6).
-- `figures/` — the two-basin map (headline); the φ* threshold + frozen-leverage anchor; the
-  real-burden runaway with the nominal identity holding.
+  debt-deflation loop + the honest genuine-divergence detector (`D/P > 1e6`, not a single-step
+  swing) + the frozen-leverage honesty switch.
+- `run_v0.py` — nested regression → the **refutation** of v0's φ\* (bounded limit cycle) → the
+  **(α_p, φ) genuine-divergence map** (headline) → the loop-not-cut anchor → capital-account
+  conservation through a genuine divergence → the corrected resolution → determinism.
+- `figures/` — the (α_p, φ) map (headline); the refutation (bounded cycle vs genuine divergence);
+  the real-burden runaway with the nominal identity holding.
 
 ## Anchors
 
-Fisher 1933 (debt-deflation — **now wired**, Engine 2). Minsky (FIH). Keen (Goodwin–Minsky debt
-dynamics). Godley–Lavoie (SFC capital-account consistency — the P-independence of the nominal
-identity is the load-bearing observation). The descriptive/normative firewall holds: this reports
-*what the price-channel strength does*; the monetarism conclusion (CYB-16) stays out.
+Fisher 1933 (debt-deflation — **now wired, and shown to require a suppressed stabilizer to
+ignite**). Minsky (FIH). Keen (Goodwin–Minsky debt dynamics). Godley–Lavoie (SFC capital-account
+consistency — the P-independence of the nominal identity is the load-bearing observation). The
+descriptive/normative firewall holds: this reports *what the stabilizer does*; the monetarism
+conclusion (CYB-16) stays out.

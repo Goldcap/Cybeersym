@@ -22,32 +22,36 @@ carries (that switch stays OFF here; Phase 2b supersedes it with a real feedback
     P ← P · (1 − φ · pressure)                    # distress selling cuts the price level
     # next period: leverage = D/P rises (D nominal, unchanged) ⇒ pressure rises ⇒ bigger cut
 
-TWO ENGINES ON ONE SIGNAL — the two-basin structure (the headline). A falling P does TWO
-opposite things simultaneously:
-  * Engine 2 (φ, deflationary): cuts prices directly (this module).
-  * Engine 1 (ε, inflationary): raises i·D/P (cost channel) and impairment/P (the rentier's
-    risk premium, CYB-23) ⇒ MORE inflation.
-So the SAME debt-distress routes to inflation OR deflation, and which COLLAPSE basin you fall
-into is set by φ vs ε — the *strength of the price channel*, exactly the pivot CYB-23 named.
-This is the honest resolution of the CYB-23 caveat: with the shipped config (φ=0) the
-spontaneously-reachable collapse is inflationary (Engine 1) and deflation is unreachable;
-strengthen the price channel past a threshold φ* and the Fisher deflationary basin opens.
-Both basins reachable ⇒ the "inflationary, not Fisher" result is CONDITIONAL, not a refutation
-of the canon.
+CORRECTION (the proper-proof pass — this SUPERSEDES the original v0 "two-basin / φ* threshold"
+headline, which was a detector artifact). We stress-tested the deflation basin the honest way:
+LIFT the single-step blow-up/blow-down detectors and ask whether P actually RUNS AWAY. It does
+not. Composed on the conflict layer's markup-defense, the Fisher cut is a self-limiting feedback:
+a falling P raises ω=W/P, so next tick the conflict layer pushes P back up. The two forces settle
+into a BOUNDED LIMIT CYCLE — the running-min log P is byte-identical across early and late windows
+for every φ up to 20 (non-secular ⇒ no divergence). The old φ*≈1.63 was merely where that cycle's
+down-swing first breaches −25%/step; unfrozen, φ=1.8 sits at P≈0.9 forever. So:
+
+  * GENUINE Fisher debt-deflation (D/P → ∞, P → 0) requires the markup-defense to be SUPPRESSED.
+    Over the (α_p, φ) plane, genuine divergence appears ONLY at α_p → 0 (and then for φ ≳ 2);
+    for ANY working markup layer (α_p ≥ 0.005) it is a bounded cycle at every φ tested.
+  * THE STABILIZER IS STRUCTURAL. The isolated Fisher map is ALWAYS unstable (linearize
+    u ← u·(1+φ·b_ref), multiplier > 1 for any φ>0); the conflict layer's markup-defense is the
+    thing that stops it. So "inflationary, not Fisher" is not merely "conditional on a weak price
+    channel" — it reflects the markup-defense acting as a structural PRICE FLOOR. That is a
+    stronger, honest engagement with the Fisher condition than a reproduction would be.
 
 DISCIPLINE (inherited, non-negotiable):
   * Deterministic (σ=0, pure function of state).
   * Nested byte-exact regression: fisher_phi=0 ⇒ CYB-23 exactly ⇒ (recovery=1) Phase 1 ⇒
     (crunch off) CYB-17. `CYB-17 ⊂ P1 ⊂ P2 ⊂ P2b`.
-  * DON'T pre-decide the dynamics — SWEEP φ (and ε) and observe where the basins fall. Both
-    collapse basins AND the bounded region must be reachable, or it's rigged.
-  * Conservation THROUGH the deflationary transient. The nominal capital-account identity
-    (rentier asset ≡ firm liability) is P-INDEPENDENT, so the Fisher price cut cannot break it —
-    and that is the SFC point of debt-deflation: it is a REAL-burden phenomenon (D/P runs away)
-    while the NOMINAL accounting stays exactly consistent. The residual is reported to prove it.
-  * The collapse must be the LOOP, not the mechanical cut: a frozen-leverage regression (the
-    pressure term reading a held-constant leverage) must NOT collapse where the live loop does
-    (cf. CYB-10's κ=0 decoupling anchor).
+  * DON'T pre-decide the dynamics — SWEEP (α_p, φ) and classify by GENUINE divergence with the
+    detectors LIFTED, not by a single-step swing. This is the correction that mattered.
+  * Conservation THROUGH the deflationary transient — proven now on a GENUINE divergence (α_p=0):
+    the nominal capital-account identity (rentier asset ≡ firm liability) is P-INDEPENDENT, so the
+    Fisher price cut cannot break it. That is the SFC point of debt-deflation: a REAL-burden
+    runaway (D/P → ∞) while the NOMINAL accounting stays exactly consistent (residual reported).
+  * The collapse (where it is genuine, α_p→0) must be the LOOP, not the mechanical cut: a
+    frozen-leverage regression stays bounded where the live loop diverges (cf. CYB-10's κ=0).
 """
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -80,10 +84,14 @@ class FisherEconomy:
     UNCHANGED `ContagionEconomy` (its crude fisher_on switch left OFF) and applies the real
     distress-selling price cut after each contagion tick. fisher_phi=0 ⇒ byte-exact CYB-23."""
 
-    # runaway is DETECTED, not simulated to overflow. Engine 1 blows UP (π ≫ 0); Engine 2 blows
-    # DOWN (π ≪ 0, P→0, D/P→∞). Freeze at the blow-up/down so each basin is observable, not a NaN.
-    _PI_BLOWDOWN = 0.25          # π < −25%/step ⇒ Fisher deflationary runaway
-    _LEV_BLOWUP = 1e6            # D/P this large ⇒ P has collapsed toward 0 (Fisher terminus)
+    # Runaway is DETECTED, not simulated to overflow, and frozen so the terminus is observable.
+    # HONEST criterion (CORRECTED — see CORRECTION below): a genuine Fisher runaway is a REAL-burden
+    # runaway, D/P → ∞. Detect it by leverage blow-up ALONE. The earlier `π < −25%/step` single-step
+    # disjunct was an ARTIFACT: composed on the conflict layer's markup-defense (a falling P raises
+    # ω=W/P ⇒ firms push P back up), the Fisher cut vs. that floor is a BOUNDED LIMIT CYCLE whose
+    # down-swings breach −25%/step WITHOUT diverging (unfreeze and P returns). Leverage blow-up only
+    # fires on true divergence — which, at the shipped α_p, never happens (it needs α_p → 0).
+    _LEV_BLOWUP = 1e6            # D/P this large ⇒ P→0: the genuine Fisher (real-burden) terminus
 
     def __init__(self, p: FisherParams):
         self.p = p
@@ -137,9 +145,11 @@ class FisherEconomy:
         # reported inflation = the TRUE combined price change this step (conflict π net of the cut)
         self.last_pi = self.con.conflict.P / P0 - 1.0
 
-        # deflationary-runaway detection (the Engine-2 terminus)
-        if (not self.con.collapsed) and (self.last_pi < -self._PI_BLOWDOWN
-                                         or self.con.leverage > self._LEV_BLOWUP):
+        # genuine-deflationary-runaway detection (the Engine-2 terminus): D/P → ∞, NOT a single-step
+        # swing. A bounded limit cycle can swing past −25%/step every period without ever diverging;
+        # only leverage blow-up marks a true real-burden runaway (P→0). At the shipped α_p this never
+        # fires — the markup-defense floors P — so `deflation_collapsed` stays False (the honest result).
+        if (not self.con.collapsed) and (self.con.leverage > self._LEV_BLOWUP):
             self.deflation_collapsed = True
             self.deflation_step = self._step
 
