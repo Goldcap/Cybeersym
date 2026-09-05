@@ -1,6 +1,6 @@
 # Phase 2b — the genuine Fisher debt-deflation loop: PROVING the basin
 
-> Ticket: **CYB-19 Phase 2b** (Linear ticket number to be assigned; referenced here as Phase 2b).
+> Ticket: **[CYB-30](https://linear.app/techno87/issue/CYB-30)** (CYB-19 Phase 2b).
 > Successor to CYB-23 (Phase 2). Standalone; **reuses CYB-23 (`contagion/`) unchanged**
 > (`fisher_phi=0` ⇒ byte-exact CYB-23 ⇒ Phase 1 ⇒ CYB-17).
 
