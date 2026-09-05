@@ -259,6 +259,14 @@ sustaining channel; (d) **CYB-21** — supply-chain financing (the rate's 4th ch
 ## Repo / run notes
 - All code lives under `src/`. Engine modules (`model.py`, `pricers.py`, `events.py`)
   and `data/` import as siblings, so `cd src` and run `vNN_*.py` from there.
+- **Skill drift-guard — enable once per clone:** the `cybeersym-research` skill is
+  discovered at two paths (`.claude/skills/` for Claude Code, `.agents/skills/` for OpenAI
+  Codex) and they MUST stay byte-identical. `scripts/check-skill-sync.sh` enforces it. The
+  committed pre-commit hook lives in `githooks/`; activate it with
+  `git config core.hooksPath githooks` (a per-clone setting git can't commit — run it once
+  after cloning). CI (`.github/workflows/skill-sync.yml`) runs the same check as the
+  backstop for anyone who forgets. Edit BOTH copies together; if they drift the guard
+  prints the exact `git diff --no-index` to reconcile them.
 - `requirements.txt`: numpy, matplotlib only.
 - GitHub: github.com/Goldcap/Cybeersym (public, MIT).
 - Sandbox limitation that shaped the build (now lifted under Claude Code): the prior

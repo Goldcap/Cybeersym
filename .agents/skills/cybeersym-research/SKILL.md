@@ -131,7 +131,15 @@ are **relabelled**, not removed — the notebook remembers the failures.
 
 ## Portability note
 
-This skill is model-agnostic on purpose: it works in Claude Code and can be added to Claude
-Desktop's skills. GPT (OpenAI) can't *run* it — GPT's role is ideation, so give GPT the
-**contract** instead (`research/schemas/collaboration-protocol.md` + the notebook schemas), e.g.
-as a ChatGPT Project's instructions + uploaded files.
+This skill uses the open agent-skills format and is discovered by multiple runtimes via a copy
+at each runtime's path: **Claude Code** (`.claude/skills/`), **Claude Desktop**, and **OpenAI
+Codex** operating in-repo (`.agents/skills/`). The two repo copies **must stay byte-identical** —
+edit both or neither; `scripts/check-skill-sync.sh` (wireable as a pre-commit hook via
+`githooks/`) fails the commit on drift.
+
+A plain **ChatGPT conversation** can use the *contract* as context but cannot execute repository
+procedures without connected tools — give it `research/schemas/collaboration-protocol.md` + the
+notebook schemas (e.g. a ChatGPT Project). **Codex**, operating in-repo, *runs* this skill with
+filesystem, Git, and Linear access — it executes capture / promotion / provenance / support-typing
+/ review rather than describing them. A blocked operation is an authorization limit (e.g. missing
+write scope), not an absence of runtime capability.
