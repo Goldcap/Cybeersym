@@ -37,6 +37,11 @@ A compressed view of the classes and where the project's own worked instances si
 | **E1 / E2** escape (nominal / real-burden) | hyperinflation / debt-deflation runaway | contagion Engine‑1 (CYB‑23); Fisher at α_p→0 (CYB‑30) |
 | **E3** bounded grind / choke | bounded but pathological | the Minsky crunch (CYB‑19) |
 
+> *Registry note: the frozen [registry v0.1](../../research/notes/concepts/taxonomy.md) predates the
+> Goodwin–Keen rung, so the **CYB‑33** entries above (A2 Goodwin centre, C1 Keen bistability) are
+> drawn from the module's own self-mapping (`src/goodwin_keen/README.md`), not yet from the registry;
+> the registry's A2/C1 instances are CYB‑2/4. Folding CYB‑33 into the registry is a pending tidy.*
+
 The debt-dynamics rows are one coherent story on a single substrate — a distress signal that floors
 into a cycle, ignites past a threshold, and escapes upward (nominal) or downward (real) by the
 stabiliser balance. **All of this is structural-or-below** — a map of the classes a debt economy can

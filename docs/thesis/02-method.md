@@ -10,8 +10,10 @@ simulation make **falsifiable** claims about dynamics instead of pretty pictures
 Every model is a stock-flow-consistent (Godley–Lavoie) system: money and goods are **conserved to
 machine precision** (residuals < 1e‑10), asserted on every step. Conservation is the crown jewel —
 if the asserts fire, work stops until the leak is fixed, because a leak invalidates everything
-downstream. This is also where the model meets MMT: the conserved ledger *is* the issuer's balance
-sheet.
+downstream. This is the **Godley–Lavoie accounting spine** — every financial asset is a matching
+liability. (It touches MMT's *territory*, but the base engine models a private household↔firm↔store
+circuit with **no currency-issuer sector**, so this is the consolidated-ledger identity, not MMT's
+issuer claim.)
 
 Consequence, not decoration: conservation makes the equilibrium **structurally non-hyperbolic** (a
 permanent center subspace, ∀ parameter), so a conserved-ledger economy does **not** lose stability

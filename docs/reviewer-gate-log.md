@@ -13,6 +13,22 @@ or *escaped* (reached done/merge; the rows that should drive escalation).
 
 ## Entries
 
+### 3 — 2026-09-05 · Thesis document set, final gate (CYB-36) · **caught at gate**
+- **What:** the whole 9-doc set's final reviewer gate — the **cleanest pass of the session**. The
+  recurring *scope-overclaim about our own results* class (entries #1, #2) was **largely absent**: the
+  CYB-33 "Hopf" and Fisher "small drift" traps were actively avoided, the class table matched the
+  registry/modules, the descriptive/normative firewall held across all nine docs, every link resolved.
+  One real catch — 02/07 asserted "the conserved ledger *is* the issuer's balance sheet," an
+  **MMT-issuer attribution the shipped engine doesn't instantiate** (no currency-issuer sector; it's a
+  private Godley–Lavoie circuit) — exactly what an MMT-literate skeptic would use to discount the rest.
+  Plus a registry cross-reference lag (CYB-33 instances cited from the module README, not the frozen
+  registry v0.1).
+- **Check that caught it:** a fresh reviewer fact-checking every economics attribution against the
+  engine source (`src/model.py`).
+- **Outcome:** fixed before the PR. **Escalation signal (positive):** the overclaim-about-our-own-
+  results class that recurred in #1/#2 did NOT recur this round — the earlier tightening (scope every
+  claim; re-derive) appears to be catching it earlier. Keep watching; don't yet escalate the ladder.
+
 ### 2 — 2026-09-05 · Thesis flagship exhibit (CYB-36) · **caught at gate → DROPPED**
 - **What:** the thesis set's flagship — a worked example meant to *show* our approach is "more
   informative than classical economics" — was built and reviewer-gated over two attempts, and

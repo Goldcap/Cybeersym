@@ -14,7 +14,9 @@ this doc distils the intellectual lineage and the epistemics. Bounded by
 - **Complexity / out-of-equilibrium economics** — Santa Fe; Arthur; Farmer & Foley. Emergence as the
   subject, not the residual.
 - **Money as balance-sheet entries** — MMT (Mosler, Kelton, Mitchell, Fullwiler): the conserved
-  ledger *is* the issuer's balance sheet.
+  ledger is the accounting spine MMT builds on — every asset a matching liability. (The base engine
+  models a *private* circuit, not a currency-issuer sector; the issuer claim is MMT's, not something
+  the shipped model instantiates.)
 - **Data as dispositive** — Keen again: neoclassical theory lacks foundational data because the data
   would refute it. This project's entire discipline is the constructive form of that jab.
 - **Chaos, modelled honestly as illustrative-not-predictive** — the numerical-weather-prediction
