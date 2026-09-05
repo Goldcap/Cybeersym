@@ -220,7 +220,7 @@ Phase 2b). The SFC payoff: write-offs as **STOCK events**, capital-account ident
 firm liability, Godley–Lavoie) closes `≤4e-12` through defaults AND collapses. Nested `CYB-17 ⊂ P1 ⊂
 P2` byte-exact at each shell.
 
-### Phase 2b — the genuine Fisher debt-deflation loop: the markup-defense is a structural price floor  ·  `src/fisher/`
+### Phase 2b (CYB-30) — the genuine Fisher debt-deflation loop: the markup-defense is a structural price floor  ·  `src/fisher/`
 Successor to CYB-23. CYB-23 gated Engine 2 (the price-level Fisher loop) OFF with evidence —
 CYB-17's demand channel is a *symmetric multiplicative damper* that drives π→0 **from above** and
 can never flip sign, so deflation was unreachable by construction. Phase 2b **strengthens the price

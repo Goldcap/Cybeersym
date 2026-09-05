@@ -36,7 +36,7 @@ CYB-23 ✅ Phase 2 default + impairable rentier (the impairment horizon: cure↔
 a bigger haircut stabilizes; Engine-1 credit-quantity contagion is hyper-inflationary, NOT
 Fisher; capital-account balance sheet closes) · CYB-24 ✅ doc-sync: THESIS.md re-woven for the
 accommodation→crunch arc (switching-manifold through-line stated as the meta-thesis) ·
-**Phase 2b** ✅ the genuine Fisher debt-deflation loop (`src/fisher/`): proper-proof pass →
+**Phase 2b** (CYB-30) ✅ the genuine Fisher debt-deflation loop (`src/fisher/`): proper-proof pass →
 **the markup-defense is a structural price floor** (genuine `D/P→∞` debt-deflation only at α_p→0;
 bounded limit cycle otherwise); "inflationary, not Fisher" shown **STRUCTURAL** — supersedes the
 artifactual "two-basin / φ*≈1.63" first cut (a detector artifact). **Gated:**

@@ -73,5 +73,5 @@ run away in a conflict economy — with a mapped `(α_p, φ)` boundary and SFC b
 consistency holding through a genuine divergence. Nothing overclaims; a reviewer who lifts the
 detectors will find exactly what we report.
 
-*(Filing note: mirror this on CYB-23 in Linear, and file Phase 2b as its own ticket linking
-`src/fisher/`. Linear MCP was unreachable at write time, so this lives in the repo for now.)*
+*(Filing: mirrored as a comment on CYB-23 in Linear; Phase 2b filed as **CYB-30**
+(https://linear.app/techno87/issue/CYB-30), In Review, linking `src/fisher/`.)*
