@@ -45,6 +45,10 @@ jobs:
           fetch-depth: 1
       - uses: anthropics/claude-code-action@v1
         with:
+          # Either auth works; whichever repo secret is set wins. The OAuth token
+          # (CLAUDE_CODE_OAUTH_TOKEN) is the shipped path here; ANTHROPIC_API_KEY is
+          # the alternative. An unset one is an empty string the action ignores.
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           plugin_marketplaces: "https://github.com/anthropics/claude-code.git"
           plugins: "code-review@claude-code-plugins"
