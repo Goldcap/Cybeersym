@@ -69,13 +69,48 @@ economic claim (see "not empirical" below).*
 
 ![Keen bistability](figures/cybeersym_goodwin_keen_v0_keen_breakdown.png)
 
+## v1 (CYB-35) — a genuine LOCAL Hopf, recovered two ways (`run_v1.py`)
+
+v0 caught centres (`|μ|=1`) and a *global* basin; it had no *local* bifurcation for `linearize` to
+catch. v1 supplies one — a genuine **Hopf** (Neimark–Sacker on the RK4 map) with a **closed-form**
+threshold, so it is a self-test, not a demo.
+
+**The known answer (derived, not guessed).** At the Keen good equilibrium `∂ω̇/∂ω = ∂λ̇/∂λ = 0`
+for *any* Phillips shape, and the 3×3 Routh–Hurwitz Hopf condition `a₁a₂ = a₃` reduces **exactly**
+to `J₁₂·J₂₃·J₃₁ = 0`. Since `J₁₂ = ω*φ'(λ*) ≠ 0` and `J₂₃ = −λ*rκ'/ν ≠ 0`, the Hopf is where
+**`J₃₁ = 0`, i.e. `κ'(π*) = ν/(ν − d*)`** — a closed-form locus. Sweeping the **investment
+sensitivity `ksharp`** (κ' ∝ ksharp):
+
+| threshold, three independent ways | value |
+|---|---|
+| analytic — continuous-Jacobian `Re[complex pair] → 0` | ksharp\* = **18.591** |
+| closed-form — `κ'(π*) = ν/(ν − d*)` (`J₃₁ = 0`) | ksharp\* = **18.591** |
+| instrument — RK4-map `|μ| → 1` (`jacobian`/`eigs`) | ksharp\* = **18.591** (Δ = **0.00%**) |
+
+The crossing eigenvalue is **complex** (`μ = 0.99998 + 0.00563i`) ⇒ a true Neimark–Sacker. Both
+sides are reachable (not rigged): above ksharp\* a **stable focus** (spirals in, `|s−eq|` 1.7e-2 →
+3.3e-4); below, a **Hopf-born limit cycle** (sustained). Nesting (`phillips_convex=False` ⇒ v0
+byte-exact) and determinism hold.
+
+![local Hopf](figures/cybeersym_goodwin_keen_v1_hopf.png)
+![focus vs cycle](figures/cybeersym_goodwin_keen_v1_focus_vs_cycle.png)
+
+**Honest finding — the Hopf is *not* a Phillips-convexity effect.** The locus `κ'(π*) = ν/(ν−d*)`
+is **independent of the Phillips curve** (`φ'` cancels in `a₁a₂−a₃`). The local Hopf is driven by
+**investment sensitivity (`κ'`, i.e. `ksharp`) × the debt coupling** — Minsky, not the wage curve.
+The convex Phillips is added (flagged) as Keen's canonical form and the demo runs with it on, but
+the mechanism, honestly, is `ksharp`. **Taxonomy:** this is a **validated instance of class D1
+(local bifurcation)** — which the registry previously held only as *tested-and-rejected* (the chaos
+core) plus the logistic benchmark — complementing v0's A2 centre and handing off, past the cycle,
+to v0's C1→E breakdown basin ([registry](../../research/notes/concepts/taxonomy.md)).
+
 ## Honest notes / scope
 
-- **Minimal, not canonical-Keen.** The linear Phillips curve makes the (ω,λ) block a structural
-  centre, so this Keen good equilibrium is only *weakly* damped and its debt-deflation is a
-  basin/global phenomenon rather than a local Hopf. A convex Phillips curve and an output-gap
-  investment term (the natural v1) would give a stronger focus and richer local structure — but
-  they are not needed for the instrument self-test, which is this module's whole job.
+- **v0 is minimal, not canonical-Keen; v1 adds the canonical convex Phillips (flagged).** In v0 the
+  linear Phillips (ω,λ) block is a structural centre, so its debt-deflation is a *global* basin
+  phenomenon. v1 supplies the *local* Hopf — and shows it is an investment-sensitivity/debt effect,
+  Phillips-shape-independent (above). Some good-equilibria on the low-`ksharp` side carry a mildly
+  *negative* `d*` (firms net creditors) — a valid math point of the benchmark, not an economic claim.
 - **Not empirical.** This is a benchmark with analytic answers (structural reproducibility), not a
   claim about any real economy. Empirical validation is the withheld-episode work still ahead.
 - **Entry rung only.** Passing here licenses the instruments for the next rung — the coupled,
@@ -83,12 +118,16 @@ economic claim (see "not empirical" below).*
 
 ## Files
 
-- `model.py` — `GKParams`; the RK4 map `gk_step` (the `StepFn` the chaos instruments consume); the
-  independent 2-D Goodwin step (nesting); `conserved_H`; analytic `goodwin_equilibrium` /
-  `goodwin_frequency`.
+- `model.py` — `GKParams` (incl. the flagged v1 convex Phillips); the RK4 map `gk_step` (the
+  `StepFn` the chaos instruments consume); the independent 2-D Goodwin step (nesting); `conserved_H`;
+  analytic `goodwin_equilibrium`/`goodwin_frequency` (v0) and `keen_good_equilibrium`,
+  `continuous_jacobian`, `kappa_prime`, `hopf_locus_residual` (v1).
 - `run_v0.py` — the six self-tests + 2 figures; loads `../chaos/{linearize,lyapunov}.py` unchanged
   (read-only). (The bifurcation sweeper is self-tested in its own module — the logistic cascade.)
-- `figures/` — the Goodwin centre (closed orbits on H); the Keen (r, d₀) basin + survival-vs-breakdown.
+- `run_v1.py` — the local-Hopf self-test (analytic + closed-form + instrument thresholds agree) +
+  nesting (imports `run_v0`) + both-sides + determinism; loads `../chaos/linearize.py` (read-only).
+- `figures/` — v0: the Goodwin centre (closed orbits on H); the Keen (r, d₀) basin. v1: the Hopf
+  (three thresholds vs ksharp); the stable-focus-vs-limit-cycle phase portraits.
 
 ## Anchors
 
