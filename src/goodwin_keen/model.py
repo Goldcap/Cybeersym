@@ -56,11 +56,18 @@ class GKParams:
     kmid: float = 0.14
     # --- integrator ---
     dt: float = 0.01
+    # --- v1 (CYB-35): convex Phillips (Keen's canonical form) + the local Hopf. OFF by default,
+    #     so the linear path — and every v0 result — is byte-for-byte unchanged (nesting). ---
+    phillips_convex: bool = False   # True ⇒ φ(λ) = φ1/(1−λ)² − φ0 (steepens as λ→1)
+    phi0: float = 0.04
+    phi1: float = 0.00065
 
 
 # ---- primitives ---------------------------------------------------------------
 def phillips(lam: float, p: GKParams) -> float:
-    return -p.gamma + p.rho * lam
+    if p.phillips_convex:                               # v1: Keen's convex Phillips curve
+        return p.phi1 / (1.0 - lam) ** 2 - p.phi0
+    return -p.gamma + p.rho * lam                       # v0: linear (default; nesting)
 
 
 def _sigmoid(x: float) -> float:
@@ -171,3 +178,57 @@ def conserved_H(s, p: GKParams) -> float:
     A, B, C, E = _ABCE(p)
     omega, lam = float(s[0]), float(s[1])
     return E * lam - C * math.log(lam) + B * omega - A * math.log(omega)
+
+
+# ---- v1 (CYB-35): the Keen good equilibrium, κ′, and the continuous Jacobian ------------------
+def kappa_prime(pi: float, p: GKParams) -> float:
+    """dκ/dπ (investment-appetite slope). Goodwin: κ=π ⇒ 1. Keen: the sigmoid derivative."""
+    if not p.keen:
+        return 1.0
+    s = _sigmoid(p.ksharp * (pi - p.kmid))
+    return (p.kmax - p.kmin) * p.ksharp * s * (1.0 - s)
+
+
+def keen_good_equilibrium(p: GKParams):
+    """Analytic interior 'good' equilibrium (ω*, λ*, d*) of the Keen system.
+       λ* from φ(λ*)=α ;  κ(π*)=ν(α+β+δ) ⇒ π* (invert the sigmoid) ;  d*=(κ(π*)−π*)/(α+β)
+       from ḋ=0 (g*=α+β) ;  ω*=1−π*−r·d* from π=1−ω−rd. Works for convex or linear Phillips."""
+    if p.phillips_convex:
+        lam = 1.0 - math.sqrt(p.phi1 / (p.phi0 + p.alpha))     # φ1/(1−λ)² − φ0 = α
+    else:
+        lam = (p.gamma + p.alpha) / p.rho
+    target = p.nu * (p.alpha + p.beta + p.delta)               # κ(π*) must equal this
+    if p.keen:
+        frac = (target - p.kmin) / (p.kmax - p.kmin)
+        pi = p.kmid + math.log(frac / (1.0 - frac)) / p.ksharp  # σ⁻¹
+    else:
+        pi = target
+    g = p.alpha + p.beta                                        # g* = κ/ν − δ = α+β at eq
+    d = (target - pi) / g                                       # ḋ = κ − π − d·g = 0
+    omega = 1.0 - pi - p.r * d
+    return omega, lam, d
+
+
+def continuous_jacobian(s, p: GKParams, eps: float = 1e-6):
+    """3×3 Jacobian of the CONTINUOUS RHS at state s (central finite difference) — the analytic
+    side of the Hopf self-test, independent of the RK4 map the instrument sees."""
+    s = np.asarray(s, dtype=float)
+    J = np.empty((3, 3))
+    for j in range(3):
+        sp = s.copy(); sp[j] += eps
+        sm = s.copy(); sm[j] -= eps
+        fp = np.array(_rhs(sp[0], sp[1], sp[2], p))
+        fm = np.array(_rhs(sm[0], sm[1], sm[2], p))
+        J[:, j] = (fp - fm) / (2.0 * eps)
+    return J
+
+
+def hopf_locus_residual(p: GKParams) -> float:
+    """The closed-form Hopf condition at the good equilibrium: Routh–Hurwitz a₁a₂−a₃ reduces
+    EXACTLY to J₁₂·J₂₃·J₃₁, and J₁₂,J₂₃ ≠ 0, so the Hopf is where J₃₁ = 0, i.e.
+    κ′(π*) = ν/(ν−d*). Returns κ′(π*) − ν/(ν−d*): zero at the Hopf, sign = which side.
+    NB the threshold LOCATION is Phillips-independent (φ' cancels from J₃₁) — investment-sensitivity
+    × debt; φ'>0 still sets the oscillatory character (the crossing pair is ±i√a₂, a₂=ω*λ*φ'κ'/ν)."""
+    omega, lam, d = keen_good_equilibrium(p)
+    pi = 1.0 - omega - p.r * d
+    return kappa_prime(pi, p) - p.nu / (p.nu - d)
