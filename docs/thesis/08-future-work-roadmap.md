@@ -23,8 +23,9 @@ the first thing to the second.
   three-channel tug-of-war; the crunch that bounds-without-curing; two opposite-sign escapes on one
   distress signal; the markup-defense as a structural price floor.
 - **The instruments** (`src/chaos/`: Lyapunov, bifurcation, linearisation, border-collision) —
-  self-tested on the logistic map and now on the **Goodwin–Keen rung** (CYB‑33/35: a conservative
-  centre and a genuine local Hopf recovered against analytic answers).
+  self-tested on the logistic map and the chaos core, and (linearisation + Lyapunov) on the
+  **Goodwin–Keen rung** (CYB‑33: a conservative centre and a coexisting good-equilibrium +
+  debt-deflation breakdown basin — Keen bistability — recovered against analytic answers).
 - **The [taxonomy registry](../../research/notes/concepts/taxonomy.md)** — classes A1–F1 with
   worked instances, each labelled by the level it has reached.
 

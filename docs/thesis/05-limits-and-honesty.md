@@ -31,7 +31,7 @@ Where the project's results honestly sit today:
 | Egg **timing** — both HPAI peaks from the real NASS flock series (2024‑25 never fit) | **Empirical** (narrow) | The project's strongest empirical foothold: a mechanism reproducing an *unfit* episode. One commodity. |
 | Egg **magnitude** — the single linear price–deficit slope | **Structural** | Honestly *degrades* out-of-sample (overshoots ep2); reported, not re-tuned. |
 | The channel stack — conflict / accommodation / crunch / contagion / Fisher (CYB‑6/17/19/23/30) | **Structural** | Behaviours persist across parameter sweeps; byte-exact nesting; conservation < 1e‑10. **Not** validated against real debt-dynamics data. |
-| Goodwin–Keen instrument rung (CYB‑33/35) | **Numerical / Structural** | A benchmark self-test on analytic answers, not an economy. |
+| Goodwin–Keen instrument rung (CYB‑33) | **Numerical / Structural** | A benchmark self-test on analytic answers, not an economy. |
 | Chaos core (CYB‑2/4) — border-collision on a non-hyperbolic substrate | **Numerical** | A formal *proof* is the gated open problem (CYB‑13). |
 | The taxonomy [registry](../../research/notes/concepts/taxonomy.md) | **Hypothesis** | The frame is under test; its *instances* sit at the levels above. |
 | "Our approach is **more informative** than classical macro" | **Not demonstrated** | Argued (see [04](04-augmenting-the-discipline.md)); a non-circular demonstration is [future work](08-future-work-roadmap.md). |

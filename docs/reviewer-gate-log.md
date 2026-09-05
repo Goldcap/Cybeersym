@@ -13,6 +13,28 @@ or *escaped* (reached done/merge; the rows that should drive escalation).
 
 ## Entries
 
+### 2 — 2026-09-05 · Thesis flagship exhibit (CYB-36) · **caught at gate → DROPPED**
+- **What:** the thesis set's flagship — a worked example meant to *show* our approach is "more
+  informative than classical economics" — was built and reviewer-gated over two attempts, and
+  **dropped**. (1) The originally-scoped smooth inflation→deflation time-series flip + a
+  critical-slowing-down early-warning was caught **pre-build** as unsupported by the on-hand model
+  (the Fisher dynamics are a violent bounded oscillation / abrupt collapse, not a slow ramp) —
+  nothing was written. (2) The reshaped "structural-blindness" exhibit was built and green, but the
+  gate ruled its strong claim **trivial/circular**: it re-illustrates the Lucas critique on a DGP we
+  authored, mislabeled the CYB-30 bounded limit cycle as "deflation," and leaned on out-of-support
+  regression extrapolation.
+- **Where it had leaked:** the plan (KTD/U5) and my own status messages described a "more
+  informative" *demonstration* before the gate ruled it out.
+- **Why nearly missed:** the claim was exciting and the numbers were real; the flaw was in what the
+  numbers *meant* (circular against an authored border), not in the code.
+- **Check that caught it:** a fresh reviewer charged specifically to steelman the "just Lucas /
+  regressions-don't-extrapolate / circular" reads and to re-derive the fit.
+- **Outcome:** exhibit removed (`src/thesis_exhibit/` deleted); doc 04 reshaped to an honest
+  *argument* (cites Lucas, owns the circularity); the real non-circular demonstration deferred to
+  doc 08 (future work). Class = *scope-overclaim about our own results* (recurs — cf. entry #1); the
+  reviewer now checks every "more/better than X" claim for circularity + triviality.
+- **NB** numbering reconciles at merge (the `goodwin-keen-v1-hopf` branch carries its own entry #2).
+
 ### 1 — 2026-09-05 · Goodwin–Keen rung (CYB-33, PR #7) · **caught at gate**
 - **What:** the stated *known answer* `Ω = √(A·C) = 0.3603` was wrong — the true value is
   **0.3602** (0.36021). The code always *printed* 0.3602; only the prose claim was off, which
