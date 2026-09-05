@@ -13,9 +13,9 @@ or *escaped* (reached done/merge; the rows that should drive escalation).
 
 ## Entries
 
-### 3 — 2026-09-05 · Thesis document set, final gate (CYB-36) · **caught at gate**
+### 4 — 2026-09-05 · Thesis document set, final gate (CYB-36) · **caught at gate**
 - **What:** the whole 9-doc set's final reviewer gate — the **cleanest pass of the session**. The
-  recurring *scope-overclaim about our own results* class (entries #1, #2) was **largely absent**: the
+  recurring *scope-overclaim about our own results* class (entries #1–#3) was **largely absent**: the
   CYB-33 "Hopf" and Fisher "small drift" traps were actively avoided, the class table matched the
   registry/modules, the descriptive/normative firewall held across all nine docs, every link resolved.
   One real catch — 02/07 asserted "the conserved ledger *is* the issuer's balance sheet," an
@@ -26,10 +26,10 @@ or *escaped* (reached done/merge; the rows that should drive escalation).
 - **Check that caught it:** a fresh reviewer fact-checking every economics attribution against the
   engine source (`src/model.py`).
 - **Outcome:** fixed before the PR. **Escalation signal (positive):** the overclaim-about-our-own-
-  results class that recurred in #1/#2 did NOT recur this round — the earlier tightening (scope every
+  results class that recurred in #1–#3 did NOT recur this round — the earlier tightening (scope every
   claim; re-derive) appears to be catching it earlier. Keep watching; don't yet escalate the ladder.
 
-### 2 — 2026-09-05 · Thesis flagship exhibit (CYB-36) · **caught at gate → DROPPED**
+### 3 — 2026-09-05 · Thesis flagship exhibit (CYB-36) · **caught at gate → DROPPED**
 - **What:** the thesis set's flagship — a worked example meant to *show* our approach is "more
   informative than classical economics" — was built and reviewer-gated over two attempts, and
   **dropped**. (1) The originally-scoped smooth inflation→deflation time-series flip + a
@@ -49,7 +49,24 @@ or *escaped* (reached done/merge; the rows that should drive escalation).
   *argument* (cites Lucas, owns the circularity); the real non-circular demonstration deferred to
   doc 08 (future work). Class = *scope-overclaim about our own results* (recurs — cf. entry #1); the
   reviewer now checks every "more/better than X" claim for circularity + triviality.
-- **NB** numbering reconciles at merge (the `goodwin-keen-v1-hopf` branch carries its own entry #2).
+
+### 2 — 2026-09-05 · Goodwin–Keen v1 Hopf (CYB-35, PR #9) · **caught at gate**
+- **What:** (M1) the *demonstrated* limit cycle was drawn on the economically **unphysical
+  net-creditor branch** (ksharp=15.6 ⇒ `d*<0`), when a physical demo point (`d*>0`) existed just
+  below threshold (ksharp≈17.3). (M2) the "Phillips-independent" claim was **overstated** — true of
+  the Hopf's threshold *location* (φ′ cancels from `J₃₁`), but φ′>0 still sets the oscillation's
+  existence and frequency. Plus three low: "three ways"→two independent objects, a stale taxonomy
+  D1 row, a dead code idiom.
+- **Where it had leaked:** README v1 section + `run_v1.py`/`model.py` docstrings + Fig 2.
+- **Why nearly missed:** builder picked a demo `ksharp` without checking the equilibrium's `d*`
+  sign; the "Phillips-independent" framing was clean and went unscoped. The *load-bearing* algebra
+  (the `a₁a₂−a₃ = J₁₂·J₂₃·J₃₁` factorization) was, this time, correct.
+- **Check that caught it:** a fresh reviewer that **re-derived the Routh–Hurwitz factorization
+  symbolically** (sympy) and checked the demo equilibria for physicality (`d*` sign).
+- **Outcome:** caught at the gate; fixed in `9ae7a1b` before merge. Class = *demo-on-an-unphysical-
+  branch* + *scope-overclaim* (the latter recurs from entry #1 → reviewers now scope every
+  "independent of X" claim). No false science: the headline (a genuine Neimark–Sacker Hopf,
+  ksharp*=18.591 on flow and map) held under independent re-derivation.
 
 ### 1 — 2026-09-05 · Goodwin–Keen rung (CYB-33, PR #7) · **caught at gate**
 - **What:** the stated *known answer* `Ω = √(A·C) = 0.3603` was wrong — the true value is
