@@ -7,7 +7,7 @@ instruments on the coupled SFC substrate.
   0. Nested regression — Keen(κ=identity, r=δ=0, d₀=0) reproduces Goodwin byte-exact.
   1. Goodwin conservation — the Lotka–Volterra invariant H holds along an orbit (crown jewel).
   2. Goodwin eigenvalues — jacobian/eigs recover the CENTRE: |μ|≈1 (taxonomy A2) and the
-     small-oscillation frequency Ω_meas ≈ √(A·C) ≈ 0.3603; the third (d) eigenvalue contracts.
+     small-oscillation frequency Ω_meas ≈ √(A·C) ≈ 0.3602; the third (d) eigenvalue contracts.
   3. Goodwin Lyapunov — largest_lyapunov ≈ 0 (conservative centre: neither expands nor contracts),
      vs the suite's logistic self-test (r=4 → ln2 chaotic, periodic < 0).
   4. Keen bistability — a STABLE good equilibrium (A1) coexists with a debt-deflationary breakdown
@@ -22,7 +22,7 @@ matplotlib.use("Agg"); import matplotlib.pyplot as plt
 from pathlib import Path
 import importlib.util as _ilu
 
-from model import (GKParams, gk_step, goodwin_2d_step, step_fn, GKSystem,
+from model import (GKParams, gk_step, goodwin_2d_step, step_fn,
                    conserved_H, goodwin_equilibrium, goodwin_frequency, _ABCE)
 
 

@@ -26,7 +26,7 @@ equilibrium (A1) that, as the interest rate r crosses a threshold r*, loses stab
 economy breaks down (d→∞, ω→0, λ→0 — a debt-deflationary escape; taxonomy D-transition → E).
 
 The KNOWN answers our instruments must recover (defaults below):
-  ω* = 1 − ν(α+β) = 0.865 ,  λ* = (γ+α)/ρ = 0.9 ,  Ω = √(A·C) ≈ 0.3603   (A=1/ν−α−β, C=γ+α)
+  ω* = 1 − ν(α+β) = 0.865 ,  λ* = (γ+α)/ρ = 0.9 ,  Ω = √(A·C) ≈ 0.3602   (A=1/ν−α−β, C=γ+α)
   H(ω,λ) = ρ·λ − (γ+α)·ln λ + (1/ν)·ω − (1/ν−α−β)·ln ω   is conserved along Goodwin orbits.
 
 Discipline (inherited): deterministic (σ=0, pure function of state); the RK4 map `gk_step` is the
