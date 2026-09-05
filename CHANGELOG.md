@@ -220,6 +220,30 @@ Phase 2b). The SFC payoff: write-offs as **STOCK events**, capital-account ident
 firm liability, Godley–Lavoie) closes `≤4e-12` through defaults AND collapses. Nested `CYB-17 ⊂ P1 ⊂
 P2` byte-exact at each shell.
 
+### Phase 2b — the genuine Fisher debt-deflation loop: the markup-defense is a structural price floor  ·  `src/fisher/`
+Successor to CYB-23. CYB-23 gated Engine 2 (the price-level Fisher loop) OFF with evidence —
+CYB-17's demand channel is a *symmetric multiplicative damper* that drives π→0 **from above** and
+can never flip sign, so deflation was unreachable by construction. Phase 2b **strengthens the price
+channel** into a genuine, self-reinforcing Fisher loop (`pressure = max(0, D/P − b_ref)`;
+`P ← P·(1 − φ·pressure)` → higher real burden → more distress selling) and asks whether
+debt-deflation now ignites. **Correction:** a first-cut write-up reported a "two-basin map" with a
+deflation threshold φ*≈1.63; the proper-proof pass found that was a **detector artifact** (a
+−25%/step tripwire freezing a bounded oscillation and calling it collapse) and **supersedes it**.
+Attacked honestly — *lift the collapse detectors and see whether P actually runs away* — the Fisher
+loop composed on the conflict layer is a **bounded limit cycle** (running-min log P non-secular,
+byte-identical early vs late, for every φ up to 20): a falling P raises `ω=W/P`, so the markup
+defense pushes P back up. It is a **structural price floor**. **The headline is the `(α_p, φ)`
+genuine-divergence map:** genuine Fisher debt-deflation (`D/P→∞`, `P→0`) appears **only on the
+`α_p→0` edge** (the stabilizer suppressed; there for φ≳2); for any working markup layer it is
+bounded at every φ. Mechanistic: the isolated Fisher map is *always* unstable
+(`u←u(1+φ·b_ref)`), so **the stabilizer, not φ, is the pivot**. Where genuine (α_p=0) the collapse
+is the **loop** (frozen-leverage regression stays bounded); conservation holds to **1e-16** through
+a genuine runaway (`D/P: 1→1.4e6`) because the nominal capital-account identity is **P-independent**
+— a real-burden runaway under an exact balance sheet, the SFC payoff. **Resolution of CYB-23's
+caveat:** *"inflationary, not Fisher"* is **STRUCTURAL** (the markup-defense floor), not merely
+"conditional on a weak price channel," and **NOT a refutation of debt-deflation** (alive once the
+stabilizer is removed). Nested `CYB-17 ⊂ P1 ⊂ P2 (CYB-23) ⊂ P2b` byte-exact; determinism σ=0.
+
 ### CYB-24 — doc-sync: THESIS.md re-woven for the accommodation→crunch arc  ·  `THESIS.md`
 Successor to CYB-15 (which stopped at CYB-10). Extends the "From map to mechanism" narrative
 through CYB-14 (concavity rejected — the null result, kept), CYB-17/18/19/22/23 as one continuous
@@ -252,6 +276,10 @@ better"). Narrative, not changelog; cross-refs each module README.
                  `chaos/` + `crunch/` unchanged via the CYB-18 reload.
 - `contagion/` — CYB-19 Phase 2 (CYB-23): default + impairable rentier; the impairment horizon;
                  composes `crunch/` unchanged; capital-account (balance-sheet) reconciliation.
+- `fisher/`    — Phase 2b: the genuine Fisher debt-deflation loop (Engine 2); the `(α_p, φ)`
+                 genuine-divergence map — the markup-defense is a structural price floor (genuine
+                 divergence only at α_p→0); composes `contagion/` unchanged (`fisher_phi=0` ⇒
+                 byte-exact CYB-23). Supersedes the artifactual "two-basin / φ*≈1.63" first cut.
 
 ## Open threads (named, mostly blocked on data, not cleverness)
 1. ~~**NASS layer-inventory series** → retire `replace_lag`.~~ **DONE (CYB-7, v0.9).**
@@ -264,9 +292,12 @@ better"). Narrative, not changelog; cross-refs each module README.
    **DONE** (bounding-vs-fizzle); the **crunch on the coupled egg stack** (CYB-22) **DONE** (the
    grind worsens under reloading); **CYB-19 Phase 2 = CYB-23** (default + impairable rentier → the
    impairment horizon: cure vs contagion-collapse; a bigger haircut stabilizes; Fisher gated) **DONE**.
-   Live next: **CYB-24** (THESIS re-weave, gated on 22+23), **Phase 2b** (switch Engine-2/Fisher on,
-   after strengthening the price channel), **Phase-2-on-coupled**, and **reflexivity / expectations**
-   (CYB-20). Seeds: **CYB-21** supply-chain financing (the rate's 4th channel). The monetarism
+   **Phase 2b** (the genuine Fisher debt-deflation loop → the `(α_p, φ)` map: the markup-defense is
+   a structural price floor; genuine debt-deflation only at α_p→0; "inflationary, not Fisher" shown
+   STRUCTURAL — supersedes the artifactual "two-basin / φ*" first cut) **DONE** (`src/fisher/`).
+   Live next: **Phase-2b-on-coupled**
+   (the two-basin map on CYB-22's recursion substrate), **Phase-2-on-coupled**, and **reflexivity /
+   expectations** (CYB-20). Seeds: **CYB-21** supply-chain financing (the rate's 4th channel). The monetarism
    critique (CYB-16) stays gated. Plus the **CYB-10 follow-ups**: H2 chaos-leakage spectra,
    and bidirectional coupling.
 5. **Cost-matrix / third channel** — real feed-cost / natural-gas series into

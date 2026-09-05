@@ -80,14 +80,22 @@ channel *self-exhausts*) and on the coupled stack (CYB-18 — under recursion's 
 distributional exhaustion is deferred and recursion pins an inflation floor the rate can't
 reach; the rate gates ignition both ways; two byte-exact anchors); **Minsky credit-crunch
 cascade Phase 1** (CYB-19 — bounding-vs-fizzle is an outcome the params pick; the crunch bounds
-but doesn't cure; Ponzi ≡ CYB-17 capitalizing interest; Fisher/debt-deflation basin deliberately
-unwired). Open threads: the **formal global-bifurcation proof** is **gated** on an external
-mathematician (CYB-13, post-July-6 — do NOT solo-build); **CYB-19 Phase 2** (default + impairable
-rentier → the debt-deflation basin, closing the Fisher loop) and **CYB-19-on-coupled** are the
-live crunch follow-ups; **reflexivity / expectations** (CYB-20, the other sustaining channel);
-**supply-chain financing** (CYB-21, the rate's 4th channel); **H2 chaos-leakage characterization**
-and **bidirectional coupling** (CYB-10 follow-ups); the monetarism critique (CYB-16) stays gated;
-then cost-matrix third channel → the distributed virtual economy. Pull real data from source APIs (FRED/NASS) directly now — a NASS QuickStats
+but doesn't cure; Ponzi ≡ CYB-17 capitalizing interest); **Phase 2** (CYB-23 — default +
+impairable rentier → the impairment horizon; Engine-1 credit-quantity contagion is
+hyper-inflationary, NOT Fisher); and **Phase 2b** (`src/fisher/` — the genuine Fisher
+debt-deflation loop → **the markup-defense is a structural price floor**: composed on the conflict
+layer the Fisher loop is a *bounded limit cycle*, and genuine `D/P→∞` debt-deflation appears only
+on the `α_p→0` edge (stabilizer suppressed); the isolated Fisher map is always unstable so the
+stabilizer, not φ, is the pivot; the **"inflationary, not Fisher" result is STRUCTURAL**, not a
+refutation of the canon. This **supersedes an artifactual first cut** — a "two-basin / φ*≈1.63"
+map that was a detector artifact (a −25%/step tripwire freezing a bounded oscillation)).
+Open threads: the **formal global-bifurcation proof** is **gated** on an external
+mathematician (CYB-13, post-July-6, now parked after Dr Hu declined — do NOT solo-build);
+**Phase-2b-on-coupled** and **CYB-19-on-coupled** are the live crunch follow-ups; **reflexivity /
+expectations** (CYB-20, the other sustaining channel); **supply-chain financing** (CYB-21, the
+rate's 4th channel); **H2 chaos-leakage characterization** and **bidirectional coupling** (CYB-10
+follow-ups); the monetarism critique (CYB-16) stays gated; then cost-matrix third channel → the
+distributed virtual economy. Pull real data from source APIs (FRED/NASS) directly now — a NASS QuickStats
 key is required (env `NASS_API_KEY`).
 
 ## Conventions
