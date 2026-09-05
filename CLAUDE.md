@@ -70,6 +70,30 @@ python3 v08_wedge.py                   # the distributional wedge
   (both peaks land, ep1 exact); magnitude *degraded* honestly (see the slope note above).
   `hpai_culls.flock_deficit_path(replace_lag=…)` remains only for the v09 side-by-side.
 
+## The reviewer gate (builder ≠ reviewer) — run before calling anything done
+No build or analysis is **done** — not reported to the user, not committed to a PR — until a
+**fresh, independent reviewer** has signed off: a separate subagent with *none* of the builder's
+context (or the `ce-code-review` / `ce-doc-review` skills). Self-review does not count — the
+builder's blind spots are exactly what it misses (the Fisher "two-basin" headline was a detector
+artifact that read as *done* until rechecked). From a clean state the reviewer must:
+1. **Re-run** the code; confirm determinism (byte-identical rerun).
+2. **Check every stated number** — report, README, commit message, Linear ticket — against actual
+   output. No claim without a matching output line. (First catch: a stated `Ω=√(A·C)=0.3603` that
+   was really `0.3602` — CYB-33.)
+3. **Attack the headline** — "lift the detectors": re-derive independently, try to break it.
+4. **Guards green AND not vacuous** — conservation `< tol` on a *real* trajectory (not sitting at
+   the fixed point), byte-exact nesting, σ=0 determinism.
+5. **Reconcile docs ↔ code** — README/figures/claims match; no stale refs or phantom imports.
+Resolve every finding before presenting. If a fork can't be resolved, **HOLD and surface it** in
+one sentence — never silently ratify (`../tandem`'s rule: *if unsure, HOLD*).
+
+**The gate is a floor, not a ceiling — measure and escalate.** Log every whoops found *after*
+"done" (the escaped-defect record). When a class keeps escaping, climb the ladder: 1 reviewer →
+two independent / cross-model → adversarial red-team (must *falsify* the headline) → full
+`../tandem` fresh-clone loop → external expert (CYB-13). And **label what can't be self-verified**
+(out-of-sample empirical, formal proof) rather than let a green gate imply coverage it lacks —
+name the highest reproducibility level actually demonstrated. Full spec + rationale: **CYB-34**.
+
 ## Next move & open threads (see HANDOFF.md for full detail)
 Done: `replace_lag` retired via the real NASS flock series (CYB-7); egg pricer slope
 recalibrated to ~24/pt on real deficits (CYB-9); **saturation tested & rejected** (CYB-14 —
