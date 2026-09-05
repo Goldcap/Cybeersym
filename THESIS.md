@@ -1,5 +1,12 @@
 # What Cybeersym is actually claiming
 
+> **Front door.** This is the single-file long-form. For the **navigable, per-axis thesis** — with a
+> capped "open threads" section on each axis and the honest boundary broken out — start at
+> [`docs/thesis/00-index.md`](docs/thesis/00-index.md). If you read one page, read
+> [`docs/thesis/05-limits-and-honesty.md`](docs/thesis/05-limits-and-honesty.md) (what we do *not*
+> claim). The set never contradicts this document; where it sharpens a point (the mainstream
+> head-to-head, the honest reproducibility ladder), it supersedes the older phrasing here.
+
 This document is the conceptual statement of purpose — the *why*, separate from the
 code (`README.md` for structure, `CHANGELOG.md` for the build history, `HANDOFF.md`
 for the working state). If you're new here and wondering "what is this, what is it
