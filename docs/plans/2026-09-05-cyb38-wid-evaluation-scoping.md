@@ -3,9 +3,11 @@
 > **Status: scoping (not the evaluation).** This document plans *how* to execute the LOCKED
 > pre-registration `docs/preregistrations/2026-09-05-classifier-vs-wid.md` (locked in commit
 > **`6338f3a`** on `main`). It **references** the lock; it **may not alter** anything above the
-> lock line. Two design decisions in §4–§5 need Andy's sign-off, and one model-side prerequisite
-> (§3) must be executed *blind to WID* before any evaluation. Nothing here touches the WID×outcome
-> join — that is Phase C, and it stays sealed until the Phase-A pre-analysis plan is itself committed.
+> lock line. The two design decisions in §4–§5 are **now made** (A / Laeven–Valencia); the §3
+> model-side prerequisite has been **executed blind to WID and came back negative** (no graded
+> border — see §3), so the evaluation is **paused pending a direction call** (report null-of-
+> feasibility vs a new pre-registration). Nothing here touches the WID×outcome join — that is Phase
+> C, and it stays sealed until the Phase-A pre-analysis plan is itself committed.
 
 ## 0. The one-sentence job
 
@@ -65,11 +67,12 @@ one grid point below 0.025 (namely 0.0), so it resolves a **corner at α_p→0**
 α_p ≥ 0.025** — but *not* a graded tipping value in between. Two things must happen first, and both
 are **pure model computation, blind to WID** (blind-safe — no outcome data touched):
 
-1. **Fine α_p sweep in (0, 0.025]** (e.g. `linspace(0, 0.025, N)` at fixed representative φ, plus a
-   2-D refinement), classifying **not just divergence** (−1/0/+1) but the **qualitative character**
-   of the bounded regime (limit-cycle amplitude / period, or a Neimark–Sacker–type onset). The
-   "graded border" is the α_p where the regime *character* changes, even if outright divergence
-   stays pinned at 0.
+1. **Fine α_p sweep resolving the interior (0, 0.025]** — plus α_p=0 itself as the *known-corner*
+   control (so the run spans the closed `[0, 0.025]`, densely near 0, e.g.
+   `linspace(0, 0.0020, 41)` ∪ finer out to 0.03). Classify **not just divergence** (−1/0/+1) but the
+   **qualitative character** of the bounded regime (limit-cycle amplitude / period, or a
+   Neimark–Sacker–type onset). The "graded border" is the α_p>0 where the regime *character* changes,
+   even if outright divergence stays pinned at 0. *(As executed in `run_v1.py` — see the §3 banner.)*
 2. **Feasibility verdict.** If a genuine interior graded tipping α_p exists → that is the border,
    `distance-to-border = |effective α_p − α_p*|`. **If the transition is a true hard corner at
    α_p=0 with no interior structure** → the lock's committed border is *unsatisfiable as written*;
@@ -87,7 +90,7 @@ Output: `src/fisher/` fine-sweep script + figure + a one-paragraph verdict. This
 
 The knot: the border lives in **α_p units**; WID lives in **concentration units**. To place the
 border on the data you must relate them — and the lock forbids fitting *and* disavows the trivial
-"more inequality → more crises." Candidate resolutions (Andy picks; I recommend **A**):
+"more inequality → more crises." Candidate resolutions considered (**A chosen** — see the banner above):
 
 - **A — Shape/threshold test (CHOSEN; egg-CYB-14–consistent).** The model's *distinctive*
   claim is a **regime change** (a step) in concentration→fragility, not a smooth gradient. Test
@@ -107,7 +110,7 @@ border on the data you must relate them — and the lock forbids fitting *and* d
 > fixed chronology source. Exact country-era rows get pinned in the Phase-A analysis lock.
 
 Must be **named and fixed before data** (the load-bearing anti-circularity guard). Candidates
-(recommend **Laeven–Valencia**):
+considered (**Laeven–Valencia chosen** — see the banner above):
 
 - **Laeven–Valencia, IMF Systemic Banking Crises Database (recommended).** Standard, well-documented,
   covers 1970–2017, includes every reproducibility bank (Nordic '91–'93, Asian '97, LatAm). Clean
