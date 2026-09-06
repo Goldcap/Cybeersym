@@ -13,6 +13,48 @@ or *escaped* (reached done/merge; the rows that should drive escalation).
 
 ## Entries
 
+### 8 — 2026-09-06 · NAIRU v1 micro-foundation (CYB-20, `run_v1.py`) · **caught at gate — an inverted economic interpretation**
+- **What:** v1 micro-founds the discipline function from Nash/McDonald–Solow bargaining and dials the
+  outside-option convexity γ. The reviewer confirmed the load-bearing math — nesting (γ=1 ≡ v0 linear,
+  matched to 1.1e-16, u\* exact), the closed form, the u\* decomposition, determinism, and the honest
+  "relocates-not-removes" framing — but caught a **CONFIRMED BUG in the economic interpretation**: the
+  γ-dial's slack/tight labeling was **inverted**. Since `|dπ/du| ∝ u^(γ−1)`, γ>1 is **flat at low u
+  (TIGHT) / steep at high u (SLACK)** — it *flattens* near full employment; the runner and README
+  claimed the reverse ("flat when slack, steep when tight") and mis-attributed "steepening near full
+  employment" to γ>1 (it's γ<1). **The numbers and slopes were exactly right; only the words mapping
+  curvature → market condition were backwards** — but that gloss is the section's load-bearing economic
+  content and the stated *fingerprint direction*, so anyone taking it to data would match the wrong γ.
+  Plus three NITs: "the objection evaporates" softened to "relocated, not removed"; `ω_e` was
+  listed-but-not-swept (added to the decomposition output); the printed conservation residual came from
+  an un-stepped economy (now read off the 400-step trajectory).
+- **Check that caught it:** a fresh reviewer that **computed π(u) directly at low vs high u** (tight vs
+  slack) rather than trusting the slope-label prose.
+- **Outcome:** fixed before commit. Class = **interpretation-inverted** (a new class — the math is
+  correct, the *economic gloss* is backwards). Escalation signal: this is exactly why the gate must
+  re-derive the ECONOMICS, not just the arithmetic — here the arithmetic was flawless and the reading
+  was reversed. Keep charging reviewers to attack the interpretation/prose, not only the numbers.
+
+### 7 — 2026-09-06 · Two channel builds (expectations + NAIRU, CYB-20) · **caught at gate (NITs only) — positive signal**
+- **What:** two new `src/` modules — `expectations/` (adaptive-expectations de-anchoring) and `nairu/`
+  (the conflict/Kaleckian NAIRU) — each put through a fresh independent reviewer before commit. **Both
+  headlines SURVIVED independent re-derivation:** for expectations the reviewer hand-derived the closed
+  form *and* the 2×2 Jacobian (matched `linearize` to 2.85e-10) and confirmed a real +1-multiplier
+  de-anchoring, stable throughout the physical range; for the NAIRU the reviewer re-derived
+  `u*=(ω_w0−ω_f)/b`, confirmed the sim↔closed-form to 8.3e-17, and judged the (unavoidable) circularity
+  objection *honestly owned, not hidden*. Only **NITs** found and fixed pre-commit: expectations — the
+  real-vs-complex check ran at a single φ_e (→ swept and asserted), and "fold" overstated the evidence
+  (→ "+1-multiplier / equilibrium escapes"); NAIRU — "~1e-17" undersold the 8.3e-17 error (→ "~1e-16"),
+  and one polemical half-sentence ("used to justify recessions") tripped the descriptive/normative
+  firewall (→ softened to the analytic policy corollary).
+- **Check that caught it:** fresh reviewers re-deriving the math symbolically/numerically AND attacking
+  the prose for overclaim (the NAIRU reviewer was charged specifically to flag preachy/oversold framing).
+- **Outcome:** caught at the gate; fixed before the PRs. **Escalation signal (positive):** the
+  *centerpiece-overclaim-about-our-own-results* class (entries #1–#3) did **not** recur — both new builds
+  passed with only NITs, and the anti-overclaim net now catches *register-level* issues (the NAIRU
+  polemic) before merge, not just numeric ones. No ladder climb; keep the fresh-reviewer-per-build cadence.
+  Note the discovery discipline that fed these: a cheap probe found the expectations bifurcation was real
+  (vs Fisher/recursion dead-ends) *before* the build — see the escaped-defect-avoidance in the probes.
+
 ### 6 — 2026-09-06 · CYB-39 pre-registration (v1 voided, v2 caught pre-lock) · **caught before lock → LADDER CLIMB**
 - **What:** the second WID pre-registration (Keen breakdown-basin border) failed design review twice.
   **v1** was *locked* (PR #15) and then the **advisory review app** caught three substantive design
