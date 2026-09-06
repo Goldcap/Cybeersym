@@ -89,36 +89,82 @@ frictional one (theirs) is exactly what is *not* settled here.
 | 5 | policy | recession vs incomes-policy trajectories, both π→0; only A raises u |
 | 6 | determinism | byte-identical rerun |
 
+## v1 — micro-founded from bargaining; the outside option is a dial (`run_v1.py`)
+
+v0's discipline function `ω_w(u)=ω_w0−b·u` is exactly the objection a mainstream economist reaches
+for: *ad hoc*. v1 answers it — the target is **derived** from Nash / McDonald–Solow wage bargaining,
+with the outside option (the **cost of job loss**) an explicit, dial-able parameterization:
+
+```
+cjl(u)      = k · u^γ                 # γ = cost-of-job-loss CONVEXITY dial
+ω_threat(u) = ω_e − cjl(u)            # worker fallback (reemployed share minus the cost)
+ω_w(u)      = β·C + (1−β)·ω_threat(u)  # bargained target (β = worker power, C = ceiling)
+```
+
+- **The "ad hoc" form was the bargaining solution.** At **γ=1** this reduces *exactly* to v0's linear
+  `ω_w(u)=ω_w0−b·u` (`ω_w0=β·C+(1−β)ω_e`, `b=(1−β)k`) — matched to **1.1e-16**, u\* identical. So the
+  *specific* "why that linear shape?" objection is answered — the shape is the optimizing outcome. (The
+  broader assumption isn't removed, only relocated — see below.)
+- **u\* depends on BOTH frictions and power, from one optimizing model.** Frictional levers (cost of
+  job loss `k`: 7.08→4.25%; reemployed share `ω_e`: 4.69→5.94%) *and* power levers (worker power `β`:
+  3.75→7.92%; firm markup `ω_f`: 3.75→6.88%). It **reproduces** the frictional u\* and **carries** the
+  distributional dependence the frictional story omits — legs 1+2 in a single object they can't call ad hoc.
+- **The dial (γ) shapes the Phillips curvature.** Holding u\* fixed (adjusting `k`) so only the *shape*
+  moves — slope `|dπ/du| ∝ u^(γ−1)`: γ<1 concave (**steep when TIGHT / near full employment**, flat when
+  slack), γ=1 linear, **γ>1 convex — flat when TIGHT, steep when SLACK**, i.e. it *flattens near full
+  employment* (the post-2010 "flat Phillips curve" shape). The *sign* of that curvature is a live
+  empirical/**fingerprint** question — γ>1 gives flat-when-tight, γ<1 gives steepening-when-tight; which
+  the real Phillips curve shows is the open question, **not** a claim made here.
+
+![micro-founded, the outside option as a dial](figures/cybeersym_nairu_v1_microfounded.png)
+
+**Still an illustration.** Micro-founding **relocates** the assumption to bargaining primitives (the
+protocol, the outside-option shape γ) the mainstream accepts — it does not remove it, and does not make
+it true. The finer pen, one level deeper.
+
+| # (v1) | test | result |
+|---|---|---|
+| 0 | nesting | γ=1 bargain ≡ v0 linear discipline function, max Δ **1.1e-16**, u\* exact |
+| 1 | micro-foundation | ω_w(u) derived; sim π == closed form, worst Δ **3.4e-17** |
+| 2 | decomposition | u\* moves with frictions (k, ω_e) AND power (β, ω_f) |
+| 3 | γ dial | concave (γ<1) ↔ linear (γ=1) ↔ convex/flat-then-steep (γ>1) |
+| 4 | determinism | byte-identical; conservation residual **0.0** |
+
 ## Honest notes / scope
 
-- **The discipline function is the whole bet, and it's contestable.** `ω_w(u)=ω_w0−b·u` is a
-  deliberate, simple choice; a different `ω_w(u)` moves everything. The result illustrates a
-  *mechanism*, conditional on that form.
+- **v0's discipline function is now DERIVED (v1), not merely posited** — but the bet is *relocated*, not
+  removed: it rests on the bargaining protocol and the outside-option shape `γ`, both contestable. A
+  different micro-foundation moves everything. The result illustrates a *mechanism*, conditional on those
+  primitives.
 - **Finer ≠ truer.** Precision and reproducibility buy falsifiability and honesty, not correctness.
 - **The frictional NAIRU rests on a different, equally-unproven assumption.** We reproduce it as a
   special case; we do not claim to have discriminated between the two — that is the empirical question,
   untouched here (and possibly wall-bound, cf. the WID work).
 - **Reproduces a known heterodox result** (the conflict NAIRU); the value here is the rigorous,
   falsifiable, orthodox-as-special-case framing, not a new economic result. Genuine innovation would be
-  a further step (the expectations/de-anchoring interaction — v1 — or a distinct testable comparative
+  a further step (the expectations/de-anchoring interaction — v2 — or a distinct testable comparative
   static: does u\* co-move with labour-share/union-density rather than demographics?).
 - **Steady-state u.** `u` is held fixed per run (the NAIRU is a steady-state object); an endogenous
   `u(t)` path is a later cell. **Descriptive only** — no normative content beyond illustrating the
   mechanism.
 
-## Next (v1, scoped)
+## Next (v2, scoped)
 
 The **expectations interaction**: below `u*` the gap is open and the CYB-20 expectations channel
 (`src/expectations/`) transmits/de-anchors it — reframing the "accelerationist" acceleration as the
 *open distributional gap* being amplified, not expectations creating it from nothing. Probed-then-built
-the same way.
+the same way. (Also open: micro-founding γ itself from a search/matching job-finding rate.)
 
 ## Files
 
 - `model.py` — `NairuParams` (the discipline function + CYB-6 primitives; `nairu`, `steady_pi`,
-  `conflict_at`), `NairuEconomy` (a CYB-6 `ConflictEconomy` at a fixed `u`; pure pass-through).
+  `conflict_at`), `NairuEconomy` (a CYB-6 `ConflictEconomy` at a fixed `u`; pure pass-through), and
+  `BargainParams` (v1 — the micro-founded discipline function; the outside option as the γ dial).
 - `run_v0.py` — the six self-tests + the policy trajectories + the figure; uses `../conflict/model.py`.
-- `figures/` — the two Phillips curves (shifting NAIRU) and the recession-vs-incomes-policy paths.
+- `run_v1.py` — the micro-foundation: nesting (γ=1 ≡ v0), reproduction, the frictions-vs-power
+  decomposition, and the γ (outside-option convexity) dial on the Phillips curvature.
+- `figures/` — v0: the two Phillips curves (shifting NAIRU) and the recession-vs-incomes-policy paths.
+  v1: `..._v1_microfounded.png` (ω_w(u) and the Phillips curve, dialed by γ).
 
 ## Anchors
 

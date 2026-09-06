@@ -91,6 +91,83 @@ class NairuParams:
                               alpha_p=self.alpha_p, dt=self.dt, wage_floor=self.wage_floor)
 
 
+@dataclass
+class BargainParams:
+    """v1 — the discipline function MICRO-FOUNDED from Nash / McDonald–Solow wage bargaining, with the
+    OUTSIDE OPTION made an explicit, dial-able parameterization. Answers the mainstream 'ad hoc'
+    charge: ω_w(u) is now a *derived* bargaining outcome, not a posited shape.
+
+    Nash sharing of the bargaining surplus with worker power β, ceiling C, over an outside option that
+    falls with unemployment via a parameterized COST OF JOB LOSS:
+
+        cjl(u)      = k · u^γ                 # γ = convexity dial: 1 linear (≡ nairu v0); >1 convex; <1 concave
+        ω_threat(u) = ω_e − cjl(u)            # worker fallback share (reemployed share ω_e minus the cost)
+        ω_w(u)      = β·C + (1−β)·ω_threat(u)  # bargained worker target
+
+    γ=1 reduces EXACTLY to the nairu-v0 linear discipline function ω_w(u)=ω_w0−b·u, with
+    ω_w0 = β·C+(1−β)·ω_e and b = (1−β)·k. So v1 nests v0 at γ=1, and the 'ad hoc' linear form is
+    revealed as the bargaining solution. Turning γ dials the Phillips-curve CURVATURE (the sign of that
+    curvature is itself a live empirical/fingerprint question). Still an ILLUSTRATION: micro-founding
+    RELOCATES the assumption to bargaining primitives (protocol, outside-option shape) the mainstream
+    accepts — it does not remove it, and does not make it true."""
+    beta: float = 0.60         # worker bargaining power (Nash surplus share) — a POWER lever
+    ceiling: float = 0.90      # ω_ceiling: max worker share attainable in the bargain
+    omega_e: float = 0.70      # reemployed share (outside option at u=0) — a FRICTIONAL lever
+    k: float = 8.0             # cost-of-job-loss scale — a FRICTIONAL/institutional lever
+    gamma: float = 1.0         # cost-of-job-loss CONVEXITY dial (the new v1 knob)
+    omega_f: float = 0.65      # firms' markup target — a POWER lever
+    alpha_w: float = 0.30
+    alpha_p: float = 0.30
+    dt: float = 1.0
+    wage_floor: bool = True
+
+    @property
+    def c(self) -> float:
+        return self.alpha_w * self.alpha_p / (self.alpha_w + self.alpha_p)
+
+    def cjl(self, u: float) -> float:
+        return self.k * (u ** self.gamma)
+
+    def omega_threat(self, u: float) -> float:
+        return self.omega_e - self.cjl(u)
+
+    def omega_w(self, u: float) -> float:
+        """The bargained worker target share — DERIVED, not assumed."""
+        return self.beta * self.ceiling + (1.0 - self.beta) * self.omega_threat(u)
+
+    def gap(self, u: float) -> float:
+        return self.omega_w(u) - self.omega_f
+
+    @property
+    def nairu(self) -> float:
+        """u* where the bargained gap closes: ω_w(u*)=ω_f ⇒ (1−β)k·u*^γ = βC+(1−β)ω_e − ω_f, so
+        u* = ( [βC+(1−β)ω_e − ω_f] / [(1−β)k] )^(1/γ). Depends on BOTH power (β, ω_f) and frictions
+        (ω_e, k, and the shape γ). Returns nan if the gap never opens (no NAIRU)."""
+        num = self.beta * self.ceiling + (1.0 - self.beta) * self.omega_e - self.omega_f
+        den = (1.0 - self.beta) * self.k
+        if num <= 0.0 or den <= 0.0:
+            return float("nan")
+        return (num / den) ** (1.0 / self.gamma)
+
+    def steady_pi(self, u: float) -> float:
+        g = self.gap(u)
+        if self.wage_floor and g <= 0.0:
+            return 0.0
+        return self.c * g
+
+    def conflict_at(self, u: float) -> ConflictParams:
+        return ConflictParams(omega_f=self.omega_f, gap=self.gap(u), alpha_w=self.alpha_w,
+                              alpha_p=self.alpha_p, dt=self.dt, wage_floor=self.wage_floor)
+
+    def as_nairu_linear(self):
+        """The v0 NairuParams whose linear discipline function coincides with this bargain at γ=1
+        (ω_w0=βC+(1−β)ω_e, b=(1−β)k). Used for the nesting check."""
+        return NairuParams(omega_f=self.omega_f,
+                           omega_w0=self.beta * self.ceiling + (1.0 - self.beta) * self.omega_e,
+                           b=(1.0 - self.beta) * self.k, alpha_w=self.alpha_w, alpha_p=self.alpha_p,
+                           dt=self.dt, wage_floor=self.wage_floor)
+
+
 class NairuEconomy:
     """A CYB-6 `ConflictEconomy` whose aspiration gap is set by the discipline function at a fixed
     unemployment `u`. Pure pass-through to CYB-6 — this layer chooses the gap, nothing else — so

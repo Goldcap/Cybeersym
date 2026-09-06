@@ -13,6 +13,27 @@ or *escaped* (reached done/merge; the rows that should drive escalation).
 
 ## Entries
 
+### 8 — 2026-09-06 · NAIRU v1 micro-foundation (CYB-20, `run_v1.py`) · **caught at gate — an inverted economic interpretation**
+- **What:** v1 micro-founds the discipline function from Nash/McDonald–Solow bargaining and dials the
+  outside-option convexity γ. The reviewer confirmed the load-bearing math — nesting (γ=1 ≡ v0 linear,
+  matched to 1.1e-16, u\* exact), the closed form, the u\* decomposition, determinism, and the honest
+  "relocates-not-removes" framing — but caught a **CONFIRMED BUG in the economic interpretation**: the
+  γ-dial's slack/tight labeling was **inverted**. Since `|dπ/du| ∝ u^(γ−1)`, γ>1 is **flat at low u
+  (TIGHT) / steep at high u (SLACK)** — it *flattens* near full employment; the runner and README
+  claimed the reverse ("flat when slack, steep when tight") and mis-attributed "steepening near full
+  employment" to γ>1 (it's γ<1). **The numbers and slopes were exactly right; only the words mapping
+  curvature → market condition were backwards** — but that gloss is the section's load-bearing economic
+  content and the stated *fingerprint direction*, so anyone taking it to data would match the wrong γ.
+  Plus three NITs: "the objection evaporates" softened to "relocated, not removed"; `ω_e` was
+  listed-but-not-swept (added to the decomposition output); the printed conservation residual came from
+  an un-stepped economy (now read off the 400-step trajectory).
+- **Check that caught it:** a fresh reviewer that **computed π(u) directly at low vs high u** (tight vs
+  slack) rather than trusting the slope-label prose.
+- **Outcome:** fixed before commit. Class = **interpretation-inverted** (a new class — the math is
+  correct, the *economic gloss* is backwards). Escalation signal: this is exactly why the gate must
+  re-derive the ECONOMICS, not just the arithmetic — here the arithmetic was flawless and the reading
+  was reversed. Keep charging reviewers to attack the interpretation/prose, not only the numbers.
+
 ### 7 — 2026-09-06 · Two channel builds (expectations + NAIRU, CYB-20) · **caught at gate (NITs only) — positive signal**
 - **What:** two new `src/` modules — `expectations/` (adaptive-expectations de-anchoring) and `nairu/`
   (the conflict/Kaleckian NAIRU) — each put through a fresh independent reviewer before commit. **Both
