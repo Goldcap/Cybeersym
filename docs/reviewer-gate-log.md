@@ -13,6 +13,28 @@ or *escaped* (reached done/merge; the rows that should drive escalation).
 
 ## Entries
 
+### 10 — 2026-09-06 · CSD early-warning instrument self-test (CYB-40, `src/csd/`) · **clean pass (NIT → strengthened) — positive signal**
+- **What:** a new scale-free early-warning instrument (critical slowing down) self-tested on
+  known-answer models *before* any data (the `src/chaos/`-on-the-logistic-map discipline). A fresh
+  reviewer independently re-derived the fold control (var = σ²/(1−μ²), AR1 σ-invariant ⇒ a genuine CSD
+  signal, not an integration/noise artifact), confirmed the expectations-fold CSD (physical branch; AR1
+  undershoots |eig| only via the honest 2-D→1-D projection), verified `d*` stays physical across the GK
+  sweep (no unphysical-branch repeat of the entry-#2 defect), and — the load-bearing conceptual claim —
+  confirmed the **LOCAL-vs-GLOBAL discrimination is sound early-warning theory** (B-tipping vs N-tipping;
+  Boettiger–Hastings 2012, Ditlevsen–Johnsen 2010): CSD precedes *local* bifurcations and is *correctly
+  blind* to shock/basin (global) crossings — a discriminator, not a limitation. **SURVIVED — no bug, no
+  overclaim.**
+- **NIT (fixed → strengthened):** the §2 "d₀-invariant: True" print was **vacuous** — it re-ran the
+  same input (a determinism check, not a d₀ variation). Replaced with a *real* demonstration:
+  deterministic GK trajectories from differing initial d₀ show d₀ sets the OUTCOME (survive vs
+  breakdown) while survivors converge to the IDENTICAL good equilibrium (dev ~1e-9) ⇒ same local
+  recovery rate ∀ d₀ ⇒ CSD flat ⇒ blind to the boundary. A vacuous line became a genuine measurement.
+- **Check that caught it:** a fresh reviewer re-deriving the CSD scaling + eigenvalues and testing the
+  artifact hypotheses (AR1 σ-invariance), rather than trusting the printed trend.
+- **Outcome:** clean. **Escalation signal (positive):** another instrument passed with only a cosmetic
+  nit, and the nit was *upgraded into a stronger demonstration* rather than patched away. This is the
+  scale-free data bridge for leg 3 (test shape/timing, not magnitude).
+
 ### 9 — 2026-09-06 · NAIRU v2 (matching-γ + expectations×NAIRU, `run_v2.py`) · **clean pass (cosmetic nit only) — positive signal**
 - **What:** v2 micro-founds γ from a matching job-finding rate (γ=1−a) and composes the expectations
   channel with the NAIRU gap. A fresh reviewer re-derived γ=1−a and the composition closed form,
