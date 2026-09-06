@@ -13,6 +13,22 @@ or *escaped* (reached done/merge; the rows that should drive escalation).
 
 ## Entries
 
+### 9 — 2026-09-06 · NAIRU v2 (matching-γ + expectations×NAIRU, `run_v2.py`) · **clean pass (cosmetic nit only) — positive signal**
+- **What:** v2 micro-founds γ from a matching job-finding rate (γ=1−a) and composes the expectations
+  channel with the NAIRU gap. A fresh reviewer re-derived γ=1−a and the composition closed form,
+  independently confirmed the steepening, and — the two spots most likely to fail — verified (i) the v1
+  **interpretation-inverted** bug (entry #8) did **NOT** recur (slack/tight labels correct), and (ii) the
+  **sim-overflow transient trap was avoided**: the orthogonal borders and regime map are computed
+  analytically, not from finite-horizon overflow (which the reviewer confirmed does overflow u-dependently
+  below the true φ_e* — the transient the build refuses to present as the border). Only a cosmetic
+  docstring nit (cost "rises with D" vs the ∝D actually used); fixed.
+- **Check that caught it:** a fresh reviewer re-deriving both the matching→γ mapping and the composition
+  from the sim's own map, and probing the sim for the transient artifact the build claims to avoid.
+- **Outcome:** clean — no bug, no overclaim. **Escalation signal (positive):** the two recurring classes
+  the gate has been climbing on (scope-overclaim #1–#3; interpretation-inverted #8) did not recur; the
+  DMP simplification and the transient/steady-state distinction were both flagged honestly *by the
+  builder* before the reviewer. The per-build fresh-reviewer cadence is holding; no ladder climb.
+
 ### 8 — 2026-09-06 · NAIRU v1 micro-foundation (CYB-20, `run_v1.py`) · **caught at gate — an inverted economic interpretation**
 - **What:** v1 micro-founds the discipline function from Nash/McDonald–Solow bargaining and dials the
   outside-option convexity γ. The reviewer confirmed the load-bearing math — nesting (γ=1 ≡ v0 linear,

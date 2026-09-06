@@ -130,6 +130,42 @@ it true. The finer pen, one level deeper.
 | 3 | γ dial | concave (γ<1) ↔ linear (γ=1) ↔ convex/flat-then-steep (γ>1) |
 | 4 | determinism | byte-identical; conservation residual **0.0** |
 
+## v2 — γ micro-founded from matching; expectations × NAIRU (`run_v2.py`)
+
+Two deepenings, both still **illustrations under stated primitives**.
+
+**v2a — the γ dial is pinned by matching.** v1 left the cost-of-job-loss convexity γ free. A
+Cobb–Douglas job-finding rate closes it: with `m=A·u^a·v^(1−a)` and vacancies held fixed,
+`f(u) ∝ u^(−(1−a))`, so expected unemployment duration and hence the cost of job loss `∝ u^(1−a)` ⇒
+**γ = 1 − a**. Since the matching elasticity `a∈(0,1)`, **γ∈(0,1) is always concave** — a search/matching
+labour market **predicts a Phillips curve that STEEPENS near full employment** (verified: |slope| near
+full employment 0.82 vs 0.28 when slack), *not* the flat-when-tight (γ>1) shape. So γ is no longer a
+free dial: its sign is pinned by `a<1`, and γ>1 would require a mechanism *other* than plain matching —
+a discriminating question. *(Caveat: the `v`-fixed, cost∝duration reduction is a canonical but specific
+DMP simplification; endogenous vacancy posting would modify it. The assumption is relocated to the
+matching primitives, not removed.)*
+
+**v2b — expectations transmit the NAIRU's open gap.** Below `u*` the aspiration gap `g(u)>0` is open;
+the CYB-20 expectations channel amplifies it. Combined steady inflation
+`π(u,φ_e)=α_w·g(u)/(1+α_w/α_p−φ_e)` (sim-verified to 8.3e-17). The two borders are **orthogonal**
+*analytically*: `u*=(ω_w0−ω_f)/b` carries no `φ_e` (the NAIRU is distributional), and
+`φ_e*=1+α_w/α_p` carries no `u` (de-anchoring is set by the adjustment structure). And de-anchoring is
+**gated by `u<u*`** — expectations are inert where the gap is closed (`g≤0 ⇒ π=0 ∀φ_e`). This rereads
+the *accelerationist NAIRU*: below `u*`, expectations amplify the **open distributional gap** — they do
+not conjure inflation where no gap is open. *(The de-anchoring border is characterised **analytically**,
+not by a finite-horizon sim, which overflows earlier and `u`-dependently — the transient overshoot, not
+the steady-state border; same distinction as `expectations/` v0.)*
+
+![v2 — matching-founded γ and the expectations × NAIRU regime map](figures/cybeersym_nairu_v2_matching_and_expectations.png)
+
+| # (v2) | test | result |
+|---|---|---|
+| v2a | γ from matching | `γ = 1−a` (0.70/0.50/0.30 for a=0.3/0.5/0.7); steepens near full employment (0.82 vs 0.28) |
+| v2b | composition | `π(u,φ_e)` sim == closed form, worst Δ **8.3e-17** |
+| v2b | orthogonality | `u*` φ_e-independent; `φ_e*=1+α_w/α_p` u-independent (analytic) |
+| v2b | gating | de-anchoring only where `g(u)>0` (u<u*); inert at u≥u* |
+| — | determinism | byte-identical rerun |
+
 ## Honest notes / scope
 
 - **v0's discipline function is now DERIVED (v1), not merely posited** — but the bet is *relocated*, not
@@ -141,30 +177,36 @@ it true. The finer pen, one level deeper.
   special case; we do not claim to have discriminated between the two — that is the empirical question,
   untouched here (and possibly wall-bound, cf. the WID work).
 - **Reproduces a known heterodox result** (the conflict NAIRU); the value here is the rigorous,
-  falsifiable, orthodox-as-special-case framing, not a new economic result. Genuine innovation would be
-  a further step (the expectations/de-anchoring interaction — v2 — or a distinct testable comparative
-  static: does u\* co-move with labour-share/union-density rather than demographics?).
+  falsifiable, orthodox-as-special-case framing, not a new economic result. The genuine-innovation
+  candidates are the compositions/microfoundations (v1's bargaining, v2's matching-γ and expectations
+  interaction) and — the real prize — a distinct **testable comparative static**: does `u*` co-move
+  with labour-share / union-density (power) rather than demographics (frictions)?
 - **Steady-state u.** `u` is held fixed per run (the NAIRU is a steady-state object); an endogenous
   `u(t)` path is a later cell. **Descriptive only** — no normative content beyond illustrating the
   mechanism.
 
-## Next (v2, scoped)
+## Next (v3+, scoped)
 
-The **expectations interaction**: below `u*` the gap is open and the CYB-20 expectations channel
-(`src/expectations/`) transmits/de-anchors it — reframing the "accelerationist" acceleration as the
-*open distributional gap* being amplified, not expectations creating it from nothing. Probed-then-built
-the same way. (Also open: micro-founding γ itself from a search/matching job-finding rate.)
+The **fingerprint (leg 3)** — the empirical discrimination the circularity turns on: does `u*` (and the
+Phillips curvature `γ`) co-move with **power** variables (union density, labour share, the markup)
+beyond what **frictions** (demographics, UI, matching efficiency) explain? A comparative-static,
+largely scale-free — plausibly dodging the cardinal-units wall the WID border work hit. Cheap-probe the
+data commensurability first. (Also open: a dynamic `u(t)` path; endogenous vacancy posting behind γ.)
 
 ## Files
 
 - `model.py` — `NairuParams` (the discipline function + CYB-6 primitives; `nairu`, `steady_pi`,
-  `conflict_at`), `NairuEconomy` (a CYB-6 `ConflictEconomy` at a fixed `u`; pure pass-through), and
-  `BargainParams` (v1 — the micro-founded discipline function; the outside option as the γ dial).
+  `conflict_at`), `NairuEconomy` (a CYB-6 `ConflictEconomy` at a fixed `u`; pure pass-through),
+  `BargainParams` (v1 — the micro-founded discipline function; the outside option as the γ dial;
+  `from_matching(a)`), and `gamma_from_matching(a)=1−a` (v2a).
 - `run_v0.py` — the six self-tests + the policy trajectories + the figure; uses `../conflict/model.py`.
 - `run_v1.py` — the micro-foundation: nesting (γ=1 ≡ v0), reproduction, the frictions-vs-power
   decomposition, and the γ (outside-option convexity) dial on the Phillips curvature.
+- `run_v2.py` — v2a (γ=1−a from matching; the steepening prediction) + v2b (the expectations × NAIRU
+  interaction: composition, orthogonal borders, gating); uses `../expectations/model.py`.
 - `figures/` — v0: the two Phillips curves (shifting NAIRU) and the recession-vs-incomes-policy paths.
-  v1: `..._v1_microfounded.png` (ω_w(u) and the Phillips curve, dialed by γ).
+  v1: `..._v1_microfounded.png` (ω_w(u) and the Phillips curve, dialed by γ). v2:
+  `..._v2_matching_and_expectations.png` (γ=1−a steepening; the (u, φ_e) regime map).
 
 ## Anchors
 
