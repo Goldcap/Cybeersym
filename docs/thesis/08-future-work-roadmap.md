@@ -80,6 +80,14 @@ is the build that could support the empirical trophy above.
 
 ---
 
+## The data question, stated plainly
+
+The single open question the whole roadmap turns on is empirical: **does a real dataset actually put the fast system near a border, and does a distributional slow variable walk it there?** We are explicit about what we hold and have not yet used.
+
+- **We have the data; we have not fired it.** The WID / Piketty series (`research/data/wid/`) are in hand as the intended **distributional slow manifold** (CYB‑28) — the candidate wealth-concentration / leverage variable meant to move the fast system across regimes over decades. As of now they are *loaded but unused*: **no result in this thesis rests on them, and none may** until the classifier arc actually runs.
+- **They fit one wing, honestly.** WID/Piketty are low-frequency and distributional — the right shape for the **conflict / slow-manifold** side of the project (does the aspiration-gap / wealth-share state track the regime boundaries), and the *wrong* shape for anything needing high-frequency structure. This is consistent with the firewall already kept: we do **not** attempt direct chaos-detection in macro data ([05](05-limits-and-honesty.md)), so the distributional data is asked to do distributional work, nothing more.
+- **The *result* is deferred on purpose; the *method* is pre-registered, not withheld.** When the CYB‑28 slow-manifold build is run against this data, its rule — the loader, the pre-specified signature set, and the decision rule — is **frozen in a locked pre-registration *before* the run** (the discipline the classifier-vs-WID lock already demonstrates: [`docs/preregistrations/2026-09-05-classifier-vs-wid.md`](../preregistrations/2026-09-05-classifier-vs-wid.md)), and its *design* is adversarially reviewed before it is locked. Pre-registration **is** committing the rule before you see the data — that is the discipline, not a trap; the trap is claiming a *result* early, or locking an *unreviewed design*. What is deferred here is only the **evaluation and its write-up**, which — per the lock — is a *separate, subsequent* commit that references the frozen rule and reports at whatever level of support it earns on the ladder ([05](05-limits-and-honesty.md)), not one word stronger. Until then this is **a commitment and a dataset, not a finding.**
+
 ## Signals we'd want but cannot honestly show yet
 
 - **Critical slowing down** (rising lag-1 autocorrelation + variance before a basin crossing —
