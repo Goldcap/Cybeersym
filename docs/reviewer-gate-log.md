@@ -13,6 +13,27 @@ or *escaped* (reached done/merge; the rows that should drive escalation).
 
 ## Entries
 
+### 7 — 2026-09-06 · Two channel builds (expectations + NAIRU, CYB-20) · **caught at gate (NITs only) — positive signal**
+- **What:** two new `src/` modules — `expectations/` (adaptive-expectations de-anchoring) and `nairu/`
+  (the conflict/Kaleckian NAIRU) — each put through a fresh independent reviewer before commit. **Both
+  headlines SURVIVED independent re-derivation:** for expectations the reviewer hand-derived the closed
+  form *and* the 2×2 Jacobian (matched `linearize` to 2.85e-10) and confirmed a real +1-multiplier
+  de-anchoring, stable throughout the physical range; for the NAIRU the reviewer re-derived
+  `u*=(ω_w0−ω_f)/b`, confirmed the sim↔closed-form to 8.3e-17, and judged the (unavoidable) circularity
+  objection *honestly owned, not hidden*. Only **NITs** found and fixed pre-commit: expectations — the
+  real-vs-complex check ran at a single φ_e (→ swept and asserted), and "fold" overstated the evidence
+  (→ "+1-multiplier / equilibrium escapes"); NAIRU — "~1e-17" undersold the 8.3e-17 error (→ "~1e-16"),
+  and one polemical half-sentence ("used to justify recessions") tripped the descriptive/normative
+  firewall (→ softened to the analytic policy corollary).
+- **Check that caught it:** fresh reviewers re-deriving the math symbolically/numerically AND attacking
+  the prose for overclaim (the NAIRU reviewer was charged specifically to flag preachy/oversold framing).
+- **Outcome:** caught at the gate; fixed before the PRs. **Escalation signal (positive):** the
+  *centerpiece-overclaim-about-our-own-results* class (entries #1–#3) did **not** recur — both new builds
+  passed with only NITs, and the anti-overclaim net now catches *register-level* issues (the NAIRU
+  polemic) before merge, not just numeric ones. No ladder climb; keep the fresh-reviewer-per-build cadence.
+  Note the discovery discipline that fed these: a cheap probe found the expectations bifurcation was real
+  (vs Fisher/recursion dead-ends) *before* the build — see the escaped-defect-avoidance in the probes.
+
 ### 6 — 2026-09-06 · CYB-39 pre-registration (v1 voided, v2 caught pre-lock) · **caught before lock → LADDER CLIMB**
 - **What:** the second WID pre-registration (Keen breakdown-basin border) failed design review twice.
   **v1** was *locked* (PR #15) and then the **advisory review app** caught three substantive design
