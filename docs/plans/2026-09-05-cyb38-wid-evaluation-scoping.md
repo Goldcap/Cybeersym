@@ -48,6 +48,18 @@ overshooting OOS)?
 
 ## 3. PREREQUISITE (model-side, blind to WID) — locate the graded border
 
+> **RESOLVED (2026-09-05, reviewer-gated): NO graded border exists on the shipped Fisher α_p axis.**
+> `src/fisher/run_v1.py` fine-resolved the interval `run_v0` stepped over and found the deflation
+> border is a **hard corner at exactly α_p=0** (n-stable to 100k under independent review), with the
+> bounded regime a **smooth monotone gradient** (no fixed-point/Hopf onset, no interior tip;
+> φ-flat; conservation ~1e-15). So the only "border" is the degenerate α_p→0 corner the lock
+> **excluded**, and the bounded gradient *is* the smooth null the Option-A shape test must beat.
+> **⇒ the WID test cannot be instantiated on this axis as pre-registered** — a reportable
+> prerequisite result. Per the lock's forbidden moves we do **not** swap the slow variable or
+> redefine the border. **Decision pending (Andy):** (1) report the null-of-feasibility and close the
+> CYB-38 line, or (2) open a *new* pre-registration asking whether a graded border lives elsewhere in
+> the stack (coupled/recursion — the CYB-22 territory `run_v0`/`run_v1` flag as the prime suspect).
+
 **The border the lock commits to does not yet exist at usable resolution.** The current sweep has
 one grid point below 0.025 (namely 0.0), so it resolves a **corner at α_p→0** and a **wall at
 α_p ≥ 0.025** — but *not* a graded tipping value in between. Two things must happen first, and both
