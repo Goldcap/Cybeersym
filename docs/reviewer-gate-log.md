@@ -13,6 +13,33 @@ or *escaped* (reached done/merge; the rows that should drive escalation).
 
 ## Entries
 
+### 6 — 2026-09-06 · CYB-39 pre-registration (v1 voided, v2 caught pre-lock) · **caught before lock → LADDER CLIMB**
+- **What:** the second WID pre-registration (Keen breakdown-basin border) failed design review twice.
+  **v1** was *locked* (PR #15) and then the **advisory review app** caught three substantive design
+  flaws (a Spearman rank-correlation success criterion contradicting the doc's own anti-triviality
+  guard; a **circular train/withheld split** selected on the outcome; a *"preferred ordinal"* mapping
+  that cannot instantiate the **cardinal** `d − d₀*` border) → **VOIDED before merge** (no data touched,
+  so clean). **v2** was redesigned (real leverage as the cardinal axis) and — per the escalation below —
+  sent to a **fresh independent adversarial reviewer BEFORE locking**, which ran the model and found
+  **two FATAL flaws**: the benchmark's `d₀*≈3.25–9.93` (uncalibrated `D/Y`) is **not commensurable** with
+  real BIS leverage (~1–2.5), so the "zero-fit" border needs a normalization constant `k≈3–5` = **fitting**
+  (the v1 cardinal flaw moved to the leverage axis), and the border sits **off the entire data cloud**
+  (degenerate threshold, position dominated by `r`). Plus the distributional test collapsed to the known
+  "inequality → crisis" claim. → **NEEDS REDESIGN; banked as a negative finding** (see
+  `docs/solutions/frozen-model-borders-resist-zero-fit-empirical-instantiation.md`).
+- **Where it had leaked:** the flaws were *in the pre-registration design itself* (locked-then-voided for
+  v1; caught pre-lock for v2). No code shipped.
+- **Why nearly missed:** the builder authored the pre-reg and the human design sign-off covered the
+  *direction*, not the load-bearing internals (unit commensurability, split independence, ordinal↔cardinal).
+- **Check that caught it:** v1 — the advisory code-review app on a *docs* file (beyond its nominal
+  `src/**` scope, and valuable for it). v2 — a **pre-lock** fresh adversarial reviewer that *ran the
+  model* to get `d₀*` magnitudes rather than trusting the prose.
+- **Outcome / ESCALATION (the ladder climb):** pre-registration *design* flaws recurred (v1's three, tracing
+  to the cardinal-mapping issue latent in CYB-38), so the gate escalated: **a pre-registration now gets a
+  fresh independent adversarial review BEFORE it is locked, not after.** That pre-lock review is what
+  caught v2. Class = *pre-registration-design-flaw* (recurring) → escalated one rung. The empirical arc is
+  banked as a boundary result; the discipline caught both non-instantiable designs before any data.
+
 ### 5 — 2026-09-05 · Fisher α_p border, the WID prerequisite (CYB-38 §3, `run_v1.py`) · **caught at gate**
 - **What:** the §3 finding — *the shipped Fisher α_p axis has no graded border; it's a hard corner
   at α_p=0* (which makes the locked WID test uninstantiable as written) — was sent to a **fresh,
