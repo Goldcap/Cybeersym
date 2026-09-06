@@ -167,6 +167,26 @@ class BargainParams:
                            b=(1.0 - self.beta) * self.k, alpha_w=self.alpha_w, alpha_p=self.alpha_p,
                            dt=self.dt, wage_floor=self.wage_floor)
 
+    @classmethod
+    def from_matching(cls, a: float, **overrides):
+        """v2 — micro-found the cost-of-job-loss convexity γ from a search/matching job-finding rate,
+        so γ is not a free dial. DMP logic: unemployed find work at rate f(u); expected duration
+        D(u)=1/f(u); the cost of job loss rises with D. With a Cobb–Douglas matching function
+        m=A·u^a·v^(1−a) and vacancies v held fixed, f(u)=A(v/u)^(1−a) ∝ u^(−(1−a)), so expected
+        duration D(u)=1/f ∝ u^(1−a); taking the cost of job loss ∝ D gives cjl(u) ∝ u^(1−a) ⇒
+        **γ = 1 − a** (the v-fixed, cost∝duration reduction is specific — see the README caveat). Since the matching elasticity a∈(0,1),
+        γ∈(0,1) is ALWAYS concave — the matching microfoundation predicts a Phillips curve that
+        STEEPENS near full employment (a checkable fingerprint), not the flat-when-tight (γ>1) shape.
+        (`gamma` in `overrides` is ignored — it is set to 1−a here by construction.)"""
+        overrides.pop("gamma", None)
+        return cls(gamma=gamma_from_matching(a), **overrides)
+
+
+def gamma_from_matching(a: float) -> float:
+    """The cost-of-job-loss convexity implied by a Cobb–Douglas matching elasticity `a`: γ = 1 − a.
+    a∈(0,1) ⇒ γ∈(0,1), always concave ⇒ the Phillips curve steepens near full employment."""
+    return 1.0 - a
+
 
 class NairuEconomy:
     """A CYB-6 `ConflictEconomy` whose aspiration gap is set by the discipline function at a fixed
