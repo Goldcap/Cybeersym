@@ -80,6 +80,14 @@ is the build that could support the empirical trophy above.
 
 ---
 
+## The data question, stated plainly
+
+The single open question the whole roadmap turns on is empirical: **does a real dataset actually put the fast system near a border, and does a distributional slow variable walk it there?** We are explicit about what we hold and have not yet used.
+
+- **We have the data; we have not fired it.** The WID / Piketty series (`research/data/wid/`) are in hand as the intended **distributional slow manifold** (CYB‑28) — the candidate wealth-concentration / leverage variable meant to move the fast system across regimes over decades. As of now they are *loaded but unused*: **no result in this thesis rests on them, and none may** until the classifier arc actually runs.
+- **They fit one wing, honestly.** WID/Piketty are low-frequency and distributional — the right shape for the **conflict / slow-manifold** side of the project (does the aspiration-gap / wealth-share state track the regime boundaries), and the *wrong* shape for anything needing high-frequency structure. This is consistent with the firewall already kept: we do **not** attempt direct chaos-detection in macro data ([05](05-limits-and-honesty.md)), so the distributional data is asked to do distributional work, nothing more.
+- **The methodology is deferred on purpose, and will be shared only once asserted.** The specific loader, the pre-specified signature set, and the decision rule that turn these series into a regime label are **not stated here** — because publishing a method before it has been run and reviewer-gated is exactly the pre-registration trap the project exists to avoid. When the CYB‑28 slow-manifold build is actually run against this data, the methodology and its result will be written up *together*, at whatever level of support it earns on the ladder ([05](05-limits-and-honesty.md)) — and not one word stronger. Until then this is **a commitment and a dataset, not a finding.**
+
 ## Signals we'd want but cannot honestly show yet
 
 - **Critical slowing down** (rising lag-1 autocorrelation + variance before a basin crossing —
