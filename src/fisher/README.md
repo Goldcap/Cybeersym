@@ -144,9 +144,20 @@ follow-up is a *new* question — does a graded border live elsewhere in the sta
 
 ## Scope / forward-links
 
-* **Bare-CYB-17 substrate** (as CYB-23). Phase-2b-on-coupled (the CYB-22 recursion territory) is a
-  later cell — recursion re-loading the gap changes the stabilizer balance and could move the
-  `α_p → 0` edge inward. **This is now the prime suspect for a graded border** (see v1 above).
+* **Bare-CYB-17 substrate** (as CYB-23). Phase-2b-on-coupled (the CYB-22 recursion territory) was the
+  suspected home of a graded border — recursion reloading the gap could move the `α_p → 0` edge inward.
+  **Probed and (on this evidence) rejected** — a **scratch probe, NOT reviewer-gated**: the Fisher
+  Engine-2 cut composed on the existing `crunch_coupled` substrate, sweeping (α_p, κ). Result:
+  **recursion does NOT move the deflation edge** — it stays a hard corner at exactly `α_p=0` across
+  κ ∈ [0, 0.8] and φ ∈ {4, 8, 20}. Mechanistically recursion is *inflationary* (it reloads the gap
+  *up* — the CYB-18 inflation floor), which *reinforces* the markup-defense against a Fisher deflation
+  rather than weakening it, so it structurally cannot open a deflation edge at finite α_p. A grader
+  border *appeared* on the **inflation** side (a κ-moved α_p threshold), but robustness **debunked it**
+  as a finite-time/band artifact of the same class as the retired "two-basin" (every α_p>0 slowly
+  inflates; the threshold drifts toward 0 as the horizon grows 3k→30k and moves with the classifier
+  band) — not a genuine bifurcation. So recursion does **not** supply the graded α_p border. The
+  faithful two-module build (`contagion_coupled` → `fisher_coupled`) is not worth it for this question;
+  the missing hyper-inflationary Engine-1 layer would only smear the inflation side further.
 * The "is there a partial-stabilizer regime at finite α_p?" question is **answered (no)** for the
   isolated Fisher map by `run_v1`: the border is a knife-edge at `α_p=0`. A structural output-gap
   price mechanism (real activity, not just leverage) remains a separate modeling question.
