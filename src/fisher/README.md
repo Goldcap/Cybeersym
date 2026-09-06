@@ -112,15 +112,44 @@ suppressed (`α_p=0`) — `P → 0` monotonically for `φ ≳ 2`.
 `CYB-17 ⊂ Phase 1 ⊂ Phase 2 (CYB-23) ⊂ Phase 2b`: `fisher_phi=0` ⇒ CYB-23 exactly (`W,P,D` Δ =
 `0.0`). Determinism (σ=0): byte-identical reruns.
 
+## v1 (CYB-38 §3) — the finer sweep: the border is a HARD CORNER, not a graded tip
+
+```bash
+cd src/fisher
+python3 run_v1.py   # fine α_p resolution near 0 + n-stability + bounded-branch structure → verdict
+```
+
+`run_v0`'s headline map stepped `α_p` by 0.025 and saw genuine divergence **only at the `α_p=0`
+grid point** — but that step is too coarse to tell a hard corner from a thin graded wedge below
+0.025. The locked WID pre-registration (`docs/preregistrations/2026-09-05-classifier-vs-wid.md`,
+commit `6338f3a`) needs a **graded** tipping `α_p` (explicitly *not* the `α_p→0` corner), so before
+any WID data is touched, `run_v1` resolves the interval `run_v0` skipped. **Reviewer-gated**
+(builder≠reviewer; the "hard corner" headline survived an independent adversarial attack that pushed
+`α_p` to 1e-6 at n=100k). Findings:
+
+* **The deflation-side border is a HARD CORNER at exactly `α_p=0`** — `n`-stable (the classification
+  does not move as the horizon grows 3k→30k→100k). Divergence at `0.0`; bounded for every `α_p ≥ 1e-4`.
+* **No interior tip.** The bounded regime is a limit cycle at *every* `α_p>0` — no fixed-point
+  region (no Hopf onset), a smooth net deepening as `α_p→0` (worst non-monotone wobble < 0.2% of
+  amplitude = limit-cycle jitter). **φ-flat** (amplitude spread across φ=2..8 ≈ 0.03): `α_p` is the
+  pivot, as in `run_v0`. Conservation holds through the runaway (residual ~1e-15).
+
+**Consequence:** the shipped Fisher `α_p` axis has **no graded tipping value** — only the degenerate
+`α_p→0` corner the pre-registration excluded, and a smooth-monotone bounded gradient (which *is* the
+null a shape/threshold test would have to beat). So the CYB-38 WID test **cannot be instantiated on
+this axis as pre-registered** — a reportable prerequisite result. We do **not** move the goalposts
+(swapping the slow variable or redefining the border are the lock's forbidden moves); the honest
+follow-up is a *new* question — does a graded border live elsewhere in the stack (coupled/recursion)?
+— which needs its **own** pre-registration.
+
 ## Scope / forward-links
 
 * **Bare-CYB-17 substrate** (as CYB-23). Phase-2b-on-coupled (the CYB-22 recursion territory) is a
   later cell — recursion re-loading the gap changes the stabilizer balance and could move the
-  `α_p → 0` edge inward.
-* The obvious next question: **is there a partial-stabilizer regime** (small but nonzero α_p, or a
-  weakened markup-defense under stress) where genuine divergence appears at finite α_p? The map
-  says not for α_p ≥ 0.025 up to φ=8; a finer/higher-φ sweep and a structural output-gap price
-  mechanism (real activity, not just leverage) is the natural v1.
+  `α_p → 0` edge inward. **This is now the prime suspect for a graded border** (see v1 above).
+* The "is there a partial-stabilizer regime at finite α_p?" question is **answered (no)** for the
+  isolated Fisher map by `run_v1`: the border is a knife-edge at `α_p=0`. A structural output-gap
+  price mechanism (real activity, not just leverage) remains a separate modeling question.
 * **Aggregate only** — no unit-level / network default topology.
 * Feeds the **monetarism critique (CYB-16, gated)** and the **formal bifurcation program (CYB-13,
   gated)**: the `α_p → 0` divergence edge is a switching structure a piecewise-smooth specialist
@@ -135,8 +164,12 @@ suppressed (`α_p=0`) — `P → 0` monotonically for `φ ≳ 2`.
 - `run_v0.py` — nested regression → the **refutation** of v0's φ\* (bounded limit cycle) → the
   **(α_p, φ) genuine-divergence map** (headline) → the loop-not-cut anchor → capital-account
   conservation through a genuine divergence → the corrected resolution → determinism.
+- `run_v1.py` — **CYB-38 §3**: the finer α_p sweep (near 0, where `run_v0` was blind) + n-stability
+  + bounded-branch structure → the **hard-corner / no-graded-border** verdict. Reuses `run_v0`'s
+  honest `classify` unchanged (no new dynamics).
 - `figures/` — the (α_p, φ) map (headline); the refutation (bounded cycle vs genuine divergence);
-  the real-burden runaway with the nominal identity holding.
+  the real-burden runaway with the nominal identity holding; `..._v1_alpha_p_border.png` (the
+  hard-corner characterization).
 
 ## Anchors
 

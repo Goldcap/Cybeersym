@@ -13,6 +13,36 @@ or *escaped* (reached done/merge; the rows that should drive escalation).
 
 ## Entries
 
+### 5 — 2026-09-05 · Fisher α_p border, the WID prerequisite (CYB-38 §3, `run_v1.py`) · **caught at gate**
+- **What:** the §3 finding — *the shipped Fisher α_p axis has no graded border; it's a hard corner
+  at α_p=0* (which makes the locked WID test uninstantiable as written) — was sent to a **fresh,
+  independent reviewer** (no builder context) charged specifically to **falsify** the headline. The
+  headline **SURVIVED**: the reviewer pushed α_p to 1e-6 at n=100k, varied the classifier band and
+  the grid, and confirmed the corner is a genuine n-stable singularity *consistent with* `run_v0`
+  (evidence against a detector artifact — the failure mode that produced the retired Fisher
+  "two-basin" headline). Two real defects were caught **beside** the verdict: (M) a **latent
+  false-corner bug** in `border_alpha_p` — via the `last_div is None` path it would print "HARD
+  CORNER at α_p=0" even where α_p=0 does *not* diverge (safe only because the tested φ∈{2,4,8} all
+  diverge at 0); and (overclaim) **"interior kinks: 0 / monotone" was grid-fragile** — a finer grid
+  turns limit-cycle sampling jitter into spurious reversals, so the literal integers held only on
+  the coarse grid.
+- **Where it had leaked:** the bug was latent (not on the live path); the grid-fragile claim was in
+  `run_v1.py`'s printed Q2 line + docstring.
+- **Why nearly missed:** the corner logic was not self-validating (no guard asserting α_p=0 actually
+  diverges before declaring a corner); the "0 kinks" claim read the sign of raw successive diffs
+  with no jitter tolerance.
+- **Check that caught it:** a fresh reviewer that **re-ran with independent probes** (α_p→1e-6,
+  n→100k, band and grid variations) rather than re-reading the printed output.
+- **Outcome:** both fixed before the PR — `border_alpha_p` now returns an explicit
+  `corner`/`graded`/`none` kind guarded on α_p=0 diverging (+ an assert for the tested φ), and the
+  bounded-branch claim is now a **grid-robust** statement (no fixed-point region; net deepening;
+  worst non-monotone wobble reported as a fraction of amplitude, < 0.2% = jitter). Verdict unchanged;
+  byte-identical rerun; conservation ~1e-15. Class: *self-validating-guard-missing* (new) +
+  *grid-fragile scope-overclaim* (a mild recurrence of the entry #1–#3 class, caught immediately).
+  **Escalation signal (positive):** the gate did exactly its job on a headline-grade structural
+  claim — an adversarial reviewer failed to break a true finding and found only side-defects; no
+  ladder climb warranted.
+
 ### 4 — 2026-09-05 · Thesis document set, final gate (CYB-36) · **caught at gate**
 - **What:** the whole 9-doc set's final reviewer gate — the **cleanest pass of the session**. The
   recurring *scope-overclaim about our own results* class (entries #1–#3) was **largely absent**: the
