@@ -374,18 +374,19 @@ if(typeof window!=='undefined'){window.__viz={pOf,keenGoodEq,leadingEig,simFromE
 
 /* ---- pinned views ---- */
 function pinTo(ix,iy){mark.ix=Math.max(0,Math.min(NX-1,ix));mark.iy=Math.max(0,Math.min(NY-1,iy));drawMark();renderPinned();}
-function orthoPath(steps){                          // the orthodox null: a smooth monotonic return, no cycle, no debt
-  const ew=0.865,el=0.9,ep=1-ew,tau=4.0,dt=0.01,path=[];
-  for(let i=0;i<=steps;i++){if(i%6===0){const t=i*dt,dev=SHOCK*Math.exp(-t/tau);path.push([t,ew,el*(1-dev),0,ep]);}}
+function orthoPath(steps){                          // orthodox: a shock-driven business cycle that DAMPS back to trend (co-moving vars, no debt)
+  const ew=0.865,el=0.9,ep=1-ew,dt=0.01,tau=10.0,T=8.0,path=[];
+  for(let i=0;i<=steps;i++){if(i%6===0){const t=i*dt,e=-SHOCK*Math.exp(-t/tau)*Math.cos(2*Math.PI*t/T);
+    path.push([t, ew*(1-0.4*e), el*(1+e), 0, ep*(1+0.7*e)]);}}   // employment shocked down then damps; profit procyclical; wage share mildly countercyclical
   return{eq:[ew,el,0],path,broke:false,eqpi:ep};
 }
 function renderOrtho(){
-  document.getElementById('coord').innerHTML='orthodox null · unique stable equilibrium (no debt)';
-  const pill=document.getElementById('ptPill');pill.className='ptpill ok';pill.textContent='STABLE · monotonic return';
-  const disp=orthoPath(3000);
-  drawPhase(disp,{re:-0.25,im:0});drawTime(disp,{re:-0.25,im:0});drawIRF(disp,{re:-0.25,im:0});
-  document.getElementById('hlReadout').textContent='returns smoothly — no cycle';document.getElementById('hlReadout').style.color=css('--ok-ink');
-  document.getElementById('recVal').textContent='monotonic';
+  document.getElementById('coord').innerHTML='orthodox · unique stable equilibrium, shock-driven cycle (no debt)';
+  const pill=document.getElementById('ptPill');pill.className='ptpill ok';pill.textContent='STABLE · shock damps back to trend';
+  const disp=orthoPath(4000);
+  drawPhase(disp,{re:-0.07,im:0.785});drawTime(disp,{re:-0.07,im:0.785});drawIRF(disp,{re:-0.07,im:0.785});
+  document.getElementById('hlReadout').textContent='shock-driven — damps back to trend';document.getElementById('hlReadout').style.color=css('--ok-ink');
+  document.getElementById('recVal').textContent='needs a shock';
 }
 function renderPinned(){
   if(ortho){renderOrtho();return;}
@@ -423,8 +424,8 @@ function drawTime(sim,e){
   g.fillStyle=css('--faint');g.font=`${10*dpr}px "IBM Plex Mono"`;g.textBaseline='top';
   if(!sim.eq||!sim.path||sim.path.length<2){g.fillText('—',4*dpr,4*dpr);return;}
   const Pp=sim.path,n=Pp.length,tmax=Pp[n-1][0]||1,eqw=sim.eq[0],eql=sim.eq[1],eqp=sim.eqpi||(1-eqw);
-  let SCALE=10;for(const pt of Pp){const a=Math.max(Math.abs((pt[2]-eql)/eql*100),Math.abs((pt[1]-eqw)/eqw*100),Math.abs((pt[4]-eqp)/Math.abs(eqp)*100));if(a<=60)SCALE=Math.max(SCALE,a);}
-  SCALE=Math.ceil(SCALE*1.05/5)*5;                                        // scale from the pre-collapse dynamics (runaway >60% excluded) so cycles stay readable and a collapse dives off as a cliff
+  let SCALE=10;for(const pt of Pp)SCALE=Math.max(SCALE,Math.abs((pt[2]-eql)/eql*100),Math.abs((pt[1]-eqw)/eqw*100));  // scale from employment+wage (bounded, can't pass -100%); profit runs away in a collapse and is clamped to the edge
+  SCALE=Math.min(120,Math.ceil(SCALE*1.05/5)*5);
   let dlo=Infinity,dhi=-Infinity;for(const pt of Pp){if(pt[3]<dlo)dlo=pt[3];if(pt[3]>dhi)dhi=pt[3];}const dp=(dhi-dlo)*0.12||0.1;dlo-=dp;dhi+=dp;
   const lp=0.09*W,Xt=t=>lp+t/tmax*(W-lp),clv=v=>Math.max(-SCALE,Math.min(SCALE,v)),Yp=v=>H/2-(clv(v)/SCALE)*(H/2-9*dpr),Yd=v=>H-(v-dlo)/((dhi-dlo)||1)*H;
   const T=(e&&e.im>1e-6)?2*Math.PI/e.im:0;                                  // business-cycle period
@@ -449,7 +450,7 @@ function drawIRF(sim,e){
   const hl=document.getElementById('hlReadout');
   if(!sim.eq||!sim.path){hl.textContent='—';g.fillStyle=css('--faint');g.font=`${11*dpr}px "IBM Plex Mono"`;g.fillText('no equilibrium to shock',8*dpr,8*dpr);return;}
   const Pp=sim.path,n=Pp.length,eql=sim.eq[1],tmax=Pp[n-1][0]||1;
-  let AM=10;for(const pt of Pp){const a=Math.abs((pt[2]-eql)/eql*100);if(a<=60)AM=Math.max(AM,a);}AM=Math.ceil(AM*1.05/5)*5;  // pre-collapse scale; a collapse dives off as a cliff
+  let AM=10;for(const pt of Pp)AM=Math.max(AM,Math.abs((pt[2]-eql)/eql*100));AM=Math.min(120,Math.ceil(AM*1.05/5)*5);  // employment is bounded (down to -100%); shows the collapse as a cliff, no flat-line
   const lp=0.11*W,Xt=t=>lp+t/tmax*(W-lp),clv=v=>Math.max(-AM,Math.min(AM,v)),Y=v=>H/2-(clv(v)/AM)*(H/2-9*dpr);
   g.strokeStyle=css('--edge');g.lineWidth=1;g.beginPath();g.moveTo(0,Y(0));g.lineTo(W,Y(0));g.stroke();                 // 0 line
   g.font=`${9*dpr}px "IBM Plex Mono"`;g.textBaseline='middle';g.textAlign='left';                                       // y-axis ticks
@@ -469,8 +470,8 @@ function drawIRF(sim,e){
 
 /* ---- demonstration (Keen A→B) ---- */
 const BEATS=[
- {beat:0,cls:'',orthodox:true,r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'a demand shock — then it fades',
-  caption:'<b>The orthodox baseline (Lucas · Mankiw · DSGE).</b> A unique stable equilibrium with rational, market-clearing agents: hit it with a demand shock and <span style="color:var(--ts-emp)">employment</span> returns <b>smoothly and monotonically</b> — no overshoot, no cycle, no finance. Business cycles are just the economy digesting <em>external</em> shocks. This is the null the rest of the demonstration departs from.'},
+ {beat:0,cls:'',orthodox:true,r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'a demand shock — then it damps away',
+  caption:'<b>The orthodox baseline (Lucas · Mankiw · DSGE).</b> A unique stable equilibrium. A demand shock sends the economy into a business cycle — <span style="color:var(--ts-emp)">employment</span> and <span style="color:var(--ts-profit)">profit</span> co-move — but it <b>damps back to trend</b>. Cycles are the economy digesting <em>external</em> shocks; with no shock, no cycle. This is the null the heterodox beats depart from — starting with Goodwin, whose cycle needs no shock at all.'},
  {beat:1,cls:'hetero',ov:{keen:false,delta:0},r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'endogenous · no shock, no debt',
   caption:'<b>Goodwin 1967 — the growth cycle.</b> Relax "external shocks only." With <em>no shock at all</em>, the economy traces a <b>closed orbit</b> at constant amplitude: <span style="color:var(--ts-emp)">employment</span> and the <span style="color:var(--trace-2)">wage share</span> chase each other, employment peaking a <b>quarter-cycle before wages</b> — the predator–prey signature (invariant conserved to machine precision). The cycle is <em>endogenous</em> — the smooth orthodox return is already gone.'},
  {beat:2,cls:'hetero',ov:{kmax:0.45,kmid:0.15},r:0.03,ksharp:30,atEq:true,d0:0,pt:[0.03,30],shock:'endogenous · no shock',
