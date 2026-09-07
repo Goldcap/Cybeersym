@@ -413,6 +413,9 @@ function drawTime(sim,e){
   const T=(e&&e.im>1e-6)?2*Math.PI/e.im:0;                                  // business-cycle period
   if(T>0){g.strokeStyle=css('--edge');g.globalAlpha=0.5;g.lineWidth=1;for(let t=T;t<tmax;t+=T){g.beginPath();g.moveTo(Xt(t),0);g.lineTo(Xt(t),H);g.stroke();}g.globalAlpha=1;}
   g.strokeStyle=css('--edge');g.lineWidth=1;g.beginPath();g.moveTo(0,Yp(0));g.lineTo(W,Yp(0));g.stroke();          // 0% line
+  g.font=`${9*dpr}px "IBM Plex Mono"`;g.textBaseline='middle';g.textAlign='left';                                 // y-axis ticks (magnitude)
+  for(const v of [30,15,-15,-30]){g.strokeStyle=css('--edge');g.globalAlpha=0.35;g.beginPath();g.moveTo(lp,Yp(v));g.lineTo(W,Yp(v));g.stroke();g.globalAlpha=1;g.fillStyle=css('--faint');g.fillText((v>0?'+':'')+v+'%',lp+2*dpr,Yp(v));}
+  g.fillStyle=css('--faint');g.fillText('0',lp+2*dpr,Yp(0));g.textBaseline='top';g.font=`${10*dpr}px "IBM Plex Mono"`;
   function ln(sel,col,w){g.strokeStyle=col;g.lineWidth=w*dpr;g.lineJoin='round';g.beginPath();g.moveTo(0,sel(Pp[0]));g.lineTo(lp,sel(Pp[0]));for(let i=0;i<n;i++){g.lineTo(Xt(Pp[i][0]),sel(Pp[i]));}g.stroke();}
   ln(pt=>Yd(pt[3]),css('--trace-3'),1.2);                                   // debt (own scale, right)
   ln(pt=>Yp((pt[1]-eqw)/eqw*100),css('--trace-2'),1.3);                     // wage share ω (purple)
@@ -431,6 +434,9 @@ function drawIRF(sim,e){
   const Pp=sim.path,n=Pp.length,eql=sim.eq[1],tmax=Pp[n-1][0]||1,AM=30;    // FIXED ±30% (same as the time-series)
   const lp=0.11*W,Xt=t=>lp+t/tmax*(W-lp),clv=v=>Math.max(-AM,Math.min(AM,v)),Y=v=>H/2-(clv(v)/AM)*(H/2-9*dpr);
   g.strokeStyle=css('--edge');g.lineWidth=1;g.beginPath();g.moveTo(0,Y(0));g.lineTo(W,Y(0));g.stroke();                 // 0 line
+  g.font=`${9*dpr}px "IBM Plex Mono"`;g.textBaseline='middle';g.textAlign='left';                                       // y-axis ticks
+  for(const v of [30,15,-15,-30]){g.strokeStyle=css('--edge');g.globalAlpha=0.35;g.beginPath();g.moveTo(lp,Y(v));g.lineTo(W,Y(v));g.stroke();g.globalAlpha=1;g.fillStyle=css('--faint');g.fillText((v>0?'+':'')+v+'%',lp+2*dpr,Y(v));}
+  g.fillStyle=css('--faint');g.fillText('0',lp+2*dpr,Y(0));g.textBaseline='top';g.font=`${10*dpr}px "IBM Plex Mono"`;
   g.strokeStyle=css('--faint');g.lineWidth=1.3*dpr;g.beginPath();g.moveTo(0,Y(0));g.lineTo(lp,Y(0));g.stroke();          // pre-shock baseline (at steady state)
   g.strokeStyle=css('--warn');g.setLineDash([3*dpr,3*dpr]);g.lineWidth=1.2*dpr;g.beginPath();g.moveTo(lp,4*dpr);g.lineTo(lp,H-4*dpr);g.stroke();g.setLineDash([]);  // shock marker
   g.strokeStyle=css('--ts-emp');g.lineWidth=2.0*dpr;g.lineJoin='round';g.beginPath();
@@ -458,8 +464,10 @@ function applyBeat(i){
   const b=BEATS[i];curBeat=i;freeMode=false;
   document.querySelectorAll('.beat').forEach(el=>el.setAttribute('aria-pressed',String(+el.dataset.beat===i)));
   const cap=document.getElementById('caption');cap.className='caption'+(b.cls?' '+b.cls:'');cap.innerHTML=b.caption;
-  st.params_r=b.r;st.params_k=b.ksharp;d0=b.d0;
-  document.getElementById('sR').value=b.r;document.getElementById('sKsharp').value=b.ksharp;document.getElementById('sD0').value=b.d0;
+  st.params_r=b.r;st.params_k=b.ksharp;
+  const pb=P(Object.assign({},BASE,{r:b.r,ksharp:b.ksharp,rho:extra.rho,nu:extra.nu})),eqb=keenGoodEq(pb);
+  d0=(i<3&&eqb)?Math.max(0,Math.round(eqb[2]*100)/100):b.d0;   // cycle beats start at equilibrium debt d* (so debt oscillates, not just slides to it)
+  document.getElementById('sR').value=b.r;document.getElementById('sKsharp').value=b.ksharp;document.getElementById('sD0').value=d0;
   syncNums();
   // place the marker at the beat's (r,k)
   mark.ix=Math.round((b.pt[0]-R0)/(R1-R0)*NX-0.5);mark.iy=Math.round((b.pt[1]-K0)/(K1-K0)*NY-0.5);
