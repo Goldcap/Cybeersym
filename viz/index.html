@@ -434,11 +434,11 @@ function drawTime(sim,e){
   g.font=`${9*dpr}px "IBM Plex Mono"`;g.textBaseline='middle';g.textAlign='left';                                 // y-axis ticks (magnitude)
   for(const v of [SCALE,SCALE/2,-SCALE/2,-SCALE]){g.strokeStyle=css('--edge');g.globalAlpha=0.35;g.beginPath();g.moveTo(lp,Yp(v));g.lineTo(W,Yp(v));g.stroke();g.globalAlpha=1;g.fillStyle=css('--faint');g.fillText((v>0?'+':'')+Math.round(v)+'pp',lp+2*dpr,Yp(v));}
   g.fillStyle=css('--faint');g.fillText('0',lp+2*dpr,Yp(0));g.textBaseline='top';g.font=`${10*dpr}px "IBM Plex Mono"`;
-  function ln(sel,col,w){g.strokeStyle=col;g.lineWidth=w*dpr;g.lineJoin='round';g.beginPath();g.moveTo(0,sel(Pp[0]));g.lineTo(lp,sel(Pp[0]));for(let i=0;i<n;i++){g.lineTo(Xt(Pp[i][0]),sel(Pp[i]));}g.stroke();}
-  ln(pt=>Yd(pt[3]),css('--trace-3'),1.2);                                   // debt (own scale, right)
-  ln(pt=>Yp((pt[1]-eqw)*100),css('--trace-2'),1.3);                         // wage share ω (pp)
-  ln(pt=>Yp((pt[4]-eqp)*100),css('--ts-profit'),1.6);                       // profit share π (pp, GREEN — the pivot; ≈ −wage share in pure Goodwin)
-  ln(pt=>Yp((pt[2]-eql)*100),css('--ts-emp'),2.0);                          // employment λ (pp, RED)
+  function ln(sel,preY,col,w){g.strokeStyle=col;g.lineWidth=w*dpr;g.lineJoin='round';g.beginPath();g.moveTo(0,preY);g.lineTo(lp,preY);for(let i=0;i<n;i++){g.lineTo(Xt(Pp[i][0]),sel(Pp[i]));}g.stroke();}
+  ln(pt=>Yd(pt[3]),Yd(sim.eq[2]),css('--trace-3'),1.2);                     // debt (own scale, right) — pre-shock flat at equilibrium d*
+  ln(pt=>Yp((pt[1]-eqw)*100),Yp(0),css('--trace-2'),1.3);                   // wage share ω (pp)
+  ln(pt=>Yp((pt[4]-eqp)*100),Yp(0),css('--ts-profit'),1.6);                 // profit share π (pp, GREEN — the pivot; ≈ −wage share in pure Goodwin)
+  ln(pt=>Yp((pt[2]-eql)*100),Yp(0),css('--ts-emp'),2.0);                    // employment λ (pp, RED) — flat at 0 (healthy) pre-shock, then the shock drops it
   g.strokeStyle=css('--warn');g.setLineDash([3*dpr,3*dpr]);g.lineWidth=1.1*dpr;g.beginPath();g.moveTo(lp,0);g.lineTo(lp,H);g.stroke();g.setLineDash([]);  // shock marker
   g.fillStyle=css('--faint');g.fillText('percentage points from steady state (±'+SCALE+'pp)',4*dpr,3*dpr);
   g.fillStyle=css('--warn');g.fillText('↓shock',lp+3*dpr,3*dpr);
