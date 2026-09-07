@@ -45,7 +45,7 @@
   .demo .dh{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 14px;margin-bottom:10px}
   .demo .dh h2{font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:600;margin:0}
   .demo .dh .dhint{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--faint)}
-  .beats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .beats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
   @media (max-width:760px){.beats{grid-template-columns:1fr 1fr}}
   .beat{text-align:left;background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;padding:9px 11px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:2px;min-width:0}
   .beat:hover{border-color:var(--accent);transform:translateY(-1px)}
@@ -160,10 +160,11 @@
   <div class="demo">
     <div class="dh"><h2>Demonstration — which crises can you see coming?</h2><span class="dhint">click a beat, or use ◀ ▶ · then explore freely</span></div>
     <div class="beats" id="beats">
-      <button class="beat classical" data-beat="0" aria-pressed="true" type="button"><span class="bn">GOODWIN 1967 · 1</span><span class="bt">The growth cycle</span></button>
-      <button class="beat hetero" data-beat="1" aria-pressed="false" type="button"><span class="bn">KEEN · 2</span><span class="bt">Add finance (stabilising)</span></button>
-      <button class="beat hetero" data-beat="2" aria-pressed="false" type="button"><span class="bn">MINSKY MOMENT · 3</span><span class="bt">Endogenous debt collapse</span></button>
-      <button class="beat hetero" data-beat="3" aria-pressed="false" type="button"><span class="bn">N-TIPPING · 4</span><span class="bt">Exogenous shock</span></button>
+      <button class="beat classical" data-beat="0" aria-pressed="true" type="button"><span class="bn">LUCAS · MANKIW · 1</span><span class="bt">Self-correcting (orthodox)</span></button>
+      <button class="beat hetero" data-beat="1" aria-pressed="false" type="button"><span class="bn">GOODWIN 1967 · 2</span><span class="bt">The growth cycle</span></button>
+      <button class="beat hetero" data-beat="2" aria-pressed="false" type="button"><span class="bn">KEEN · 3</span><span class="bt">Add finance</span></button>
+      <button class="beat hetero" data-beat="3" aria-pressed="false" type="button"><span class="bn">MINSKY MOMENT · 4</span><span class="bt">Endogenous debt collapse</span></button>
+      <button class="beat hetero" data-beat="4" aria-pressed="false" type="button"><span class="bn">N-TIPPING · 5</span><span class="bt">Exogenous shock</span></button>
     </div>
     <div class="caption" id="caption"></div>
     <div class="nav">
@@ -373,7 +374,21 @@ if(typeof window!=='undefined'){window.__viz={pOf,keenGoodEq,leadingEig,simFromE
 
 /* ---- pinned views ---- */
 function pinTo(ix,iy){mark.ix=Math.max(0,Math.min(NX-1,ix));mark.iy=Math.max(0,Math.min(NY-1,iy));drawMark();renderPinned();}
+function orthoPath(steps){                          // the orthodox null: a smooth monotonic return, no cycle, no debt
+  const ew=0.865,el=0.9,ep=1-ew,tau=4.0,dt=0.01,path=[];
+  for(let i=0;i<=steps;i++){if(i%6===0){const t=i*dt,dev=SHOCK*Math.exp(-t/tau);path.push([t,ew,el*(1-dev),0,ep]);}}
+  return{eq:[ew,el,0],path,broke:false,eqpi:ep};
+}
+function renderOrtho(){
+  document.getElementById('coord').innerHTML='orthodox null · unique stable equilibrium (no debt)';
+  const pill=document.getElementById('ptPill');pill.className='ptpill ok';pill.textContent='STABLE · monotonic return';
+  const disp=orthoPath(3000);
+  drawPhase(disp,{re:-0.25,im:0});drawTime(disp,{re:-0.25,im:0});drawIRF(disp,{re:-0.25,im:0});
+  document.getElementById('hlReadout').textContent='returns smoothly — no cycle';document.getElementById('hlReadout').style.color=css('--ok-ink');
+  document.getElementById('recVal').textContent='monotonic';
+}
 function renderPinned(){
+  if(ortho){renderOrtho();return;}
   const p=pOf(mark.ix,mark.iy),r=rAt(mark.ix),ks=kAt(mark.iy);
   document.getElementById('coord').innerHTML=`r <b>${r.toFixed(4)}</b> · k<sub>sharp</sub> <b>${ks.toFixed(1)}</b> · d₀ <b>${d0.toFixed(2)}</b>`;
   const cl=simFromEq(p,d0,BUDGET,false);   // classification (matches the map): near-equilibrium start
@@ -408,8 +423,8 @@ function drawTime(sim,e){
   g.fillStyle=css('--faint');g.font=`${10*dpr}px "IBM Plex Mono"`;g.textBaseline='top';
   if(!sim.eq||!sim.path||sim.path.length<2){g.fillText('—',4*dpr,4*dpr);return;}
   const Pp=sim.path,n=Pp.length,tmax=Pp[n-1][0]||1,eqw=sim.eq[0],eql=sim.eq[1],eqp=sim.eqpi||(1-eqw);
-  let SCALE=10;for(const pt of Pp)SCALE=Math.max(SCALE,Math.abs((pt[2]-eql)/eql*100),Math.abs((pt[1]-eqw)/eqw*100),Math.abs((pt[4]-eqp)/Math.abs(eqp)*100));
-  SCALE=Math.min(150,Math.ceil(SCALE*1.05/5)*5);                          // auto y-scale, ±10% floor — no flat-line clipping; read the ticks for magnitude
+  let SCALE=10;for(const pt of Pp){const a=Math.max(Math.abs((pt[2]-eql)/eql*100),Math.abs((pt[1]-eqw)/eqw*100),Math.abs((pt[4]-eqp)/Math.abs(eqp)*100));if(a<=60)SCALE=Math.max(SCALE,a);}
+  SCALE=Math.ceil(SCALE*1.05/5)*5;                                        // scale from the pre-collapse dynamics (runaway >60% excluded) so cycles stay readable and a collapse dives off as a cliff
   let dlo=Infinity,dhi=-Infinity;for(const pt of Pp){if(pt[3]<dlo)dlo=pt[3];if(pt[3]>dhi)dhi=pt[3];}const dp=(dhi-dlo)*0.12||0.1;dlo-=dp;dhi+=dp;
   const lp=0.09*W,Xt=t=>lp+t/tmax*(W-lp),clv=v=>Math.max(-SCALE,Math.min(SCALE,v)),Yp=v=>H/2-(clv(v)/SCALE)*(H/2-9*dpr),Yd=v=>H-(v-dlo)/((dhi-dlo)||1)*H;
   const T=(e&&e.im>1e-6)?2*Math.PI/e.im:0;                                  // business-cycle period
@@ -434,7 +449,7 @@ function drawIRF(sim,e){
   const hl=document.getElementById('hlReadout');
   if(!sim.eq||!sim.path){hl.textContent='—';g.fillStyle=css('--faint');g.font=`${11*dpr}px "IBM Plex Mono"`;g.fillText('no equilibrium to shock',8*dpr,8*dpr);return;}
   const Pp=sim.path,n=Pp.length,eql=sim.eq[1],tmax=Pp[n-1][0]||1;
-  let AM=10;for(const pt of Pp)AM=Math.max(AM,Math.abs((pt[2]-eql)/eql*100));AM=Math.min(150,Math.ceil(AM*1.05/5)*5);  // auto, ±10% floor
+  let AM=10;for(const pt of Pp){const a=Math.abs((pt[2]-eql)/eql*100);if(a<=60)AM=Math.max(AM,a);}AM=Math.ceil(AM*1.05/5)*5;  // pre-collapse scale; a collapse dives off as a cliff
   const lp=0.11*W,Xt=t=>lp+t/tmax*(W-lp),clv=v=>Math.max(-AM,Math.min(AM,v)),Y=v=>H/2-(clv(v)/AM)*(H/2-9*dpr);
   g.strokeStyle=css('--edge');g.lineWidth=1;g.beginPath();g.moveTo(0,Y(0));g.lineTo(W,Y(0));g.stroke();                 // 0 line
   g.font=`${9*dpr}px "IBM Plex Mono"`;g.textBaseline='middle';g.textAlign='left';                                       // y-axis ticks
@@ -454,17 +469,19 @@ function drawIRF(sim,e){
 
 /* ---- demonstration (Keen A→B) ---- */
 const BEATS=[
- {beat:0,cls:'',ov:{keen:false,delta:0},r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'endogenous · no shock, no debt',
-  caption:'<b>Goodwin 1967 — the growth cycle.</b> No finance, no external shock. From any starting point the economy traces a <b>closed orbit</b> at constant amplitude: <span style="color:var(--ts-emp)">employment</span> and the <span style="color:var(--trace-2)">wage share</span> chase each other, employment peaking a <b>quarter-cycle before wages</b> — the predator–prey signature (its invariant is conserved to machine precision). Capitalism cycles <em>endogenously</em>; the orthodox "equilibrium + shocks" view (Lucas · Mankiw) already fails here.'},
- {beat:1,cls:'hetero',ov:{kmax:0.45,kmid:0.15},r:0.03,ksharp:30,atEq:true,d0:0,pt:[0.03,30],shock:'endogenous · no shock',
-  caption:'<b>Keen — add finance.</b> Firms now borrow to invest; equilibrium leverage sits near ~100% of output. Watch <span style="color:var(--trace-3)">debt</span> cycle — up in the boom, down in the bust — and for prudent finance the whole cycle <b>damps</b> toward equilibrium. Finance can be stabilising.'},
- {beat:2,cls:'hetero',ov:{kmax:0.6,kmid:0.12},r:0.07,ksharp:25,d0:1.0,pt:[0.07,25],shock:'endogenous · no shock — the crisis is built in',
-  caption:'<b>The Minsky moment (Keen).</b> Euphoric finance and higher interest: <span style="color:var(--trace-3)">debt</span> <b>ratchets up every boom</b> (≈2.8 → 4 → 11 …), the interest burden compounds, and with <em>no external shock</em> the economy tips into <b>debt-deflation collapse</b> — sooner the higher the interest rate. Keen’s formalisation of Minsky.'},
- {beat:3,cls:'hetero',ov:{kmax:0.45,kmid:0.15},r:0.03,ksharp:30,d0:9.0,pt:[0.03,30],shock:'shock · an exogenous debt bubble / COVID-type hit',
-  caption:'<b>N-tipping — the exogenous shock.</b> This is the <em>same locally-stable economy as beat 2</em> (KEEN — prudent finance, Re&lt;0, it damps) — but hit it with a sudden <span style="color:var(--trace-3)">debt</span> overhang (a burst bubble, or a COVID-type collapse) that lands it beyond the basin, and it crashes with <b>no prior warning</b>: same map cell, same damping, opposite fate. Early warning catches the endogenous tipping; it is <span style="color:var(--warn)">blind</span> to this.'}];
-let curBeat=0,freeMode=false;
+ {beat:0,cls:'',orthodox:true,r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'a demand shock — then it fades',
+  caption:'<b>The orthodox baseline (Lucas · Mankiw · DSGE).</b> A unique stable equilibrium with rational, market-clearing agents: hit it with a demand shock and <span style="color:var(--ts-emp)">employment</span> returns <b>smoothly and monotonically</b> — no overshoot, no cycle, no finance. Business cycles are just the economy digesting <em>external</em> shocks. This is the null the rest of the demonstration departs from.'},
+ {beat:1,cls:'hetero',ov:{keen:false,delta:0},r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'endogenous · no shock, no debt',
+  caption:'<b>Goodwin 1967 — the growth cycle.</b> Relax "external shocks only." With <em>no shock at all</em>, the economy traces a <b>closed orbit</b> at constant amplitude: <span style="color:var(--ts-emp)">employment</span> and the <span style="color:var(--trace-2)">wage share</span> chase each other, employment peaking a <b>quarter-cycle before wages</b> — the predator–prey signature (invariant conserved to machine precision). The cycle is <em>endogenous</em> — the smooth orthodox return is already gone.'},
+ {beat:2,cls:'hetero',ov:{kmax:0.45,kmid:0.15},r:0.03,ksharp:30,atEq:true,d0:0,pt:[0.03,30],shock:'endogenous · no shock',
+  caption:'<b>Keen — add finance.</b> Keen (1995) put private <span style="color:var(--trace-3)">debt</span> into Goodwin’s cycle. Firms borrow to invest; equilibrium leverage sits near ~100–170% of output; debt cycles up in booms and down in busts, and for prudent finance the whole cycle <b>damps</b>. Finance can be stabilising.'},
+ {beat:3,cls:'hetero',ov:{kmax:0.6,kmid:0.12},r:0.07,ksharp:25,d0:1.0,pt:[0.07,25],shock:'endogenous · no shock — the crisis is built in',
+  caption:'<b>The Minsky moment (Keen).</b> Euphoric finance and higher interest: <span style="color:var(--trace-3)">debt</span> <b>ratchets up every boom</b>, the interest burden compounds so the <span style="color:var(--ts-profit)">profit</span> margin <b>tightens each cycle</b>, and with <em>no external shock</em> the economy tips into <b>debt-deflation collapse</b> — sooner the higher the interest rate. Keen’s formalisation of Minsky.'},
+ {beat:4,cls:'hetero',ov:{kmax:0.45,kmid:0.15},r:0.03,ksharp:30,d0:9.0,pt:[0.03,30],shock:'shock · an exogenous debt bubble / COVID-type hit',
+  caption:'<b>N-tipping — the exogenous shock.</b> The <em>same locally-stable economy as the KEEN beat</em> (Re&lt;0, it damps) — but hit it with a sudden <span style="color:var(--trace-3)">debt</span> overhang (a burst bubble, or a COVID-type collapse) past the basin, and it crashes with <b>no prior warning</b>: same map cell, same damping, opposite fate. Early warning catches the endogenous tipping; it is <span style="color:var(--warn)">blind</span> to this.'}];
+let curBeat=0,freeMode=false,ortho=false;
 function applyBeat(i){
-  const b=BEATS[i];curBeat=i;freeMode=false;
+  const b=BEATS[i];curBeat=i;freeMode=false;ortho=!!b.orthodox;
   document.querySelectorAll('.beat').forEach(el=>el.setAttribute('aria-pressed',String(+el.dataset.beat===i)));
   const cap=document.getElementById('caption');cap.className='caption'+(b.cls?' '+b.cls:'');
   const sc=(b.shock&&b.shock.indexOf('shock ·')===0)?'var(--warn)':'var(--ts-profit)';
@@ -482,7 +499,7 @@ function applyBeat(i){
 document.getElementById('beats').addEventListener('click',e=>{const b=e.target.closest('.beat');if(b)applyBeat(+b.dataset.beat);});
 document.getElementById('nextBeat').onclick=()=>applyBeat(Math.min(BEATS.length-1,curBeat+1));
 document.getElementById('prevBeat').onclick=()=>applyBeat(Math.max(0,curBeat-1));
-document.getElementById('freeBeat').onclick=()=>{freeMode=true;ov={};document.querySelectorAll('.beat').forEach(el=>el.setAttribute('aria-pressed','false'));const cap=document.getElementById('caption');cap.className='caption';cap.innerHTML='<b>Free exploration.</b> Drag on the map or move the dials. Watch the phase portrait, the time-series, and the shock response update together — and the breakdown hatching grow as you raise d₀.';};
+document.getElementById('freeBeat').onclick=()=>{freeMode=true;ortho=false;ov={};document.querySelectorAll('.beat').forEach(el=>el.setAttribute('aria-pressed','false'));const cap=document.getElementById('caption');cap.className='caption';cap.innerHTML='<b>Free exploration.</b> Drag on the map or move the dials. Watch the phase portrait, the time-series, and the shock response update together — and the breakdown hatching grow as you raise d₀.';};
 
 /* ---- controls ---- */
 const st={params_r:0.03,params_k:40};
