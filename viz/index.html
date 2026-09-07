@@ -193,6 +193,7 @@
 <script>
 "use strict";
 /* ---- faithful port of src/goodwin_keen/model.py ---- */
+// ==GK-MODEL-START== (CI fidelity gate extracts this block; see viz/verify_fidelity.mjs)
 const DEF={alpha:0.025,beta:0.02,nu:3.0,rho:0.5,gamma:0.425,delta:0.0,r:0.0,keen:false,kmin:0.0,kmax:0.30,ksharp:10.0,kmid:0.14,dt:0.01,phillips_convex:false,phi0:0.04,phi1:0.00065};
 const P=o=>Object.assign({},DEF,o);
 function sigmoid(x){if(x>=0)return 1/(1+Math.exp(-x));const ex=Math.exp(x);return ex/(1+ex);}
@@ -204,6 +205,7 @@ function keenGoodEq(p){const lam=p.phillips_convex?1-Math.sqrt(p.phi1/(p.phi0+p.
 function jacobian(s,p){const e=1e-6,J=[[0,0,0],[0,0,0],[0,0,0]];for(let j=0;j<3;j++){const sp=s.slice(),sm=s.slice();sp[j]+=e;sm[j]-=e;const fp=rhs(sp[0],sp[1],sp[2],p),fm=rhs(sm[0],sm[1],sm[2],p);for(let i=0;i<3;i++)J[i][j]=(fp[i]-fm[i])/(2*e);}return J;}
 function cubicRoots(b,c,d){const p=c-b*b/3,q=2*b*b*b/27-b*c/3+d,off=-b/3,disc=q*q/4+p*p*p/27,R=[];if(disc>1e-13){const sq=Math.sqrt(disc),u=Math.cbrt(-q/2+sq),v=Math.cbrt(-q/2-sq);R.push({re:u+v+off,im:0});const rp=-(u+v)/2+off,ip=Math.sqrt(3)/2*(u-v);R.push({re:rp,im:ip});R.push({re:rp,im:-ip});}else if(disc<-1e-13){const m=2*Math.sqrt(-p/3),phi=Math.acos(Math.max(-1,Math.min(1,-q/2/Math.sqrt(-p*p*p/27))));for(let k=0;k<3;k++)R.push({re:m*Math.cos((phi+2*Math.PI*k)/3)+off,im:0});}else{const u=Math.cbrt(-q/2);R.push({re:2*u+off,im:0});R.push({re:-u+off,im:0});R.push({re:-u+off,im:0});}return R;}
 function leadingEig(s,p){const J=jacobian(s,p);const tr=J[0][0]+J[1][1]+J[2][2];const m2=(J[0][0]*J[1][1]-J[0][1]*J[1][0])+(J[0][0]*J[2][2]-J[0][2]*J[2][0])+(J[1][1]*J[2][2]-J[1][2]*J[2][1]);const det=J[0][0]*(J[1][1]*J[2][2]-J[1][2]*J[2][1])-J[0][1]*(J[1][0]*J[2][2]-J[1][2]*J[2][0])+J[0][2]*(J[1][0]*J[2][1]-J[1][1]*J[2][0]);const roots=cubicRoots(-tr,m2,-det);let best=roots[0],osc=false;for(const rt of roots){if(rt.re>best.re)best=rt;if(Math.abs(rt.im)>1e-7)osc=true;}return{re:best.re,im:Math.abs(best.im),osc};}
+// ==GK-MODEL-END==
 function simulate(p,d0,maxSteps){const eq=keenGoodEq(p);if(!eq)return{eq:null,broke:false,path:null};let s=[eq[0]*0.98,eq[1]*0.98,d0];const path=[];const rec=maxSteps>3000;let broke=false;for(let i=0;i<maxSteps;i++){if(rec&&(i%6===0))path.push([s[0],s[1],s[2]]);const ns=gkStep(s,p);if(!isFinite(ns[0])||!isFinite(ns[1])||!isFinite(ns[2])||ns[0]<=1e-3||Math.abs(ns[2])>1e3){broke=true;s=ns;break;}s=ns;}if(rec)path.push([s[0],s[1],s[2]]);return{eq,broke,path,end:s};}
 
 /* ---- fidelity ---- */
