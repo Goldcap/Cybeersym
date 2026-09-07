@@ -8,7 +8,7 @@
     --ink:#16232a; --muted:#5b6a70; --faint:#8a979b;
     --accent:#12857b; --warn:#c05a28; --screen:#f3f6f4;
     --reg-stable:#1f9a8d; --reg-unstable:#c99a1e; --reg-break:#c1462a; --reg-noeq:#b9c1ba; --reg-hopf:#0c3f3a;
-    --trace:#0f7d72; --trace-break:#c1462a; --trace-2:#7a5cc0; --trace-3:#b06a1e;
+    --trace:#0f7d72; --trace-break:#c1462a; --trace-2:#7a5cc0; --trace-3:#b06a1e; --ts-emp:#cf3a2a; --ts-profit:#1c8a4b;
     --shadow:0 1px 2px rgba(20,35,42,.08),0 8px 24px rgba(20,35,42,.06);
     --ok-bg:#d9ede9; --ok-ink:#0c6f65; --warn-bg:#f3ddcf; --warn-ink:#9a3f18; --cyc-bg:#f0e7cf; --cyc-ink:#7f6414;
   }
@@ -17,7 +17,7 @@
     --ink:#dbe6e8; --muted:#8497a0; --faint:#5d6f78;
     --accent:#37c6b6; --warn:#f0913a; --screen:#07100f;
     --reg-stable:#1e8f83; --reg-unstable:#b9931f; --reg-break:#c74a2a; --reg-noeq:#2a3a41; --reg-hopf:#a9fff2;
-    --trace:#3fd3c2; --trace-break:#ff6a3d; --trace-2:#a992ff; --trace-3:#f0b25a;
+    --trace:#3fd3c2; --trace-break:#ff6a3d; --trace-2:#a992ff; --trace-3:#f0b25a; --ts-emp:#ff6f5c; --ts-profit:#4bd47f;
     --shadow:0 1px 0 rgba(255,255,255,.02),0 12px 34px rgba(0,0,0,.5);
     --ok-bg:#0e2b28; --ok-ink:#4fd8c6; --warn-bg:#301c0e; --warn-ink:#f5a662; --cyc-bg:#2a250f; --cyc-ink:#e6c766;
   }}
@@ -26,7 +26,7 @@
     --ink:#dbe6e8; --muted:#8497a0; --faint:#5d6f78;
     --accent:#37c6b6; --warn:#f0913a; --screen:#07100f;
     --reg-stable:#1e8f83; --reg-unstable:#b9931f; --reg-break:#c74a2a; --reg-noeq:#2a3a41; --reg-hopf:#a9fff2;
-    --trace:#3fd3c2; --trace-break:#ff6a3d; --trace-2:#a992ff; --trace-3:#f0b25a;
+    --trace:#3fd3c2; --trace-break:#ff6a3d; --trace-2:#a992ff; --trace-3:#f0b25a; --ts-emp:#ff6f5c; --ts-profit:#4bd47f;
     --shadow:0 1px 0 rgba(255,255,255,.02),0 12px 34px rgba(0,0,0,.5);
     --ok-bg:#0e2b28; --ok-ink:#4fd8c6; --warn-bg:#301c0e; --warn-ink:#f5a662; --cyc-bg:#2a250f; --cyc-ink:#e6c766;
   }
@@ -202,14 +202,14 @@
         <div class="coord" id="coord">r — · k — · d₀ —</div>
         <div class="cap" style="padding-top:0"><h2 style="font-size:11.5px;color:var(--muted)">PHASE PORTRAIT · ω ↔ λ (Goodwin's growth cycle)</h2></div>
         <div class="scope"><canvas id="pv-phase"></canvas></div>
-        <p style="font-size:11.5px;color:var(--muted);margin:2px 16px 4px">The loop is Goodwin's distributive cycle: high employment → wages rise → <span style="color:var(--accent)">profit</span> squeezed → investment &amp; employment fall → wages fall → profit recovers → repeat. That profit pivot turns every peak and trough — the "agent of change."</p>
+        <p style="font-size:11.5px;color:var(--muted);margin:2px 16px 4px">The loop is Goodwin's distributive cycle: high employment → wages rise → <span style="color:var(--ts-profit)">profit</span> squeezed → investment &amp; employment fall → wages fall → profit recovers → repeat. That profit pivot turns every peak and trough — the "agent of change."</p>
         <div class="cap" style="padding-top:0"><h2 style="font-size:11.5px;color:var(--muted)">OVER TIME · the same run, as a time-series</h2></div>
         <div class="scope" style="margin-top:0"><canvas id="pv-time"></canvas></div>
         <div class="tslegend">
-          <span><i style="background:var(--trace)"></i>employment λ</span>
-          <span><i style="background:var(--accent)"></i>profit π (pivot)</span>
+          <span><i style="background:var(--ts-emp)"></i>employment λ</span>
+          <span><i style="background:var(--ts-profit)"></i>profit π (pivot)</span>
           <span><i style="background:var(--trace-2)"></i>wage share ω</span>
-          <span><i style="background:var(--trace-3)"></i>debt d</span>
+          <span><i style="background:var(--trace-3)"></i>debt d (right axis)</span>
         </div>
       </div>
 
@@ -299,7 +299,7 @@ function simFromEq(p,d0,steps,record){
    One run drives the phase portrait, the time-series, and the impulse-response panel. A debt shock
    barely moves employment; an employment shock is what makes the local dynamics (and CSD) visible. */
 const SHOCK=0.05;  // employment dip fraction
-const DISPLAY_STEPS=4500;  // ~45 yr — a few business cycles, legible (map classify still uses BUDGET)
+const DISPLAY_STEPS=7000;  // ~70 yr — long enough to SEE the envelope damp (beat 1) or sustain (beat 2/3)
 function simDisplay(p,d0,steps){
   const eq=keenGoodEq(p); if(!eq)return{eq:null,path:null,broke:false,eqpi:0};
   const pf=v=>1-v[0]-p.r*v[2];                                          // profit share π = 1 − ω − r·d
@@ -407,36 +407,35 @@ function drawTime(sim,e){
   g.fillStyle=css('--faint');g.font=`${10*dpr}px "IBM Plex Mono"`;g.textBaseline='top';
   if(!sim.eq||!sim.path||sim.path.length<2){g.fillText('—',4*dpr,4*dpr);return;}
   const Pp=sim.path,n=Pp.length,tmax=Pp[n-1][0]||1,eqw=sim.eq[0],eql=sim.eq[1],eqp=sim.eqpi||(1-eqw);
-  // employment, wage share, profit as % deviation from steady state (comparable; motion fills the panel)
-  let mx=4;for(const pt of Pp)mx=Math.max(mx,Math.abs((pt[2]-eql)/eql*100),Math.abs((pt[1]-eqw)/eqw*100),Math.abs((pt[4]-eqp)/Math.abs(eqp)*100));mx=Math.min(mx,60);
+  const SCALE=30;                                                          // FIXED shared %-deviation scale — comparable across all beats
   let dlo=Infinity,dhi=-Infinity;for(const pt of Pp){if(pt[3]<dlo)dlo=pt[3];if(pt[3]>dhi)dhi=pt[3];}const dp=(dhi-dlo)*0.12||0.1;dlo-=dp;dhi+=dp;
-  const lp=0.09*W,Xt=t=>lp+t/tmax*(W-lp),Yp=v=>H/2-(v/mx)*(H/2-9*dpr),Yd=v=>H-(v-dlo)/((dhi-dlo)||1)*H;
+  const lp=0.09*W,Xt=t=>lp+t/tmax*(W-lp),clv=v=>Math.max(-SCALE,Math.min(SCALE,v)),Yp=v=>H/2-(clv(v)/SCALE)*(H/2-9*dpr),Yd=v=>H-(v-dlo)/((dhi-dlo)||1)*H;
   const T=(e&&e.im>1e-6)?2*Math.PI/e.im:0;                                  // business-cycle period
   if(T>0){g.strokeStyle=css('--edge');g.globalAlpha=0.5;g.lineWidth=1;for(let t=T;t<tmax;t+=T){g.beginPath();g.moveTo(Xt(t),0);g.lineTo(Xt(t),H);g.stroke();}g.globalAlpha=1;}
   g.strokeStyle=css('--edge');g.lineWidth=1;g.beginPath();g.moveTo(0,Yp(0));g.lineTo(W,Yp(0));g.stroke();          // 0% line
   function ln(sel,col,w){g.strokeStyle=col;g.lineWidth=w*dpr;g.lineJoin='round';g.beginPath();g.moveTo(0,sel(Pp[0]));g.lineTo(lp,sel(Pp[0]));for(let i=0;i<n;i++){g.lineTo(Xt(Pp[i][0]),sel(Pp[i]));}g.stroke();}
-  ln(pt=>Yd(pt[3]),css('--trace-3'),1.2);                                   // debt (own scale)
-  ln(pt=>Yp((pt[4]-eqp)/Math.abs(eqp)*100),css('--accent'),1.3);            // profit share π (the pivot)
-  ln(pt=>Yp((pt[1]-eqw)/eqw*100),css('--trace-2'),1.4);                     // wage share ω
-  ln(pt=>Yp((pt[2]-eql)/eql*100),sim.broke?css('--trace-break'):css('--trace'),1.9);  // employment λ
+  ln(pt=>Yd(pt[3]),css('--trace-3'),1.2);                                   // debt (own scale, right)
+  ln(pt=>Yp((pt[1]-eqw)/eqw*100),css('--trace-2'),1.3);                     // wage share ω (purple)
+  ln(pt=>Yp((pt[4]-eqp)/Math.abs(eqp)*100),css('--ts-profit'),1.6);         // profit share π (GREEN — the pivot)
+  ln(pt=>Yp((pt[2]-eql)/eql*100),css('--ts-emp'),2.0);                      // employment λ (RED)
   g.strokeStyle=css('--warn');g.setLineDash([3*dpr,3*dpr]);g.lineWidth=1.1*dpr;g.beginPath();g.moveTo(lp,0);g.lineTo(lp,H);g.stroke();g.setLineDash([]);  // shock marker
-  g.fillStyle=css('--faint');g.fillText('% from steady state (±'+mx.toFixed(0)+'%)',4*dpr,3*dpr);
+  g.fillStyle=css('--faint');g.fillText('% from steady state (fixed ±'+SCALE+'%)',4*dpr,3*dpr);
   g.fillStyle=css('--warn');g.fillText('↓shock',lp+3*dpr,3*dpr);
+  g.fillStyle=css('--trace-3');g.textAlign='right';g.fillText('debt (right): '+dlo.toFixed(1)+'→'+dhi.toFixed(1),W-4*dpr,3*dpr);g.textAlign='left';
   g.fillStyle=css('--faint');g.textBaseline='bottom';g.fillText(T>0?('gridline = 1 cycle ≈'+T.toFixed(0)+' yr'):'',4*dpr,H-3*dpr);g.fillText(tmax.toFixed(0)+' yr',W-26*dpr,H-3*dpr);
 }
 function drawIRF(sim,e){
   const c=document.getElementById('pv-irf'),dpr=sizeC(c),g=c.getContext('2d'),W=c.width,H=c.height;g.clearRect(0,0,W,H);
   const hl=document.getElementById('hlReadout');
   if(!sim.eq||!sim.path){hl.textContent='—';g.fillStyle=css('--faint');g.font=`${11*dpr}px "IBM Plex Mono"`;g.fillText('no equilibrium to shock',8*dpr,8*dpr);return;}
-  const Pp=sim.path,n=Pp.length,eql=sim.eq[1],tmax=Pp[n-1][0]||1;
-  let amax=SHOCK*100*1.15;for(const pt of Pp)amax=Math.max(amax,Math.abs((pt[2]-eql)/eql*100));amax=Math.min(amax,120);
-  const lp=0.11*W,Xt=t=>lp+t/tmax*(W-lp),Y=v=>H/2-(v/amax)*(H/2-9*dpr);
+  const Pp=sim.path,n=Pp.length,eql=sim.eq[1],tmax=Pp[n-1][0]||1,AM=30;    // FIXED ±30% (same as the time-series)
+  const lp=0.11*W,Xt=t=>lp+t/tmax*(W-lp),clv=v=>Math.max(-AM,Math.min(AM,v)),Y=v=>H/2-(clv(v)/AM)*(H/2-9*dpr);
   g.strokeStyle=css('--edge');g.lineWidth=1;g.beginPath();g.moveTo(0,Y(0));g.lineTo(W,Y(0));g.stroke();                 // 0 line
   g.strokeStyle=css('--faint');g.lineWidth=1.3*dpr;g.beginPath();g.moveTo(0,Y(0));g.lineTo(lp,Y(0));g.stroke();          // pre-shock baseline (at steady state)
   g.strokeStyle=css('--warn');g.setLineDash([3*dpr,3*dpr]);g.lineWidth=1.2*dpr;g.beginPath();g.moveTo(lp,4*dpr);g.lineTo(lp,H-4*dpr);g.stroke();g.setLineDash([]);  // shock marker
-  g.strokeStyle=sim.broke?css('--trace-break'):css('--trace');g.lineWidth=1.8*dpr;g.lineJoin='round';g.beginPath();
+  g.strokeStyle=css('--ts-emp');g.lineWidth=2.0*dpr;g.lineJoin='round';g.beginPath();
   for(let i=0;i<n;i++){const x=Xt(Pp[i][0]),y=Y((Pp[i][2]-eql)/eql*100);i?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();
-  g.fillStyle=css('--faint');g.font=`${10*dpr}px "IBM Plex Mono"`;g.textBaseline='top';g.fillText('Δ employment (%)',4*dpr,3*dpr);
+  g.fillStyle=css('--faint');g.font=`${10*dpr}px "IBM Plex Mono"`;g.textBaseline='top';g.fillText('Δ employment % (fixed ±30%)',4*dpr,3*dpr);
   g.fillStyle=css('--warn');g.textBaseline='bottom';g.fillText('−'+(SHOCK*100).toFixed(0)+'% shock',lp+3*dpr,H-3*dpr);g.fillStyle=css('--faint');g.fillText(tmax.toFixed(0)+' yr',W-26*dpr,H-3*dpr);
   if(sim.broke){hl.textContent='collapse — debt-deflation';hl.style.color=css('--trace-break');}
   else if(e&&e.re<-1e-4){const T=e.im>1e-6?2*Math.PI/e.im:0,ch=T?Math.log(2)/(-e.re)/T:99;hl.textContent=ch<8?('damps in ≈'+ch.toFixed(1)+' cycles'):'barely damps — a persistent cycle';hl.style.color=css('--warn');}
@@ -449,9 +448,9 @@ const BEATS=[
  {beat:0,cls:'',r:0.03,ksharp:60,d0:0.85,pt:[0.03,60],
   caption:'<b>The orthodox expectation (Lucas · Mankiw).</b> Shocks fade, the economy self-corrects. It does return here — but watch <em>how</em>: even at maximum investment prudence it comes back as a slowly-<b>damping business cycle</b> (~4 cycles to halve), not a smooth glide. This model is only weakly self-stabilising — already a departure from the monotonic textbook return.'},
  {beat:1,cls:'hetero',r:0.03,ksharp:22,d0:0.85,pt:[0.03,22],
-  caption:'<b>Goodwin’s growth cycle (1967).</b> Ease investment sensitivity down and the damping nearly vanishes — the cycle now <b>persists indefinitely</b> (dozens of cycles to fade): Goodwin’s closed orbit. Employment and the wage share chase each other, turned at every peak and trough by the <span style="color:var(--accent)">profit</span> pivot — high employment → wages rise → profit squeezed → employment falls → wages fall → profit recovers → …'},
+  caption:'<b>Goodwin’s growth cycle (1967).</b> Ease investment sensitivity down and the damping nearly vanishes — the cycle now <b>persists indefinitely</b> (dozens of cycles to fade): Goodwin’s closed orbit. Employment and the wage share chase each other, turned at every peak and trough by the <span style="color:var(--ts-profit)">profit</span> pivot — high employment → wages rise → profit squeezed → employment falls → wages fall → profit recovers → …'},
  {beat:2,cls:'hetero',r:0.03,ksharp:14,d0:0.85,pt:[0.03,14],
-  caption:'<b>Keen · Minsky — endogenous instability.</b> Below the tipping point the damping goes <b>negative</b>: the cycle <b>amplifies itself</b>, no external shock needed. Each boom borrows (watch <span style="color:var(--trace-3)">debt</span> ratchet up), its interest squeezes <span style="color:var(--accent)">profit</span> further, and the swings grow — Keen’s formalisation of Minsky’s financial-instability hypothesis.'},
+  caption:'<b>Keen · Minsky — endogenous instability.</b> Just past the tipping point the cycle <b>no longer fades</b> — it sustains itself and slowly widens, no external shock (contrast beat 1, which halved in ~4 cycles). The local Hopf is a <em>gentle</em> transition; the <b>abrupt</b> instability is the debt collapse next. (Honest note: at low debt firms here actually <em>deleverage</em> — the runaway debt build-up is beat 4.)'},
  {beat:3,cls:'hetero',r:0.06,ksharp:40,d0:9.0,pt:[0.06,40],
   caption:'<b>The Minsky moment — the crisis you can’t see coming.</b> A <em>locally stable</em> economy (Re&lt;0), but start it with too much <span style="color:var(--trace-3)">debt</span> (d₀ over the basin) and it collapses into debt-deflation. The map colour and the shock damping never budged beforehand: early warning works for the <span style="color:var(--accent)">local</span> tipping and is <span style="color:var(--warn)">blind</span> to this <b>global</b> basin (Fisher 1933 · Minsky).'}];
 let curBeat=0,freeMode=false;
