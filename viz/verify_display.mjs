@@ -61,7 +61,26 @@ function shockRun(r, k, d0) {
 const stab = shockRun(0.03, 40, 0.85), unst = shockRun(0.03, 14, 0.85), blind = shockRun(0.06, 40, 9.0);
 console.log(`shock ${SHOCK * 100}% — stable(k40):`, JSON.stringify(stab), " unstable(k14):", JSON.stringify(unst), " blind(d0=9):", JSON.stringify(blind));
 
+// canonical-signature guards — the four demonstration beats must reproduce the economics they claim
+function cfgP(o){ return M.P(Object.assign({ keen: true, delta: 0.03, rho: 0.5, nu: 3.0 }, o)); }
+function eigRe(p){ const eq = M.keenGoodEq(p); return eq ? M.leadingEig(eq, p).re : NaN; }
+function ampBreak(p, d0, steps){
+  const eq = M.keenGoodEq(p) || [0.865, 0.9, 0]; let s = [eq[0], eq[1] * 0.95, d0], e1 = 0, e2 = 0, b = false;
+  for (let i = 1; i <= steps; i++){ const ns = M.gkStep(s, p); if (broke(ns)) { b = true; break; } s = ns;
+    const dev = Math.abs((s[1] - eq[1]) / eq[1]); if (i < steps * 0.3) e1 = Math.max(e1, dev); if (i > steps * 0.7) e2 = Math.max(e2, dev); }
+  return { e1, e2, broke: b };
+}
+const gw = ampBreak(cfgP({ keen: false, delta: 0, ksharp: 40, r: 0.03 }), 0, 8000);       // Goodwin: constant-amplitude closed orbit
+const minsky = ampBreak(cfgP({ kmax: 0.6, kmid: 0.12, ksharp: 25, r: 0.07 }), 1.0, 10000); // Keen: endogenous debt collapse, no shock
+const ntipP = cfgP({ kmax: 0.45, kmid: 0.15, ksharp: 30, r: 0.03 });
+const ntip = ampBreak(ntipP, 9.0, 10000);                                                  // N-tipping: shock over the basin
+console.log("beat0 Goodwin:", JSON.stringify(gw), " beat2 Minsky broke:", minsky.broke, " beat3 Re:", eigRe(ntipP).toFixed(4), "broke@d0=9:", ntip.broke);
+
 const checks = [
+  ["Goodwin beat: constant-amplitude closed orbit (endogenous cycle)", gw.e1 > 0.02 && Math.abs(gw.e2 - gw.e1) / gw.e1 < 0.15 && !gw.broke],
+  ["Minsky beat: endogenous debt-deflation collapse (no shock)", minsky.broke],
+  ["N-tipping beat: locally STABLE (Re<0)", eigRe(ntipP) < 0],
+  ["N-tipping beat: collapses at high d0 (global basin)", ntip.broke],
   ["both regime bands exist (stable>0 && unstable>0)", lo.stable > 0 && lo.unstable > 0],
   ["Hopf boundary has segments (contour is drawable)", lo.hopfSegments > 0],
   ["breakdown overlay FIRES at high d0 (the d0 demo is not inert)", hi.breakdown > 0],
