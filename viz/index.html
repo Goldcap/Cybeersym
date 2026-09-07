@@ -375,8 +375,8 @@ if(typeof window!=='undefined'){window.__viz={pOf,keenGoodEq,leadingEig,simFromE
 /* ---- pinned views ---- */
 function pinTo(ix,iy){mark.ix=Math.max(0,Math.min(NX-1,ix));mark.iy=Math.max(0,Math.min(NY-1,iy));drawMark();renderPinned();}
 function orthoPath(steps){                          // orthodox: a shock-driven business cycle that DAMPS back to trend (co-moving vars, no debt)
-  const ew=0.865,el=0.9,ep=1-ew,dt=0.01,tau=10.0,T=8.0,path=[];
-  for(let i=0;i<=steps;i++){if(i%6===0){const t=i*dt,e=-SHOCK*Math.exp(-t/tau)*Math.cos(2*Math.PI*t/T);
+  const ew=0.865,el=0.9,ep=1-ew,dt=0.01,tau=10.0,T=8.0,A=0.10,path=[];
+  for(let i=0;i<=steps;i++){if(i%6===0){const t=i*dt,e=-A*Math.exp(-t/tau)*Math.cos(2*Math.PI*t/T);
     path.push([t, ew*(1-0.4*e), el*(1+e), 0, ep*(1+0.7*e)]);}}   // employment shocked down then damps; profit procyclical; wage share mildly countercyclical
   return{eq:[ew,el,0],path,broke:false,eqpi:ep};
 }
@@ -424,7 +424,7 @@ function drawTime(sim,e){
   g.fillStyle=css('--faint');g.font=`${10*dpr}px "IBM Plex Mono"`;g.textBaseline='top';
   if(!sim.eq||!sim.path||sim.path.length<2){g.fillText('—',4*dpr,4*dpr);return;}
   const Pp=sim.path,n=Pp.length,tmax=Pp[n-1][0]||1,eqw=sim.eq[0],eql=sim.eq[1],eqp=sim.eqpi||(1-eqw);
-  let SCALE=10;for(const pt of Pp)SCALE=Math.max(SCALE,Math.abs((pt[2]-eql)/eql*100),Math.abs((pt[1]-eqw)/eqw*100));  // scale from employment+wage (bounded, can't pass -100%); profit runs away in a collapse and is clamped to the edge
+  let SCALE=5;for(const pt of Pp)SCALE=Math.max(SCALE,Math.abs((pt[2]-eql)*100),Math.abs((pt[1]-eqw)*100));  // percentage-POINTS deviation of employment+wage (bounded, comparable — avoids the small-base profit exaggeration); profit clamps in a collapse
   SCALE=Math.min(120,Math.ceil(SCALE*1.05/5)*5);
   let dlo=Infinity,dhi=-Infinity;for(const pt of Pp){if(pt[3]<dlo)dlo=pt[3];if(pt[3]>dhi)dhi=pt[3];}const dp=(dhi-dlo)*0.12||0.1;dlo-=dp;dhi+=dp;
   const lp=0.09*W,Xt=t=>lp+t/tmax*(W-lp),clv=v=>Math.max(-SCALE,Math.min(SCALE,v)),Yp=v=>H/2-(clv(v)/SCALE)*(H/2-9*dpr),Yd=v=>H-(v-dlo)/((dhi-dlo)||1)*H;
@@ -432,15 +432,15 @@ function drawTime(sim,e){
   if(T>0){g.strokeStyle=css('--edge');g.globalAlpha=0.5;g.lineWidth=1;for(let t=T;t<tmax;t+=T){g.beginPath();g.moveTo(Xt(t),0);g.lineTo(Xt(t),H);g.stroke();}g.globalAlpha=1;}
   g.strokeStyle=css('--edge');g.lineWidth=1;g.beginPath();g.moveTo(0,Yp(0));g.lineTo(W,Yp(0));g.stroke();          // 0% line
   g.font=`${9*dpr}px "IBM Plex Mono"`;g.textBaseline='middle';g.textAlign='left';                                 // y-axis ticks (magnitude)
-  for(const v of [SCALE,SCALE/2,-SCALE/2,-SCALE]){g.strokeStyle=css('--edge');g.globalAlpha=0.35;g.beginPath();g.moveTo(lp,Yp(v));g.lineTo(W,Yp(v));g.stroke();g.globalAlpha=1;g.fillStyle=css('--faint');g.fillText((v>0?'+':'')+Math.round(v)+'%',lp+2*dpr,Yp(v));}
+  for(const v of [SCALE,SCALE/2,-SCALE/2,-SCALE]){g.strokeStyle=css('--edge');g.globalAlpha=0.35;g.beginPath();g.moveTo(lp,Yp(v));g.lineTo(W,Yp(v));g.stroke();g.globalAlpha=1;g.fillStyle=css('--faint');g.fillText((v>0?'+':'')+Math.round(v)+'pp',lp+2*dpr,Yp(v));}
   g.fillStyle=css('--faint');g.fillText('0',lp+2*dpr,Yp(0));g.textBaseline='top';g.font=`${10*dpr}px "IBM Plex Mono"`;
   function ln(sel,col,w){g.strokeStyle=col;g.lineWidth=w*dpr;g.lineJoin='round';g.beginPath();g.moveTo(0,sel(Pp[0]));g.lineTo(lp,sel(Pp[0]));for(let i=0;i<n;i++){g.lineTo(Xt(Pp[i][0]),sel(Pp[i]));}g.stroke();}
   ln(pt=>Yd(pt[3]),css('--trace-3'),1.2);                                   // debt (own scale, right)
-  ln(pt=>Yp((pt[1]-eqw)/eqw*100),css('--trace-2'),1.3);                     // wage share ω (purple)
-  ln(pt=>Yp((pt[4]-eqp)/Math.abs(eqp)*100),css('--ts-profit'),1.6);         // profit share π (GREEN — the pivot)
-  ln(pt=>Yp((pt[2]-eql)/eql*100),css('--ts-emp'),2.0);                      // employment λ (RED)
+  ln(pt=>Yp((pt[1]-eqw)*100),css('--trace-2'),1.3);                         // wage share ω (pp)
+  ln(pt=>Yp((pt[4]-eqp)*100),css('--ts-profit'),1.6);                       // profit share π (pp, GREEN — the pivot; ≈ −wage share in pure Goodwin)
+  ln(pt=>Yp((pt[2]-eql)*100),css('--ts-emp'),2.0);                          // employment λ (pp, RED)
   g.strokeStyle=css('--warn');g.setLineDash([3*dpr,3*dpr]);g.lineWidth=1.1*dpr;g.beginPath();g.moveTo(lp,0);g.lineTo(lp,H);g.stroke();g.setLineDash([]);  // shock marker
-  g.fillStyle=css('--faint');g.fillText('% from steady state (auto ±'+SCALE+'%)',4*dpr,3*dpr);
+  g.fillStyle=css('--faint');g.fillText('percentage points from steady state (±'+SCALE+'pp)',4*dpr,3*dpr);
   g.fillStyle=css('--warn');g.fillText('↓shock',lp+3*dpr,3*dpr);
   g.fillStyle=css('--trace-3');g.textAlign='right';g.fillText('debt (right): '+dlo.toFixed(1)+'→'+dhi.toFixed(1),W-4*dpr,3*dpr);g.textAlign='left';
   g.fillStyle=css('--faint');g.textBaseline='bottom';g.fillText(T>0?('gridline = 1 cycle ≈'+T.toFixed(0)+' yr'):'',4*dpr,H-3*dpr);g.fillText(tmax.toFixed(0)+' yr',W-26*dpr,H-3*dpr);
@@ -450,17 +450,17 @@ function drawIRF(sim,e){
   const hl=document.getElementById('hlReadout');
   if(!sim.eq||!sim.path){hl.textContent='—';g.fillStyle=css('--faint');g.font=`${11*dpr}px "IBM Plex Mono"`;g.fillText('no equilibrium to shock',8*dpr,8*dpr);return;}
   const Pp=sim.path,n=Pp.length,eql=sim.eq[1],tmax=Pp[n-1][0]||1;
-  let AM=10;for(const pt of Pp)AM=Math.max(AM,Math.abs((pt[2]-eql)/eql*100));AM=Math.min(120,Math.ceil(AM*1.05/5)*5);  // employment is bounded (down to -100%); shows the collapse as a cliff, no flat-line
+  let AM=5;for(const pt of Pp)AM=Math.max(AM,Math.abs((pt[2]-eql)*100));AM=Math.min(120,Math.ceil(AM*1.05/5)*5);  // employment pp deviation (bounded); collapse = cliff
   const lp=0.11*W,Xt=t=>lp+t/tmax*(W-lp),clv=v=>Math.max(-AM,Math.min(AM,v)),Y=v=>H/2-(clv(v)/AM)*(H/2-9*dpr);
   g.strokeStyle=css('--edge');g.lineWidth=1;g.beginPath();g.moveTo(0,Y(0));g.lineTo(W,Y(0));g.stroke();                 // 0 line
   g.font=`${9*dpr}px "IBM Plex Mono"`;g.textBaseline='middle';g.textAlign='left';                                       // y-axis ticks
-  for(const v of [AM,AM/2,-AM/2,-AM]){g.strokeStyle=css('--edge');g.globalAlpha=0.35;g.beginPath();g.moveTo(lp,Y(v));g.lineTo(W,Y(v));g.stroke();g.globalAlpha=1;g.fillStyle=css('--faint');g.fillText((v>0?'+':'')+Math.round(v)+'%',lp+2*dpr,Y(v));}
+  for(const v of [AM,AM/2,-AM/2,-AM]){g.strokeStyle=css('--edge');g.globalAlpha=0.35;g.beginPath();g.moveTo(lp,Y(v));g.lineTo(W,Y(v));g.stroke();g.globalAlpha=1;g.fillStyle=css('--faint');g.fillText((v>0?'+':'')+Math.round(v)+'pp',lp+2*dpr,Y(v));}
   g.fillStyle=css('--faint');g.fillText('0',lp+2*dpr,Y(0));g.textBaseline='top';g.font=`${10*dpr}px "IBM Plex Mono"`;
   g.strokeStyle=css('--faint');g.lineWidth=1.3*dpr;g.beginPath();g.moveTo(0,Y(0));g.lineTo(lp,Y(0));g.stroke();          // pre-shock baseline (at steady state)
   g.strokeStyle=css('--warn');g.setLineDash([3*dpr,3*dpr]);g.lineWidth=1.2*dpr;g.beginPath();g.moveTo(lp,4*dpr);g.lineTo(lp,H-4*dpr);g.stroke();g.setLineDash([]);  // shock marker
   g.strokeStyle=css('--ts-emp');g.lineWidth=2.0*dpr;g.lineJoin='round';g.beginPath();
-  for(let i=0;i<n;i++){const x=Xt(Pp[i][0]),y=Y((Pp[i][2]-eql)/eql*100);i?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();
-  g.fillStyle=css('--faint');g.font=`${10*dpr}px "IBM Plex Mono"`;g.textBaseline='top';g.fillText('Δ employment % (auto ±'+AM+'%)',4*dpr,3*dpr);
+  for(let i=0;i<n;i++){const x=Xt(Pp[i][0]),y=Y((Pp[i][2]-eql)*100);i?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();
+  g.fillStyle=css('--faint');g.font=`${10*dpr}px "IBM Plex Mono"`;g.textBaseline='top';g.fillText('Δ employment (±'+AM+'pp)',4*dpr,3*dpr);
   g.fillStyle=css('--warn');g.textBaseline='bottom';g.fillText('−'+(SHOCK*100).toFixed(0)+'% shock',lp+3*dpr,H-3*dpr);g.fillStyle=css('--faint');g.fillText(tmax.toFixed(0)+' yr',W-26*dpr,H-3*dpr);
   if(sim.broke){hl.textContent='collapse — debt-deflation';hl.style.color=css('--trace-break');}
   else if(e&&e.re<-1e-4){const T=e.im>1e-6?2*Math.PI/e.im:0,ch=T?Math.log(2)/(-e.re)/T:99;hl.textContent=ch<8?('damps in ≈'+ch.toFixed(1)+' cycles'):'barely damps — a persistent cycle';hl.style.color=css('--warn');}
