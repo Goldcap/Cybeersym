@@ -1,0 +1,367 @@
+<title>Goodwin–Keen Regime Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#ecefec; --panel:#f6f8f6; --panel-2:#e6eae6; --edge:#ccd4cd;
+    --ink:#16232a; --muted:#5b6a70; --faint:#8a979b;
+    --accent:#12857b; --warn:#c05a28;
+    --screen:#f3f6f4;
+    /* regime field (light) */
+    --reg-stable:#1f9a8d; --reg-cycle:#c99a1e; --reg-break:#c1462a; --reg-noeq:#b9c1ba; --reg-hopf:#0c3f3a;
+    --trace:#0f7d72; --trace-break:#c1462a;
+    --shadow:0 1px 2px rgba(20,35,42,.08),0 8px 24px rgba(20,35,42,.06);
+    --pill-ok-bg:#d9ede9; --pill-ok-ink:#0c6f65;
+    --pill-warn-bg:#f3ddcf; --pill-warn-ink:#9a3f18;
+    --pill-cyc-bg:#f0e7cf; --pill-cyc-ink:#7f6414;
+  }
+  :root:not([data-theme="light"]){ @media (prefers-color-scheme: dark){
+    --bg:#0a0f13; --panel:#111a20; --panel-2:#0d151a; --edge:#22333c;
+    --ink:#dbe6e8; --muted:#8497a0; --faint:#5d6f78;
+    --accent:#37c6b6; --warn:#f0913a; --screen:#07100f;
+    --reg-stable:#1e8f83; --reg-cycle:#b9931f; --reg-break:#c74a2a; --reg-noeq:#2a3a41; --reg-hopf:#a9fff2;
+    --trace:#3fd3c2; --trace-break:#ff6a3d;
+    --shadow:0 1px 0 rgba(255,255,255,.02),0 12px 34px rgba(0,0,0,.5);
+    --pill-ok-bg:#0e2b28; --pill-ok-ink:#4fd8c6;
+    --pill-warn-bg:#301c0e; --pill-warn-ink:#f5a662;
+    --pill-cyc-bg:#2a250f; --pill-cyc-ink:#e6c766;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#0a0f13; --panel:#111a20; --panel-2:#0d151a; --edge:#22333c;
+    --ink:#dbe6e8; --muted:#8497a0; --faint:#5d6f78;
+    --accent:#37c6b6; --warn:#f0913a; --screen:#07100f;
+    --reg-stable:#1e8f83; --reg-cycle:#b9931f; --reg-break:#c74a2a; --reg-noeq:#2a3a41; --reg-hopf:#a9fff2;
+    --trace:#3fd3c2; --trace-break:#ff6a3d;
+    --shadow:0 1px 0 rgba(255,255,255,.02),0 12px 34px rgba(0,0,0,.5);
+    --pill-ok-bg:#0e2b28; --pill-ok-ink:#4fd8c6;
+    --pill-warn-bg:#301c0e; --pill-warn-ink:#f5a662;
+    --pill-cyc-bg:#2a250f; --pill-cyc-ink:#e6c766;
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;padding:clamp(14px,2.4vw,30px)}
+  .wrap{max-width:1240px;margin:0 auto}
+  header{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:500}
+  h1{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:clamp(23px,3.2vw,33px);letter-spacing:-.01em;margin:.15em 0 .12em;text-wrap:balance}
+  .sub{color:var(--muted);max-width:60ch;font-size:14px}
+  .theme-btn{font-family:"IBM Plex Mono",monospace;font-size:12px;background:var(--panel);color:var(--muted);border:1px solid var(--edge);border-radius:8px;padding:7px 11px;cursor:pointer}
+  .theme-btn:hover{color:var(--ink);border-color:var(--accent)}
+
+  .console{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:16px;align-items:start}
+  @media (max-width:900px){.console{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--edge);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+  .cap{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:12px 16px 0}
+  .cap h2{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;letter-spacing:.03em;margin:0}
+  .cap .note{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--faint)}
+
+  /* map */
+  .mapbox{position:relative;margin:10px 14px 6px}
+  .mapstage{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--edge);background:var(--screen);aspect-ratio:1/.74;cursor:crosshair}
+  .mapstage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .mapstage:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .axis-x{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--faint);padding:5px 2px 0}
+  .axis-x .ttl{color:var(--muted)}
+  .axis-y{position:absolute;left:-6px;top:50%;transform:translateY(-50%) rotate(-90deg);transform-origin:center;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);white-space:nowrap}
+  .maplegend{display:flex;flex-wrap:wrap;gap:6px 16px;padding:8px 16px 14px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted)}
+  .maplegend span{display:inline-flex;align-items:center;gap:6px}
+  .maplegend i{width:13px;height:13px;border-radius:3px;display:inline-block;border:1px solid rgba(128,128,128,.35)}
+  .scanbadge{position:absolute;top:8px;right:8px;font-family:"IBM Plex Mono",monospace;font-size:11px;background:var(--panel);border:1px solid var(--edge);border-radius:6px;padding:3px 8px;color:var(--muted)}
+
+  /* pinned side */
+  .side{display:flex;flex-direction:column;gap:14px;min-width:0}
+  .ptpill{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:13px;padding:5px 11px;border-radius:999px;display:inline-block}
+  .ptpill.ok{background:var(--pill-ok-bg);color:var(--pill-ok-ink)}
+  .ptpill.cyc{background:var(--pill-cyc-bg);color:var(--pill-cyc-ink)}
+  .ptpill.warn{background:var(--pill-warn-bg);color:var(--pill-warn-ink)}
+  .ptpill.noeq{background:var(--panel-2);color:var(--muted)}
+  .coord{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .coord b{color:var(--ink);font-weight:500}
+  .scope{position:relative;margin:10px 14px 14px;border-radius:9px;background:var(--screen);border:1px solid var(--edge);overflow:hidden}
+  .scope canvas{display:block;width:100%;height:100%}
+  #pv-phase{aspect-ratio:1/.86}
+  #pv-debt{aspect-ratio:1/.4}
+  .eigrow{display:flex;flex-wrap:wrap;gap:12px 20px;padding:0 16px 14px}
+  .metric{display:flex;flex-direction:column;gap:1px}
+  .metric .lab{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-family:"IBM Plex Mono",monospace}
+  .metric .val{font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:500;font-variant-numeric:tabular-nums}
+  .recbar{position:relative;height:6px;width:110px;background:var(--panel-2);border-radius:3px;overflow:hidden;margin-top:5px}
+  .recbar > i{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:3px;transition:width .2s,background .2s}
+
+  /* d0 control — the OFF-MAP global axis */
+  .d0card{padding:14px 16px 16px}
+  .d0head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .d0head .t{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600}
+  .d0head .v{font-family:"IBM Plex Mono",monospace;font-size:14px;color:var(--warn);font-weight:600;font-variant-numeric:tabular-nums}
+  .d0card p{margin:6px 0 10px;font-size:12.5px;color:var(--muted)}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:22px;background:transparent;cursor:pointer;margin:0}
+  input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--panel-2);border:1px solid var(--edge)}
+  input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:var(--panel-2);border:1px solid var(--edge)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;margin-top:-7px;border-radius:50%;background:var(--warn);border:2px solid var(--panel);box-shadow:0 0 0 1px var(--edge)}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--warn);border:2px solid var(--panel);box-shadow:0 0 0 1px var(--edge)}
+  input[type=range]:focus-visible{outline:2px solid var(--warn);outline-offset:3px;border-radius:4px}
+
+  /* argument callouts */
+  .args{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+  @media (max-width:720px){.args{grid-template-columns:1fr}}
+  .arg{background:var(--panel);border:1px solid var(--edge);border-left:3px solid var(--accent);border-radius:10px;padding:12px 15px;font-size:13px}
+  .arg.g{border-left-color:var(--warn)}
+  .arg h3{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.03em;margin:0 0 5px;text-transform:uppercase;color:var(--accent)}
+  .arg.g h3{color:var(--warn)}
+  .arg p{margin:0;color:var(--muted)}
+
+  footer{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--faint)}
+  .fid{display:inline-flex;align-items:center;gap:7px}
+  .fid .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  .fid .dot.bad{background:var(--warn)}
+  code{font-family:"IBM Plex Mono",monospace;background:var(--panel-2);padding:1px 5px;border-radius:4px;font-size:.92em;color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Cybeersym · a map of the space</div>
+      <h1>Goodwin–Keen Regime Map</h1>
+      <p class="sub">Every point in the interest-rate × investment-sensitivity plane is one economy. The color is its fate — spirals home, cycles forever, or collapses. Pick a point; the phase portrait and debt path on the right are that economy. The Hopf line is <em>local</em>. The debt dial d₀ is <em>global</em> — and the map can't see it.</p>
+    </div>
+    <button class="theme-btn" id="themeBtn" type="button">◐ theme</button>
+  </header>
+
+  <div class="console">
+    <!-- MAP -->
+    <div class="card">
+      <div class="cap"><h2>PARAMETER SPACE · interest rate r × investment sensitivity k<sub>sharp</sub></h2>
+        <span class="note">click / drag / arrow-keys</span></div>
+      <div class="mapbox">
+        <div class="mapstage" id="stage" tabindex="0" role="img" aria-label="Regime map; use arrow keys to move the selected point">
+          <canvas id="mapBase"></canvas>
+          <canvas id="mapMark"></canvas>
+          <span class="scanbadge" id="scan" hidden>mapping…</span>
+        </div>
+        <div class="axis-y">k<sub>sharp</sub> — investment sensitivity →</div>
+        <div class="axis-x"><span>r = 0</span><span class="ttl">interest rate r →</span><span>0.07</span></div>
+      </div>
+      <div class="maplegend">
+        <span><i style="background:var(--reg-stable)"></i>stable — spirals to equilibrium</span>
+        <span><i style="background:var(--reg-cycle)"></i>limit cycle — bounded oscillation</span>
+        <span><i style="background:var(--reg-break)"></i>breakdown — debt-deflation escape</span>
+        <span><i style="background:var(--reg-noeq)"></i>no interior equilibrium</span>
+      </div>
+    </div>
+
+    <!-- PINNED VIEWS -->
+    <div class="side">
+      <div class="card">
+        <div class="cap"><h2>SELECTED ECONOMY</h2><span class="ptpill ok" id="ptPill">—</span></div>
+        <div class="scope"><canvas id="pv-phase"></canvas></div>
+        <div class="cap" style="padding-top:0"><span class="coord" id="coord">r — · k — </span></div>
+        <div class="scope" style="margin-top:0"><canvas id="pv-debt"></canvas></div>
+        <div class="eigrow">
+          <div class="metric"><span class="lab">recovery rate −Re</span><span class="val" id="mRec">—</span><span class="recbar"><i id="recFill"></i></span></div>
+          <div class="metric"><span class="lab">leading eigenvalue</span><span class="val" id="mEig">—</span></div>
+        </div>
+      </div>
+
+      <div class="card d0card">
+        <div class="d0head"><span class="t">Initial debt d₀ <span style="color:var(--faint);font-weight:400">· the global axis</span></span><span class="v" id="d0v">0.85</span></div>
+        <p>This is the basin, not a parameter. Raise it and watch the <b>breakdown region grow across the map</b> — yet the stable⇄cycle boundary (the Hopf) never moves. Local warning vs global silence, made spatial.</p>
+        <input type="range" id="sD0" min="0" max="12" step="0.1" value="0.85">
+      </div>
+    </div>
+  </div>
+
+  <div class="args">
+    <div class="arg">
+      <h3>The Hopf boundary · local</h3>
+      <p>The stable⇄cycle edge is a <em>local</em> bifurcation: cross it by moving in the map and the recovery rate on the right falls to zero. Fluctuations slow and stick first — critical slowing down. Forecastable.</p>
+    </div>
+    <div class="arg g">
+      <h3>The debt basin · global</h3>
+      <p>Raising d₀ repaints the breakdown region without touching the Hopf line or the recovery rate. A stable economy collapses because the <em>state</em> crossed a watershed — no slow warning. CSD is blind to it, correctly.</p>
+    </div>
+  </div>
+
+  <footer>
+    <span class="fid" id="fid"><span class="dot" id="fidDot"></span><span id="fidText">verifying…</span></span>
+    <span>·</span>
+    <span>every cell integrates <code>src/goodwin_keen/model.py</code> (RK4). Illustration layer — numpy stays the engine of record.</span>
+    <span>·</span><span>deterministic · σ=0</span>
+  </footer>
+</div>
+
+<script>
+"use strict";
+/* ---- faithful port of src/goodwin_keen/model.py ---- */
+const DEF={alpha:0.025,beta:0.02,nu:3.0,rho:0.5,gamma:0.425,delta:0.0,r:0.0,keen:false,kmin:0.0,kmax:0.30,ksharp:10.0,kmid:0.14,dt:0.01,phillips_convex:false,phi0:0.04,phi1:0.00065};
+const P=o=>Object.assign({},DEF,o);
+function sigmoid(x){if(x>=0)return 1/(1+Math.exp(-x));const ex=Math.exp(x);return ex/(1+ex);}
+function phillips(l,p){return p.phillips_convex?p.phi1/Math.pow(1-l,2)-p.phi0:-p.gamma+p.rho*l;}
+function kappa(pi,p){return p.keen?p.kmin+(p.kmax-p.kmin)*sigmoid(p.ksharp*(pi-p.kmid)):pi;}
+function rhs(o,l,d,p){const pi=1-o-p.r*d,k=kappa(pi,p),g=k/p.nu-p.delta;return[o*(phillips(l,p)-p.alpha),l*(g-p.alpha-p.beta),k-pi-d*g];}
+function gkStep(s,p){const dt=p.dt,f=v=>rhs(v[0],v[1],v[2],p);const k1=f(s);const k2=f([s[0]+0.5*dt*k1[0],s[1]+0.5*dt*k1[1],s[2]+0.5*dt*k1[2]]);const k3=f([s[0]+0.5*dt*k2[0],s[1]+0.5*dt*k2[1],s[2]+0.5*dt*k2[2]]);const k4=f([s[0]+dt*k3[0],s[1]+dt*k3[1],s[2]+dt*k3[2]]);return[s[0]+dt/6*(k1[0]+2*k2[0]+2*k3[0]+k4[0]),s[1]+dt/6*(k1[1]+2*k2[1]+2*k3[1]+k4[1]),s[2]+dt/6*(k1[2]+2*k2[2]+2*k3[2]+k4[2])];}
+function keenGoodEq(p){const lam=p.phillips_convex?1-Math.sqrt(p.phi1/(p.phi0+p.alpha)):(p.gamma+p.alpha)/p.rho;const target=p.nu*(p.alpha+p.beta+p.delta);let pi;if(p.keen){const frac=(target-p.kmin)/(p.kmax-p.kmin);if(frac<=0||frac>=1)return null;pi=p.kmid+Math.log(frac/(1-frac))/p.ksharp;}else pi=target;const g=p.alpha+p.beta,d=(target-pi)/g,omega=1-pi-p.r*d;if(!(omega>0&&omega<1))return null;return[omega,lam,d];}
+function jacobian(s,p){const e=1e-6,J=[[0,0,0],[0,0,0],[0,0,0]];for(let j=0;j<3;j++){const sp=s.slice(),sm=s.slice();sp[j]+=e;sm[j]-=e;const fp=rhs(sp[0],sp[1],sp[2],p),fm=rhs(sm[0],sm[1],sm[2],p);for(let i=0;i<3;i++)J[i][j]=(fp[i]-fm[i])/(2*e);}return J;}
+function cubicRoots(b,c,d){const p=c-b*b/3,q=2*b*b*b/27-b*c/3+d,off=-b/3,disc=q*q/4+p*p*p/27,R=[];if(disc>1e-13){const sq=Math.sqrt(disc),u=Math.cbrt(-q/2+sq),v=Math.cbrt(-q/2-sq);R.push({re:u+v+off,im:0});const rp=-(u+v)/2+off,ip=Math.sqrt(3)/2*(u-v);R.push({re:rp,im:ip});R.push({re:rp,im:-ip});}else if(disc<-1e-13){const m=2*Math.sqrt(-p/3),phi=Math.acos(Math.max(-1,Math.min(1,-q/2/Math.sqrt(-p*p*p/27))));for(let k=0;k<3;k++)R.push({re:m*Math.cos((phi+2*Math.PI*k)/3)+off,im:0});}else{const u=Math.cbrt(-q/2);R.push({re:2*u+off,im:0});R.push({re:-u+off,im:0});R.push({re:-u+off,im:0});}return R;}
+function leadingEig(s,p){const J=jacobian(s,p);const tr=J[0][0]+J[1][1]+J[2][2];const m2=(J[0][0]*J[1][1]-J[0][1]*J[1][0])+(J[0][0]*J[2][2]-J[0][2]*J[2][0])+(J[1][1]*J[2][2]-J[1][2]*J[2][1]);const det=J[0][0]*(J[1][1]*J[2][2]-J[1][2]*J[2][1])-J[0][1]*(J[1][0]*J[2][2]-J[1][2]*J[2][0])+J[0][2]*(J[1][0]*J[2][1]-J[1][1]*J[2][0]);const roots=cubicRoots(-tr,m2,-det);let best=roots[0],osc=false;for(const rt of roots){if(rt.re>best.re)best=rt;if(Math.abs(rt.im)>1e-7)osc=true;}return{re:best.re,im:Math.abs(best.im),osc};}
+function simulate(p,d0,maxSteps){const eq=keenGoodEq(p);if(!eq)return{eq:null,broke:false,path:null};let s=[eq[0]*0.98,eq[1]*0.98,d0];const path=[];const rec=maxSteps>3000;let broke=false;for(let i=0;i<maxSteps;i++){if(rec&&(i%6===0))path.push([s[0],s[1],s[2]]);const ns=gkStep(s,p);if(!isFinite(ns[0])||!isFinite(ns[1])||!isFinite(ns[2])||ns[0]<=1e-3||Math.abs(ns[2])>1e3){broke=true;s=ns;break;}s=ns;}if(rec)path.push([s[0],s[1],s[2]]);return{eq,broke,path,end:s};}
+
+/* ---- fidelity ---- */
+const REF=[
+ {p:P({keen:false}),s0:[0.8477,0.882,0.0],chk:{1:[0.8476238184,0.8820509755,0],1000:[0.8905180147,0.9098237365,0],4000:[0.8484093802,0.9187129543,0]}},
+ {p:P({keen:true,r:0.03,delta:0.03,ksharp:40,kmid:0.16}),s0:[0.771761333,0.882,0.8541042841],chk:{1:[0.7716920414,0.8820849533,0.8541501097],20000:[0.7855159413,0.9033146624,0.8353569773]}},
+ {p:P({keen:true,r:0.03,delta:0.03,ksharp:40,kmid:0.16}),s0:[0.8,0.9,8.0],chk:{6000:[0.174174001,0.807040753,-4.4026235349]}},
+];
+function runFidelity(){let m=0,n=0;for(const r of REF){let s=r.s0.slice();const stops=Object.keys(r.chk).map(Number).sort((a,b)=>a-b);let idx=0;for(let i=0;i<=stops[stops.length-1];i++){if(i===stops[idx]){const e=r.chk[i];for(let k=0;k<3;k++)m=Math.max(m,Math.abs(s[k]-e[k]));n++;idx++;}s=gkStep(s,r.p);}}return{m,n};}
+
+/* ============================================================ MAP ============ */
+const R0=0,R1=0.07,K0=6,K1=60;           // axis ranges
+const NX=64,NY=46;                        // grid
+const BASE={keen:true,delta:0.03,kmid:0.16};
+const cells={reg:new Uint8Array(NX*NY),rec:new Float32Array(NX*NY)}; // reg 0 noeq,1 stable,2 cycle,3 break
+let d0=0.85, mark={ix:Math.round(NX*0.43),iy:Math.round(NY*0.72)}, scanToken=0, scanned=false;
+
+const stage=document.getElementById('stage'), base=document.getElementById('mapBase'), markC=document.getElementById('mapMark');
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+function hex(h){h=h.trim();if(h[0]==='#'){const n=parseInt(h.slice(1),16);return h.length>=7?[n>>16&255,n>>8&255,n&255]:[((n>>8)&15)*17,((n>>4)&15)*17,(n&15)*17];}const m=h.match(/\d+/g);return m?[+m[0],+m[1],+m[2]]:[128,128,128];}
+function sizeC(c){const r=c.getBoundingClientRect(),dpr=Math.max(1,Math.min(2,devicePixelRatio||1));c.width=Math.round(r.width*dpr);c.height=Math.round(r.height*dpr);return dpr;}
+const rAt=ix=>R0+(ix+0.5)/NX*(R1-R0), kAt=iy=>K0+(iy+0.5)/NY*(K1-K0);
+const pOf=(ix,iy)=>P(Object.assign({},BASE,{r:rAt(ix),ksharp:kAt(iy)}));
+
+function classifyColumn(ix){
+  for(let iy=0;iy<NY;iy++){
+    const p=pOf(ix,iy), eq=keenGoodEq(p), k=ix+iy*NX;
+    if(!eq){cells.reg[k]=0;cells.rec[k]=0;continue;}
+    const e=leadingEig(eq,p);
+    const sim=simulate(p,d0,2500);
+    if(sim.broke){cells.reg[k]=3;}
+    else if(e.re<0){cells.reg[k]=1;}
+    else {cells.reg[k]=2;}
+    cells.rec[k]=e.re;
+  }
+}
+function paintMap(){
+  const dpr=sizeC(base), g=base.getContext('2d'), W=base.width, H=base.height;
+  const C={1:hex(css('--reg-stable')),2:hex(css('--reg-cycle')),3:hex(css('--reg-break')),0:hex(css('--reg-noeq'))};
+  const cw=W/NX, ch=H/NY;
+  let recMin=0;for(let i=0;i<cells.rec.length;i++)if(cells.reg[i]===1&&cells.rec[i]<recMin)recMin=cells.rec[i];
+  for(let iy=0;iy<NY;iy++)for(let ix=0;ix<NX;ix++){
+    const k=ix+iy*NX, reg=cells.reg[k]; let c=C[reg], a=1;
+    if(reg===1){const t=recMin<0?Math.min(1,cells.rec[k]/recMin):0; a=0.42+0.55*t;} // darker=more stable
+    g.fillStyle=`rgba(${c[0]},${c[1]},${c[2]},${a})`;
+    const x=ix*cw, y=H-(iy+1)*ch; g.fillRect(Math.floor(x),Math.floor(y),Math.ceil(cw)+1,Math.ceil(ch)+1);
+  }
+  // Hopf contour: stable(1) ⇄ cycle(2) boundary — the LOCAL bifurcation, d0-independent
+  g.strokeStyle=css('--reg-hopf'); g.lineWidth=2*dpr; g.beginPath();
+  for(let iy=0;iy<NY;iy++)for(let ix=0;ix<NX-1;ix++){
+    const a=cells.reg[ix+iy*NX], b=cells.reg[ix+1+iy*NX];
+    const aStab=(a===1), bStab=(b===1);
+    if(aStab!==bStab && a!==0 && b!==0 && a!==3 && b!==3){const x=(ix+1)*cw,y0=H-(iy+1)*ch;g.moveTo(x,y0);g.lineTo(x,y0+ch);}
+  }
+  g.stroke();
+  drawMark();
+}
+function drawMark(){
+  const dpr=sizeC(markC), g=markC.getContext('2d'), W=markC.width, H=markC.height;
+  g.clearRect(0,0,W,H);
+  const x=(mark.ix+0.5)/NX*W, y=H-(mark.iy+0.5)/NY*H;
+  g.strokeStyle=css('--ink'); g.lineWidth=1.5*dpr; g.beginPath();
+  g.arc(x,y,9*dpr,0,7); g.moveTo(x-14*dpr,y); g.lineTo(x-5*dpr,y); g.moveTo(x+5*dpr,y); g.lineTo(x+14*dpr,y);
+  g.moveTo(x,y-14*dpr); g.lineTo(x,y-5*dpr); g.moveTo(x,y+5*dpr); g.lineTo(x,y+14*dpr); g.stroke();
+  g.fillStyle=css('--ink'); g.beginPath(); g.arc(x,y,2.4*dpr,0,7); g.fill();
+}
+function scanMap(){
+  const tok=++scanToken; scanned=false; document.getElementById('scan').hidden=false;
+  let ix=0;
+  (function col(){
+    if(tok!==scanToken)return;
+    const batch=Math.min(NX,ix+4);
+    for(;ix<batch;ix++)classifyColumn(ix);
+    if(ix<NX){paintMap();requestAnimationFrame(col);}
+    else{scanned=true;document.getElementById('scan').hidden=true;paintMap();}
+  })();
+}
+
+/* ---- pinned views ---- */
+function pinTo(ix,iy){
+  mark.ix=Math.max(0,Math.min(NX-1,ix)); mark.iy=Math.max(0,Math.min(NY-1,iy));
+  drawMark(); renderPinned();
+}
+function renderPinned(){
+  const p=pOf(mark.ix,mark.iy), r=rAt(mark.ix), ks=kAt(mark.iy);
+  document.getElementById('coord').innerHTML=`r <b>${r.toFixed(4)}</b> · k<sub>sharp</sub> <b>${ks.toFixed(1)}</b> · d₀ <b>${d0.toFixed(2)}</b>`;
+  const sim=simulate(p,d0,5001);
+  const pill=document.getElementById('ptPill'); let cls,txt,e=null,rec=0;
+  if(!sim.eq){cls='noeq';txt='no interior equilibrium';}
+  else{ e=leadingEig(sim.eq,p); rec=Math.max(0,-e.re);
+    if(sim.broke){cls='warn';txt='BREAKDOWN · debt-deflation escape';}
+    else if(e.re<0){cls='ok';txt='STABLE · spirals to equilibrium';}
+    else{cls='cyc';txt='LIMIT CYCLE · bounded oscillation';}
+  }
+  pill.className='ptpill '+cls; pill.textContent=txt;
+  document.getElementById('mEig').textContent=e?(e.osc?`${e.re>=0?'+':''}${e.re.toFixed(4)} ± ${e.im.toFixed(3)}i`:`${e.re>=0?'+':''}${e.re.toFixed(4)}`):'—';
+  document.getElementById('mRec').textContent=e?rec.toFixed(3)+' / t':'—';
+  const fill=document.getElementById('recFill'); fill.style.width=Math.min(100,rec/0.06*100)+'%';
+  fill.style.background=(sim.broke)?css('--warn'):(rec<0.006?css('--warn'):css('--accent'));
+  drawPhase(sim); drawDebt(sim);
+}
+const PW={x0:0.0,x1:1.02,y0:0.55,y1:1.28};
+function drawPhase(sim){
+  const c=document.getElementById('pv-phase'), dpr=sizeC(c), g=c.getContext('2d'), W=c.width,H=c.height;
+  g.clearRect(0,0,W,H);
+  const X=v=>(v-PW.x0)/(PW.x1-PW.x0)*W, Y=v=>H-(v-PW.y0)/(PW.y1-PW.y0)*H;
+  g.strokeStyle=css('--edge'); g.lineWidth=1; g.font=`${10*dpr}px "IBM Plex Mono"`; g.fillStyle=css('--faint'); g.textBaseline='top';
+  for(let w=0.2;w<=1.0;w+=0.2){g.beginPath();g.moveTo(X(w),0);g.lineTo(X(w),H);g.stroke();g.fillText('ω'+w.toFixed(1),X(w)+2*dpr,H-13*dpr);}
+  for(let l=0.6;l<=1.2;l+=0.2){g.beginPath();g.moveTo(0,Y(l));g.lineTo(W,Y(l));g.stroke();g.fillText('λ'+l.toFixed(1),3*dpr,Y(l)+2*dpr);}
+  if(!sim.eq||!sim.path)return;
+  // equilibrium
+  const ex=X(sim.eq[0]),ey=Y(sim.eq[1]); g.strokeStyle=css('--accent'); g.lineWidth=1.4*dpr;
+  g.beginPath();g.moveTo(ex-5*dpr,ey);g.lineTo(ex+5*dpr,ey);g.moveTo(ex,ey-5*dpr);g.lineTo(ex,ey+5*dpr);g.stroke();
+  // trajectory
+  const col=sim.broke?css('--trace-break'):css('--trace'); g.strokeStyle=col; g.lineWidth=1.5*dpr; g.lineJoin='round';
+  g.beginPath(); let started=false;
+  for(const pt of sim.path){const x=X(pt[0]),y=Y(pt[1]); if(x<-50||x>W+50||y<-50||y>H+50){started=false;continue;} started?g.lineTo(x,y):(g.moveTo(x,y),started=true);}
+  g.stroke();
+  // start dot
+  const s0=sim.path[0]; g.fillStyle=css('--muted'); g.beginPath(); g.arc(X(s0[0]),Y(s0[1]),2.6*dpr,0,7); g.fill();
+}
+function drawDebt(sim){
+  const c=document.getElementById('pv-debt'), dpr=sizeC(c), g=c.getContext('2d'), W=c.width,H=c.height;
+  g.clearRect(0,0,W,H);
+  g.fillStyle=css('--faint'); g.font=`${10*dpr}px "IBM Plex Mono"`; g.textBaseline='top';
+  if(!sim.eq||!sim.path||sim.path.length<2){g.fillText('d(t)',4*dpr,4*dpr);return;}
+  let lo=Infinity,hi=-Infinity; for(const pt of sim.path){if(pt[2]<lo)lo=pt[2];if(pt[2]>hi)hi=pt[2];}
+  const pad=(hi-lo)*0.12||0.1; lo-=pad;hi+=pad; if(hi-lo<0.2){const m=(hi+lo)/2;lo=m-0.1;hi=m+0.1;}
+  const Y=v=>H-(v-lo)/(hi-lo)*H;
+  if(lo<0&&hi>0){g.strokeStyle=css('--edge');g.lineWidth=1;g.beginPath();g.moveTo(0,Y(0));g.lineTo(W,Y(0));g.stroke();}
+  g.strokeStyle=sim.broke?css('--trace-break'):css('--trace'); g.lineWidth=1.5*dpr; g.lineJoin='round'; g.beginPath();
+  for(let i=0;i<sim.path.length;i++){const x=i/(sim.path.length-1)*W,y=Y(sim.path[i][2]);i?g.lineTo(x,y):g.moveTo(x,y);}
+  g.stroke();
+  g.fillStyle=css('--faint'); g.fillText('d '+hi.toFixed(2),4*dpr,3*dpr); g.textBaseline='bottom'; g.fillText('d '+lo.toFixed(2),4*dpr,H-3*dpr);
+}
+
+/* ---- interaction ---- */
+function evToCell(ev){const r=stage.getBoundingClientRect();const px=(ev.clientX-r.left)/r.width,py=(ev.clientY-r.top)/r.height;return{ix:Math.floor(px*NX),iy:Math.floor((1-py)*NY)};}
+let dragging=false;
+stage.addEventListener('pointerdown',ev=>{dragging=true;stage.setPointerCapture(ev.pointerId);const c=evToCell(ev);pinTo(c.ix,c.iy);});
+stage.addEventListener('pointermove',ev=>{if(!dragging)return;const c=evToCell(ev);pinTo(c.ix,c.iy);});
+stage.addEventListener('pointerup',()=>dragging=false);
+stage.addEventListener('keydown',ev=>{const m={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,1],ArrowDown:[0,-1]}[ev.key];if(m){ev.preventDefault();pinTo(mark.ix+m[0],mark.iy+m[1]);}});
+
+const sD0=document.getElementById('sD0');
+sD0.addEventListener('input',()=>{d0=parseFloat(sD0.value);document.getElementById('d0v').textContent=d0.toFixed(2);renderPinned();});
+sD0.addEventListener('change',()=>{scanMap();}); // re-map the breakdown region on release (heavier)
+
+document.getElementById('themeBtn').onclick=()=>{const cur=document.documentElement.getAttribute('data-theme');const dark=cur?cur==='dark':matchMedia('(prefers-color-scheme:dark)').matches;document.documentElement.setAttribute('data-theme',dark?'light':'dark');paintMap();renderPinned();};
+addEventListener('resize',()=>{paintMap();renderPinned();});
+
+/* ---- boot ---- */
+(function(){
+  const fd=runFidelity(),ok=fd.m<1e-5;
+  document.getElementById('fidDot').classList.toggle('bad',!ok);
+  document.getElementById('fidText').textContent=(ok?'fidelity verified':'fidelity FAIL')+` · max Δ ${fd.m.toExponential(1)} vs numpy over ${fd.n} checkpoints`;
+  document.getElementById('d0v').textContent=d0.toFixed(2);
+  scanMap();
+  const wait=setInterval(()=>{if(scanned){clearInterval(wait);renderPinned();}},60);
+})();
+</script>
