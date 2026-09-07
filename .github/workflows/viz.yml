@@ -37,6 +37,10 @@ jobs:
           export NVM_DIR="$HOME/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
           node --version
           node viz/verify_fidelity.mjs
+      - name: Display-logic regression (the demonstration is actually visible)
+        run: |
+          export NVM_DIR="$HOME/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+          node viz/verify_display.mjs
 
   reference-drift:
     runs-on: ubuntu-latest
