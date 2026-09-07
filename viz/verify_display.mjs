@@ -47,11 +47,28 @@ function classify(d0) {
 const lo = classify(0.85), hi = classify(9.0);
 console.log("d0=0.85:", JSON.stringify(lo));
 console.log("d0=9.0 :", JSON.stringify(hi));
+
+// the pinned shock-response must actually MOVE employment (reviewer/user: a debt shock left the line flat).
+const SHOCK = Number(grab(/const SHOCK=([\d.]+)/, "SHOCK")[1]);
+function shockRun(r, k, d0) {
+  const p = M.P(Object.assign({}, BASE, { r, ksharp: k, rho: 0.5, nu: 3.0 }));
+  const eq = M.keenGoodEq(p); if (!eq) return null;
+  let s = [eq[0], eq[1] * (1 - SHOCK), d0], maxDev = 0, lateMax = 0, b = false;
+  for (let i = 1; i <= BUDGET; i++) { const ns = M.gkStep(s, p); if (broke(ns)) { b = true; break; } s = ns;
+    const dev = Math.abs((s[1] - eq[1]) / eq[1]); if (dev > maxDev) maxDev = dev; if (i > BUDGET * 0.6 && dev > lateMax) lateMax = dev; }
+  return { broke: b, maxDevPct: +(maxDev * 100).toFixed(2), lateMaxPct: +(lateMax * 100).toFixed(2) };
+}
+const stab = shockRun(0.03, 40, 0.85), unst = shockRun(0.03, 14, 0.85), blind = shockRun(0.06, 40, 9.0);
+console.log(`shock ${SHOCK * 100}% — stable(k40):`, JSON.stringify(stab), " unstable(k14):", JSON.stringify(unst), " blind(d0=9):", JSON.stringify(blind));
+
 const checks = [
   ["both regime bands exist (stable>0 && unstable>0)", lo.stable > 0 && lo.unstable > 0],
   ["Hopf boundary has segments (contour is drawable)", lo.hopfSegments > 0],
   ["breakdown overlay FIRES at high d0 (the d0 demo is not inert)", hi.breakdown > 0],
   ["breakdown overlay RESPONDS to d0 (grows from low→high)", hi.breakdown > lo.breakdown],
+  ["shock response moves employment (peak ≥ the shock itself)", stab && stab.maxDevPct >= SHOCK * 100 * 0.9],
+  ["unstable regime AMPLIFIES more than the stable regime", unst && stab && unst.maxDevPct > stab.maxDevPct],
+  ["blind-spot (high d0) COLLAPSES", blind && blind.broke],
 ];
 let ok = true;
 for (const [name, pass] of checks) { console.log(`${pass ? "✓" : "✗"} ${name}`); ok = ok && pass; }

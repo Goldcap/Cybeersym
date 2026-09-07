@@ -213,7 +213,7 @@
       </div>
 
       <div class="card">
-        <div class="irfhead"><h2 style="font-family:'IBM Plex Mono';font-size:12px;margin:0">SHOCK RESPONSE · employment after a +2% debt shock</h2><span class="hl" id="hlReadout">—</span></div>
+        <div class="irfhead"><h2 style="font-family:'IBM Plex Mono';font-size:12px;margin:0">SHOCK RESPONSE · employment after a −5% shock</h2><span class="hl" id="hlReadout">—</span></div>
         <div class="scope" style="margin-top:8px"><canvas id="pv-irf"></canvas></div>
         <button class="shockbtn" id="shockBtn" type="button">⚡ shock it again</button>
         <div class="metric" style="padding:0 16px 14px"><span class="lab">recovery rate −Re λ<sub>lead</sub></span><span class="val" id="recVal">—</span></div>
@@ -294,12 +294,15 @@ function simFromEq(p,d0,steps,record){
   if(record)path.push([s[0],s[1],s[2]]);
   return{eq,broke:b,path,end:s};
 }
-/* impulse response: kick debt +2% at equilibrium, watch employment deviation return (or not) */
-function shockResponse(p,steps){
-  const eq=keenGoodEq(p); if(!eq)return{eq:null,dev:null,broke:false};
-  let s=[eq[0],eq[1],eq[2]+0.02]; const dev=[[0,0]]; let b=false;
-  for(let i=1;i<=steps;i++){const ns=gkStep(s,p); if(broke(ns)){b=true;break;} s=ns; if(i%6===0)dev.push([i*p.dt,(s[1]-eq[1])/eq[1]]);}
-  return{eq,dev,broke:b};
+/* the pinned "shock & watch" run: a −5% EMPLOYMENT shock at t=0 (debt held at d0), then evolve.
+   One run drives the phase portrait, the time-series, and the impulse-response panel. A debt shock
+   barely moves employment; an employment shock is what makes the local dynamics (and CSD) visible. */
+const SHOCK=0.05;  // employment dip fraction
+function simDisplay(p,d0,steps){
+  const eq=keenGoodEq(p); if(!eq)return{eq:null,path:null,broke:false};
+  let s=[eq[0],eq[1]*(1-SHOCK),d0]; const path=[[0,s[0],s[1],s[2]]]; let b=false;   // path row = [t, ω, λ, d]
+  for(let i=1;i<=steps;i++){const ns=gkStep(s,p); if(broke(ns)){b=true;s=ns;path.push([i*p.dt,s[0],s[1],s[2]]);break;} s=ns; if(i%6===0)path.push([i*p.dt,s[0],s[1],s[2]]);}
+  return{eq,path,broke:b};
 }
 
 /* ============================================================ MAP ============ */
@@ -362,23 +365,24 @@ function scanMap(){
 // counters used by the display-logic regression test (viz/verify_display.mjs) — must never both be 0
 function _regimeCounts(){let s=0,u=0,b=0;for(let i=0;i<cells.reg.length;i++){if(cells.reg[i]===1)s++;else if(cells.reg[i]===2)u++;if(cells.brk[i])b++;}return{stable:s,unstable:u,breakdown:b};}
 function _hopfSegments(){let n=0;const st=k=>cells.reg[k]===1;for(let iy=0;iy<NY;iy++)for(let ix=0;ix<NX;ix++){const k=ix+iy*NX;if(cells.reg[k]===0)continue;if(ix<NX-1&&cells.reg[k+1]!==0&&st(k)!==st(k+1))n++;if(iy<NY-1&&cells.reg[k+NX]!==0&&st(k)!==st(k+NX))n++;}return n;}
-if(typeof window!=='undefined'){window.__viz={pOf,keenGoodEq,leadingEig,simFromEq,shockResponse,classifyColumn,cells,setD0:v=>{d0=v;for(let ix=0;ix<NX;ix++)classifyColumn(ix);},regimeCounts:_regimeCounts,hopfSegments:_hopfSegments,NX,NY,BUDGET};}
+if(typeof window!=='undefined'){window.__viz={pOf,keenGoodEq,leadingEig,simFromEq,simDisplay,classifyColumn,cells,setD0:v=>{d0=v;for(let ix=0;ix<NX;ix++)classifyColumn(ix);},regimeCounts:_regimeCounts,hopfSegments:_hopfSegments,NX,NY,BUDGET};}
 
 /* ---- pinned views ---- */
 function pinTo(ix,iy){mark.ix=Math.max(0,Math.min(NX-1,ix));mark.iy=Math.max(0,Math.min(NY-1,iy));drawMark();renderPinned();}
 function renderPinned(){
   const p=pOf(mark.ix,mark.iy),r=rAt(mark.ix),ks=kAt(mark.iy);
   document.getElementById('coord').innerHTML=`r <b>${r.toFixed(4)}</b> · k<sub>sharp</sub> <b>${ks.toFixed(1)}</b> · d₀ <b>${d0.toFixed(2)}</b>`;
-  const sim=simFromEq(p,d0,BUDGET,true);
+  const cl=simFromEq(p,d0,BUDGET,false);   // classification (matches the map): near-equilibrium start
+  const disp=simDisplay(p,d0,BUDGET);      // what we draw: a −5% employment shock
   const pill=document.getElementById('ptPill');let cls,txt,e=null,rec=0;
-  if(!sim.eq){cls='noeq';txt='no interior equilibrium';}
-  else{e=leadingEig(sim.eq,p);rec=Math.max(0,-e.re);
-    if(sim.broke){cls='warn';txt='BREAKDOWN · debt-deflation escape';}
-    else if(e.re<0){cls='ok';txt='STABLE · spirals home';}
+  if(!disp.eq){cls='noeq';txt='no interior equilibrium';}
+  else{e=leadingEig(disp.eq,p);rec=Math.max(0,-e.re);
+    if(cl.broke||disp.broke){cls='warn';txt='BREAKDOWN · debt-deflation escape';}
+    else if(e.re<0){cls='ok';txt='STABLE · shock decays';}
     else{cls='cyc';txt='UNSTABLE · self-driven cycles';}}
   pill.className='ptpill '+cls;pill.textContent=txt;
   document.getElementById('recVal').textContent=e?(rec.toFixed(4)+' / yr'):'—';
-  drawPhase(sim);drawTime(sim);drawIRF(p,e);
+  drawPhase(disp);drawTime(disp);drawIRF(disp,e);
 }
 const PW={x0:0.0,x1:1.02,y0:0.55,y1:1.28};
 function axis(g,dpr,W,H,xl,yl){g.strokeStyle=css('--edge');g.lineWidth=1;g.font=`${10*dpr}px "IBM Plex Mono"`;g.fillStyle=css('--faint');g.textBaseline='top';}
@@ -391,40 +395,45 @@ function drawPhase(sim){
   if(!sim.eq||!sim.path)return;
   const ex=X(sim.eq[0]),ey=Y(sim.eq[1]);g.strokeStyle=css('--accent');g.lineWidth=1.4*dpr;g.beginPath();g.moveTo(ex-5*dpr,ey);g.lineTo(ex+5*dpr,ey);g.moveTo(ex,ey-5*dpr);g.lineTo(ex,ey+5*dpr);g.stroke();
   const col=sim.broke?css('--trace-break'):css('--trace');g.strokeStyle=col;g.lineWidth=1.5*dpr;g.lineJoin='round';g.beginPath();let started=false;
-  for(const pt of sim.path){const x=X(pt[0]),y=Y(pt[1]);if(x<-60||x>W+60||y<-60||y>H+60){started=false;continue;}started?g.lineTo(x,y):(g.moveTo(x,y),started=true);}
-  g.stroke();const s0=sim.path[0];g.fillStyle=css('--muted');g.beginPath();g.arc(X(s0[0]),Y(s0[1]),2.6*dpr,0,7);g.fill();
+  for(const pt of sim.path){const x=X(pt[1]),y=Y(pt[2]);if(x<-60||x>W+60||y<-60||y>H+60){started=false;continue;}started?g.lineTo(x,y):(g.moveTo(x,y),started=true);}
+  g.stroke();const s0=sim.path[0];g.fillStyle=css('--warn');g.beginPath();g.arc(X(s0[1]),Y(s0[2]),3*dpr,0,7);g.fill();
 }
 function drawTime(sim){
   const c=document.getElementById('pv-time'),dpr=sizeC(c),g=c.getContext('2d'),W=c.width,H=c.height;g.clearRect(0,0,W,H);
   g.fillStyle=css('--faint');g.font=`${10*dpr}px "IBM Plex Mono"`;g.textBaseline='top';
   if(!sim.eq||!sim.path||sim.path.length<2){g.fillText('—',4*dpr,4*dpr);return;}
-  const n=sim.path.length;
-  // three series scaled to their own visible band: λ,ω in [0,1.3]; d auto
-  let dlo=Infinity,dhi=-Infinity;for(const pt of sim.path){if(pt[2]<dlo)dlo=pt[2];if(pt[2]>dhi)dhi=pt[2];}
-  const dpad=(dhi-dlo)*0.1||0.1;dlo-=dpad;dhi+=dpad;if(dhi-dlo<0.2){const m=(dhi+dlo)/2;dlo=m-.1;dhi=m+.1;}
-  const YV=v=>H-(v/1.35)*H, YD=v=>H-(v-dlo)/(dhi-dlo)*H, X=i=>i/(n-1)*W;
-  g.strokeStyle=css('--edge');g.lineWidth=1;for(const gl of [0.5,1.0]){g.beginPath();g.moveTo(0,YV(gl));g.lineTo(W,YV(gl));g.stroke();}
-  function line(sel,col){g.strokeStyle=col;g.lineWidth=1.5*dpr;g.lineJoin='round';g.beginPath();for(let i=0;i<n;i++){const x=X(i),y=sel(sim.path[i]);i?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();}
-  line(pt=>YD(pt[2]),css('--trace-3'));            // debt (own scale)
-  line(pt=>YV(pt[0]),css('--trace-2'));            // wage share ω
-  line(pt=>YV(pt[1]),sim.broke?css('--trace-break'):css('--trace')); // employment λ
-  g.fillStyle=css('--faint');g.fillText('λ,ω: 0–1.35',4*dpr,3*dpr);g.textBaseline='bottom';g.fillText('d: '+dlo.toFixed(1)+'–'+dhi.toFixed(1),4*dpr,H-3*dpr);
+  const Pp=sim.path,n=Pp.length,tmax=Pp[n-1][0]||1,eqw=sim.eq[0],eql=sim.eq[1];
+  // λ,ω as % deviation from steady state (comparable, and motion fills the panel); floor ±4%, clip 60%
+  let mx=4;for(const pt of Pp)mx=Math.max(mx,Math.abs((pt[2]-eql)/eql*100),Math.abs((pt[1]-eqw)/eqw*100));mx=Math.min(mx,60);
+  let dlo=Infinity,dhi=-Infinity;for(const pt of Pp){if(pt[3]<dlo)dlo=pt[3];if(pt[3]>dhi)dhi=pt[3];}const dp=(dhi-dlo)*0.12||0.1;dlo-=dp;dhi+=dp;
+  const lp=0.09*W,Xt=t=>lp+t/tmax*(W-lp),Yp=v=>H/2-(v/mx)*(H/2-9*dpr),Yd=v=>H-(v-dlo)/((dhi-dlo)||1)*H;
+  g.strokeStyle=css('--edge');g.lineWidth=1;g.beginPath();g.moveTo(0,Yp(0));g.lineTo(W,Yp(0));g.stroke();          // 0% line
+  function ln(sel,col,w){g.strokeStyle=col;g.lineWidth=w*dpr;g.lineJoin='round';g.beginPath();g.moveTo(0,sel(Pp[0]));g.lineTo(lp,sel(Pp[0]));for(let i=0;i<n;i++){g.lineTo(Xt(Pp[i][0]),sel(Pp[i]));}g.stroke();}
+  ln(pt=>Yd(pt[3]),css('--trace-3'),1.2);                                   // debt (own scale)
+  ln(pt=>Yp((pt[1]-eqw)/eqw*100),css('--trace-2'),1.5);                     // wage share % dev
+  ln(pt=>Yp((pt[2]-eql)/eql*100),sim.broke?css('--trace-break'):css('--trace'),1.8);  // employment % dev
+  g.strokeStyle=css('--warn');g.setLineDash([3*dpr,3*dpr]);g.lineWidth=1.1*dpr;g.beginPath();g.moveTo(lp,0);g.lineTo(lp,H);g.stroke();g.setLineDash([]);  // shock marker
+  g.fillStyle=css('--faint');g.fillText('% from steady state (±'+mx.toFixed(0)+'%)',4*dpr,3*dpr);
+  g.fillStyle=css('--warn');g.fillText('↓shock',lp+3*dpr,3*dpr);
+  g.fillStyle=css('--faint');g.textBaseline='bottom';g.fillText('d '+dlo.toFixed(1)+'–'+dhi.toFixed(1),4*dpr,H-3*dpr);g.fillText(tmax.toFixed(0)+' yr',W-26*dpr,H-3*dpr);
 }
-function drawIRF(p,e){
+function drawIRF(sim,e){
   const c=document.getElementById('pv-irf'),dpr=sizeC(c),g=c.getContext('2d'),W=c.width,H=c.height;g.clearRect(0,0,W,H);
-  const sr=shockResponse(p,BUDGET),hl=document.getElementById('hlReadout');
-  if(!sr.eq){hl.textContent='—';g.fillStyle=css('--faint');g.font=`${11*dpr}px "IBM Plex Mono"`;g.fillText('no equilibrium to shock',8*dpr,8*dpr);return;}
-  const dev=sr.dev;let amax=0.02,tmax=dev[dev.length-1][0];for(const d of dev)amax=Math.max(amax,Math.abs(d[1]));amax*=1.1;
-  const X=t=>t/tmax*W,Y=v=>H/2-(v/amax)*(H/2-6*dpr);
-  g.strokeStyle=css('--edge');g.lineWidth=1;g.beginPath();g.moveTo(0,H/2);g.lineTo(W,H/2);g.stroke();
-  g.strokeStyle=sr.broke?css('--trace-break'):css('--warn');g.lineWidth=1.6*dpr;g.lineJoin='round';g.beginPath();
-  for(let i=0;i<dev.length;i++){const x=X(dev[i][0]),y=Y(dev[i][1]);i?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();
-  g.fillStyle=css('--faint');g.font=`${10*dpr}px "IBM Plex Mono"`;g.textBaseline='top';g.fillText('+2% debt shock → Δλ',4*dpr,3*dpr);
-  g.textBaseline='bottom';g.fillText('0',4*dpr,H/2+11*dpr);g.fillText(tmax.toFixed(0)+' yr',W-30*dpr,H-3*dpr);
-  // half-life readout from the slow eigenvalue
-  if(sr.broke){hl.textContent='no return (breakdown)';hl.style.color=css('--trace-break');}
-  else if(e&&e.re<-1e-4){hl.textContent='shock half-life ≈ '+(Math.log(2)/(-e.re)).toFixed(1)+' yr';hl.style.color=css('--warn');}
-  else if(e&&e.re>1e-4){hl.textContent='diverges (unstable)';hl.style.color=css('--warn');}
+  const hl=document.getElementById('hlReadout');
+  if(!sim.eq||!sim.path){hl.textContent='—';g.fillStyle=css('--faint');g.font=`${11*dpr}px "IBM Plex Mono"`;g.fillText('no equilibrium to shock',8*dpr,8*dpr);return;}
+  const Pp=sim.path,n=Pp.length,eql=sim.eq[1],tmax=Pp[n-1][0]||1;
+  let amax=SHOCK*100*1.15;for(const pt of Pp)amax=Math.max(amax,Math.abs((pt[2]-eql)/eql*100));amax=Math.min(amax,120);
+  const lp=0.11*W,Xt=t=>lp+t/tmax*(W-lp),Y=v=>H/2-(v/amax)*(H/2-9*dpr);
+  g.strokeStyle=css('--edge');g.lineWidth=1;g.beginPath();g.moveTo(0,Y(0));g.lineTo(W,Y(0));g.stroke();                 // 0 line
+  g.strokeStyle=css('--faint');g.lineWidth=1.3*dpr;g.beginPath();g.moveTo(0,Y(0));g.lineTo(lp,Y(0));g.stroke();          // pre-shock baseline (at steady state)
+  g.strokeStyle=css('--warn');g.setLineDash([3*dpr,3*dpr]);g.lineWidth=1.2*dpr;g.beginPath();g.moveTo(lp,4*dpr);g.lineTo(lp,H-4*dpr);g.stroke();g.setLineDash([]);  // shock marker
+  g.strokeStyle=sim.broke?css('--trace-break'):css('--trace');g.lineWidth=1.8*dpr;g.lineJoin='round';g.beginPath();
+  for(let i=0;i<n;i++){const x=Xt(Pp[i][0]),y=Y((Pp[i][2]-eql)/eql*100);i?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();
+  g.fillStyle=css('--faint');g.font=`${10*dpr}px "IBM Plex Mono"`;g.textBaseline='top';g.fillText('Δ employment (%)',4*dpr,3*dpr);
+  g.fillStyle=css('--warn');g.textBaseline='bottom';g.fillText('−'+(SHOCK*100).toFixed(0)+'% shock',lp+3*dpr,H-3*dpr);g.fillStyle=css('--faint');g.fillText(tmax.toFixed(0)+' yr',W-26*dpr,H-3*dpr);
+  if(sim.broke){hl.textContent='no recovery — collapse';hl.style.color=css('--trace-break');}
+  else if(e&&e.re<-1e-4){const h=Math.log(2)/(-e.re);hl.textContent=h>80?('half-life ≫ '+(Math.round(h/10)*10)+' yr — glacial'):('half-life ≈ '+h.toFixed(0)+' yr');hl.style.color=css('--warn');}
+  else if(e&&e.re>1e-4){hl.textContent='no recovery — diverges';hl.style.color=css('--warn');}
   else{hl.textContent='half-life → ∞ (at the tipping point)';hl.style.color=css('--warn');}
 }
 
@@ -436,7 +445,7 @@ const BEATS=[
   caption:'<b>Relax one thing — let debt bite (Minsky).</b> Turn investment sensitivity down toward the edge. The <b>same</b> shock now rings for years — the half-life lengthens and the swings grow. On the map we’ve drifted to the Hopf line. <b>You could see this coming.</b>'},
  {beat:2,cls:'hetero',r:0.03,ksharp:14,d0:0.85,pt:[0.03,14],
   caption:'<b>Cross the local tipping point — endogenous cycles.</b> Past the Hopf, the economy destabilises <b>itself</b> — boom and bust with no external shock. This is what the stable-equilibrium view misses.'},
- {beat:3,cls:'hetero',r:0.05,ksharp:40,d0:9.0,pt:[0.05,40],
+ {beat:3,cls:'hetero',r:0.06,ksharp:40,d0:9.0,pt:[0.06,40],
   caption:'<b>The crisis you can’t see coming.</b> Back to a locally stable economy (Re&lt;0) — but push initial debt d₀ over the basin. It collapses, yet the map colour and the half-life never budged beforehand. Early warning works for the <span style="color:var(--accent)">local</span> tipping and is <span style="color:var(--warn)">blind</span> to the <b>global</b> basin. Telling them apart is the point.'}];
 let curBeat=0,freeMode=false;
 function applyBeat(i){
