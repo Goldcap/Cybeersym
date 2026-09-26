@@ -99,7 +99,7 @@ def keen_features():
         dmax = max(dmax, s[2]); wmin = min(wmin, s[0]); lmin = min(lmin, s[1])
     return {
         "good (finite-debt) equilibrium exists": eq is not None,
-        "over-basin start → debt-deflation collapse (d↑, ω↓, λ↓)": (broke and dmax > s[2] * 0 + 9.0 and wmin < 0.3),
+        "over-basin start → debt-deflation collapse (d↑, ω↓, λ↓)": (broke and dmax > 9.0 and wmin < 0.1 and lmin < 0.3),
         "_nums": f"eq={None if eq is None else [round(x,3) for x in eq]}; collapsed={broke} at step {i}; dmax={dmax:.1f} ωmin={wmin:.3f} λmin={lmin:.3f}",
     }
 

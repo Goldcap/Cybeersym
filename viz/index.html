@@ -658,7 +658,7 @@ function fireShock(s){
   shockSel=s;pressShock(s);
   const M=MODELS[sel],r=(s==='baseline')?null:M.resp[s];
   if(s==='baseline')setCaption(M.intro+'<div style="margin-top:8px;font-size:12px;color:var(--faint)">▸ '+(ortho?'the economy at rest':'moving on its own — no external shock')+'</div>');
-  else if(r.blind)setCaption('<b>'+M.name+' × '+s+' shock.</b> '+r.why+'<div style="margin-top:8px;font-size:12px;color:var(--warn)">▸ blind spot — '+r.tag+' (the flat line is the lesson)</div>',true);
+  else if(r.blind)setCaption('<b>'+M.name+' × '+s+' shock.</b> '+r.why+'<div style="margin-top:8px;font-size:12px;color:var(--warn)">▸ blind spot — '+r.tag+' ('+(ortho?'the flat line is the lesson':'nothing to shock — the cycle just continues')+')</div>',true);
   else setCaption('<b>'+M.name+' × '+s+' shock.</b> '+r.why,(s==='financial'));
   if(ortho){renderOrtho(sel,s);return;}
   gkDip=(r&&r.pert==='kick')?0.06:0.02;
