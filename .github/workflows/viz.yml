@@ -16,9 +16,9 @@ name: viz
 on:
   push:
     branches: [main]
-    paths: ["viz/**", "src/goodwin_keen/**", ".github/workflows/viz.yml"]
+    paths: ["viz/**", "src/goodwin_keen/**", "src/orthodox/**", ".github/workflows/viz.yml"]
   pull_request:
-    paths: ["viz/**", "src/goodwin_keen/**", ".github/workflows/viz.yml"]
+    paths: ["viz/**", "src/goodwin_keen/**", "src/orthodox/**", ".github/workflows/viz.yml"]
 
 concurrency:
   group: viz-${{ github.event_name == 'push' && github.sha || github.ref }}
