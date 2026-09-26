@@ -69,6 +69,10 @@ jobs:
         run: |
           umask 077
           printf '%s\n' "$DEPLOY_KEY" > "$RUNNER_TEMP/cyb_deploy_key"
+          # The app box was rebuilt (host key changed) → a stale known_hosts entry makes
+          # accept-new refuse ("host key verification failed"). Drop it so accept-new re-pins the
+          # current key. Safe: authentication is by the deploy key; this matches the existing TOFU posture.
+          ssh-keygen -R dev.motormeme.com >/dev/null 2>&1 || true
           ssh -i "$RUNNER_TEMP/cyb_deploy_key" -o BatchMode=yes -o StrictHostKeyChecking=accept-new \
             amadsen@dev.motormeme.com \
             'set -e; cd /home/cybeersym && git fetch --quiet origin main && git checkout -q main && git reset --hard -q origin/main && chmod -R a+rX /home/cybeersym/viz && sudo systemctl reload caddy && echo "deployed $(git rev-parse --short HEAD)"'
