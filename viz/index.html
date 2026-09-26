@@ -156,7 +156,7 @@
     <button class="theme-btn" id="themeBtn" type="button">◐ theme</button>
   </header>
 
-  <!-- KEEN-STYLE A→B DEMONSTRATION -->
+  <!-- DEMONSTRATION STRIP: three models (RBC/NK sketch → Goodwin → Keen), then conditions of the Keen model -->
   <div class="demo">
     <div class="dh"><h2>Three models, then conditions of the Keen model</h2><span class="dhint">top row = models (Orthodox → Goodwin → Keen); bottom row = conditions of the Keen model. Click any, then turn the dials.</span></div>
     <div class="beats" id="beats">
@@ -472,7 +472,7 @@ function drawIRF(sim,e){
   else{hl.textContent='neutral cycle (at the tipping point)';hl.style.color=css('--warn');}
 }
 
-/* ---- demonstration (Keen A→B) ---- */
+/* ---- demonstration strip: 3 models, then Keen-model conditions ---- */
 const BEATS=[
  {beat:0,cls:'',orthodox:true,shape:'rbc',r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'external productivity shock — then it self-corrects',
   caption:'<b>Orthodox · RBC (Lucas / Kydland–Prescott).</b> Business cycles are the economy’s <b>optimal response to real (productivity) shocks</b>, propagated through capital; agents hold rational expectations and the cycle is <em>efficient</em>, so policy should leave it alone. A shock hits, <span style="color:var(--ts-emp)">employment</span> and <span style="color:var(--ts-profit)">profit</span> dip and return to trend in a single hump. With no shock, no cycle. <b>Illustrative sketch — a stylized RBC impulse response, not our SFC engine (orthodoxy has no debt state here).</b>'},
