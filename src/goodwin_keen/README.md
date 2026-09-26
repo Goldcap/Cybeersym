@@ -132,8 +132,20 @@ to v0's C1→E breakdown basin ([registry](../../research/notes/concepts/taxonom
 - `figures/` — v0: the Goodwin centre (closed orbits on H); the Keen (r, d₀) basin. v1: the Hopf
   (three thresholds vs ksharp); the stable-focus-vs-limit-cycle phase portraits.
 
-## Anchors
+## References & anchors
 
-Goodwin (1967, the growth cycle). Keen (1995, *Finance and economic breakdown* — the Minsky debt
-extension). Lotka–Volterra (the conserved centre). Instruments: `src/chaos/` (CYB-2/4); the taxonomy
-registry (`research/notes/concepts/taxonomy.md`). Descriptive only — no policy/normative content.
+Models and concepts (primary sources):
+- Goodwin, R. M. (1967). "A Growth Cycle." In *Socialism, Capitalism and Economic Growth*
+  (C. H. Feinstein, ed.). Cambridge University Press. — the conservative distributive cycle.
+- Keen, S. (1995). "Finance and Economic Breakdown: Modeling Minsky's 'Financial Instability
+  Hypothesis'." *Journal of Post Keynesian Economics* 17(4), 607–635. — the private-debt extension
+  (the `keen=True` branch).
+- Minsky, H. P. (1986). *Stabilizing an Unstable Economy.* Yale University Press. — the
+  financial-instability hypothesis Keen formalises ("stability breeds instability").
+- Lotka, A. J. (1925) / Volterra, V. (1926). — the predator–prey system underlying Goodwin's
+  conserved centre.
+
+(Citations compiled from the literature — worth a spot-check before any formal citation.)
+
+Instruments: `src/chaos/` (CYB-2/4); the taxonomy registry (`research/notes/concepts/taxonomy.md`).
+Descriptive only — no policy/normative content.
