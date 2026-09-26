@@ -52,6 +52,11 @@ jobs:
       - run: pip install --quiet numpy
       - name: reference matches src/goodwin_keen/model.py
         run: python3 viz/gen_reference.py --check
+      - name: orthodox models self-test (RBC + NK)
+        run: |
+          cd src && python3 orthodox/rbc.py && python3 orthodox/nk.py
+      - name: baked orthodox IRFs match src/orthodox/
+        run: python3 viz/gen_ortho.py --check
 
   deploy:
     needs: [fidelity, reference-drift]

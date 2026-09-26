@@ -156,7 +156,7 @@
     <button class="theme-btn" id="themeBtn" type="button">◐ theme</button>
   </header>
 
-  <!-- DEMONSTRATION STRIP: three models (RBC/NK sketch → Goodwin → Keen), then conditions of the Keen model -->
+  <!-- DEMONSTRATION STRIP: three models (RBC/NK DSGE → Goodwin → Keen), then conditions of the Keen model -->
   <div class="demo">
     <div class="dh"><h2>Three models, then conditions of the Keen model</h2><span class="dhint">top row = models (Orthodox → Goodwin → Keen); bottom row = conditions of the Keen model. Click any, then turn the dials.</span></div>
     <div class="beats" id="beats">
@@ -204,7 +204,7 @@
         <div class="coord" id="coord">r — · k — · d₀ —</div>
         <div class="cap" style="padding-top:0"><h2 style="font-size:11.5px;color:var(--muted)">PHASE PORTRAIT · wage share ω ↔ employment λ</h2></div>
         <div class="scope"><canvas id="pv-phase"></canvas></div>
-        <p style="font-size:11.5px;color:var(--muted);margin:2px 16px 4px">In Goodwin and Keen the loop is the distributive cycle: high employment → wages rise → <span style="color:var(--ts-profit)">profit</span> squeezed → investment &amp; employment fall → wages fall → profit recovers → repeat. That profit pivot turns every peak and trough — the "agent of change." (Orthodox is a stylized sketch, not this engine.)</p>
+        <p style="font-size:11.5px;color:var(--muted);margin:2px 16px 4px">In Goodwin and Keen the loop is the distributive cycle: high employment → wages rise → <span style="color:var(--ts-profit)">profit</span> squeezed → investment &amp; employment fall → wages fall → profit recovers → repeat. That profit pivot turns every peak and trough — the "agent of change." (The orthodox beats plot real DSGE models from <code>src/orthodox/</code>, a different class — not this SFC engine.)</p>
         <div class="cap" style="padding-top:0"><h2 style="font-size:11.5px;color:var(--muted)">OVER TIME · the same run, as a time-series</h2></div>
         <div class="scope" style="margin-top:0"><canvas id="pv-time"></canvas></div>
         <div class="tslegend">
@@ -375,23 +375,35 @@ if(typeof window!=='undefined'){window.__viz={pOf,keenGoodEq,leadingEig,simFromE
 
 /* ---- pinned views ---- */
 function pinTo(ix,iy){mark.ix=Math.max(0,Math.min(NX-1,ix));mark.iy=Math.max(0,Math.min(NY-1,iy));drawMark();renderPinned();}
-/* ORTHODOX (a DIFFERENT model — a stylized sketch, NOT the SFC engine). A shock hits, output/
-   employment fall and return to trend as a single HUMP (no ringing): RBC = a quick optimal return
-   (Kydland–Prescott); NK = a more persistent, sticky-price gap (Mankiw). Profit co-moves; no debt. */
-function orthoPath(steps,shape){
-  const ew=0.865,el=0.9,ep=1-ew,dt=0.01,A=0.08,tau=(shape==='nk'?6.0:3.0),path=[];
-  for(let i=0;i<=steps;i++){if(i%6===0){const t=i*dt,e=-A*(t/tau)*Math.exp(1-t/tau);   // gamma hump: 0 → trough −A at t=τ → monotone back to 0 (no oscillation)
-    path.push([t, ew*(1-0.4*e), el*(1+e), 0, ep*(1+0.7*e)]);}}
-  return{eq:[ew,el,0],path,broke:false,eqpi:ep};
+/* ORTHODOX beats plot REAL numpy DSGE models (src/orthodox/), a DIFFERENT class from the SFC
+   engine — no debt state. An adverse shock makes output/employment fall on impact and return to
+   trend: RBC = efficient, near-monotone recovery (Kydland–Prescott); NK = an inefficient sticky-
+   price gap that policy closes, gap troughs on impact (NOT a hump). Co-movers real; magnitudes
+   shape-normalized for display (not comparable across models). */
+// ==ORTHO-IRF-START==
+const ORTHO_IRF={"rbc":{"t":[0.0,0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5,6.0,6.5,7.0,7.5,8.0,8.5,9.0,9.5,10.0,10.5,11.0,11.5,12.0,12.5,13.0,13.5,14.0,14.5,15.0,15.5,16.0,16.5,17.0,17.5,18.0,18.5,19.0,19.5,20.0,20.5,21.0,21.5,22.0,22.5,23.0,23.5,24.0,24.5,25.0,25.5,26.0,26.5,27.0,27.5,28.0,28.5,29.0,29.5],"emp":[-0.004612,-0.003819,-0.003134,-0.002544,-0.002038,-0.001605,-0.001236,-0.000922,-0.000656,-0.000433,-0.000245,-9e-05,3.9e-05,0.000144,0.000229,0.000296,0.000349,0.000389,0.000418,0.000439,0.000451,0.000458,0.000459,0.000456,0.000449,0.00044,0.000428,0.000415,0.0004,0.000385,0.000368,0.000352,0.000335,0.000318,0.000302,0.000286,0.00027,0.000254,0.000239,0.000225,0.000211,0.000198,0.000185,0.000173,0.000162,0.000151,0.000141,0.000132,0.000122,0.000114,0.000106,9.8e-05,9.1e-05,8.5e-05,7.9e-05,7.3e-05,6.8e-05,6.3e-05,5.8e-05,5.4e-05],"out":[-0.01309,-0.01226,-0.011471,-0.010721,-0.01001,-0.009338,-0.008704,-0.008106,-0.007544,-0.007016,-0.00652,-0.006055,-0.00562,-0.005213,-0.004833,-0.004478,-0.004147,-0.003839,-0.003552,-0.003285,-0.003037,-0.002806,-0.002592,-0.002394,-0.002209,-0.002038,-0.00188,-0.001734,-0.001598,-0.001473,-0.001357,-0.00125,-0.00115,-0.001059,-0.000975,-0.000897,-0.000825,-0.000758,-0.000697,-0.000641,-0.000589,-0.000541,-0.000497,-0.000457,-0.000419,-0.000385,-0.000353,-0.000324,-0.000298,-0.000273,-0.00025,-0.00023,-0.000211,-0.000193,-0.000177,-0.000162,-0.000149,-0.000136,-0.000125,-0.000114],"wage":[-0.008478,-0.008442,-0.008337,-0.008176,-0.007972,-0.007733,-0.007468,-0.007185,-0.006888,-0.006583,-0.006274,-0.005965,-0.005659,-0.005357,-0.005062,-0.004774,-0.004496,-0.004228,-0.00397,-0.003724,-0.003488,-0.003264,-0.003051,-0.002849,-0.002659,-0.002478,-0.002308,-0.002149,-0.001998,-0.001857,-0.001725,-0.001601,-0.001486,-0.001377,-0.001276,-0.001182,-0.001094,-0.001013,-0.000937,-0.000866,-0.0008,-0.000739,-0.000683,-0.00063,-0.000581,-0.000536,-0.000494,-0.000456,-0.00042,-0.000387,-0.000356,-0.000328,-0.000302,-0.000278,-0.000256,-0.000235,-0.000216,-0.000199,-0.000183,-0.000168]},"nk":{"t":[0.0,0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5,6.0,6.5,7.0,7.5,8.0,8.5,9.0,9.5,10.0,10.5,11.0,11.5,12.0,12.5,13.0,13.5,14.0,14.5,15.0,15.5,16.0,16.5,17.0,17.5,18.0,18.5,19.0,19.5,20.0,20.5,21.0,21.5,22.0,22.5,23.0,23.5,24.0,24.5,25.0,25.5,26.0,26.5,27.0,27.5,28.0,28.5,29.0,29.5],"emp":[-0.014438,-0.001218,0.000461,0.00036,0.000168,6.7e-05,2.5e-05,9e-06,3e-06,1e-06,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"infl":[-0.002371,0.0001,0.000247,0.000133,5.6e-05,2.1e-05,8e-06,3e-06,1e-06,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"rate":[-0.001072,-0.000914,-0.000435,-0.000175,-6.5e-05,-2.3e-05,-8e-06,-3e-06,-1e-06,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0]}};
+// ==ORTHO-IRF-END==
+// The two orthodox beats plot the REAL impulse responses of the numpy DSGE toy models
+// (src/orthodox/rbc.py, nk.py), baked above by viz/gen_ortho.py and CI-pinned (reference-drift).
+// Shape-normalized for display: the employment/gap impact maps to ORTHO_DIP pp and every other
+// series scales by the SAME factor (relative co-movements are the model's own). Magnitudes are
+// NOT comparable across models — a topological illustration, per the project method.
+const ORTHO_DIP=7.0; // pp
+function orthoPath(shape){
+  const ew=0.865,el=0.9,ep=1-ew,D=(shape==='nk')?ORTHO_IRF.nk:ORTHO_IRF.rbc;
+  const K=ORTHO_DIP/Math.abs(D.emp[0]*100);                 // employment/gap impact → ORTHO_DIP pp
+  const wg=(shape==='nk')?D.rate:D.wage, pf=(shape==='nk')?D.infl:D.out, path=[];
+  for(let i=0;i<D.t.length;i++) path.push([D.t[i], ew+K*wg[i], el+K*D.emp[i], 0, ep+K*pf[i]]);
+  return{eq:[ew,el,0],path,broke:false,eqpi:ep,wideScale:true};
 }
 function renderOrtho(){
   const b=BEATS[curBeat],shape=(b&&b.shape)||'rbc';
-  document.getElementById('coord').innerHTML='<b>illustrative sketch — not the SFC engine</b> · orthodoxy has no debt state here';
-  const pill=document.getElementById('ptPill');pill.className='ptpill ok';pill.textContent=(shape==='nk'?'STABLE · sticky-price gap, then closes':'STABLE · shock, then self-corrects');
-  const disp=orthoPath(3500,shape);
+  document.getElementById('coord').innerHTML='<b>real '+(shape==='nk'?'New-Keynesian (3-equation)':'RBC (log-linear)')+' model output</b> · src/orthodox/ · shape-normalized for display — magnitudes not comparable across models';
+  const pill=document.getElementById('ptPill');pill.className='ptpill ok';pill.textContent=(shape==='nk'?'INEFFICIENT GAP · policy eases and closes it':'EFFICIENT · optimal response, self-corrects');
+  const disp=orthoPath(shape);
   drawPhase(disp,{re:-0.2,im:0});drawTime(disp,{re:-0.2,im:0});drawIRF(disp,{re:-0.2,im:0});
-  document.getElementById('hlReadout').textContent=(shape==='nk'?'persistent gap — policy can close it':'self-corrects — no cycle without a shock');document.getElementById('hlReadout').style.color=css('--ok-ink');
-  document.getElementById('recVal').textContent='needs a shock';
+  document.getElementById('hlReadout').textContent=(shape==='nk'?'inefficient gap — policy eases and closes it':'efficient — output & hours self-correct, no policy needed');document.getElementById('hlReadout').style.color=css('--ok-ink');
+  document.getElementById('recVal').textContent=(shape==='nk'?'policy-stabilised':'shock-driven, efficient');
 }
 function renderPinned(){
   if(ortho){renderOrtho();return;}
@@ -428,7 +440,7 @@ function drawTime(sim,e){
   g.fillStyle=css('--faint');g.font=`${10*dpr}px "IBM Plex Mono"`;g.textBaseline='top';
   if(!sim.eq||!sim.path||sim.path.length<2){g.fillText('—',4*dpr,4*dpr);return;}
   const Pp=sim.path,n=Pp.length,tmax=Pp[n-1][0]||1,eqw=sim.eq[0],eql=sim.eq[1],eqp=sim.eqpi||(1-eqw);
-  let SCALE=5;for(const pt of Pp)SCALE=Math.max(SCALE,Math.abs((pt[2]-eql)*100),Math.abs((pt[1]-eqw)*100));  // percentage-POINTS deviation of employment+wage (bounded, comparable — avoids the small-base profit exaggeration); profit clamps in a collapse
+  let SCALE=5;for(const pt of Pp)SCALE=Math.max(SCALE,Math.abs((pt[2]-eql)*100),Math.abs((pt[1]-eqw)*100),sim.wideScale?Math.abs((pt[4]-eqp)*100):0);  // percentage-POINTS deviation of employment+wage (bounded, comparable — avoids GK's small-base profit exaggeration; profit clamps in a collapse). Orthodox (wideScale) DOES include output, which genuinely moves more than employment there.
   SCALE=Math.min(120,Math.ceil(SCALE*1.05/5)*5);
   let dlo=Infinity,dhi=-Infinity;for(const pt of Pp){if(pt[3]<dlo)dlo=pt[3];if(pt[3]>dhi)dhi=pt[3];}const dp=(dhi-dlo)*0.12||0.1;dlo-=dp;dhi+=dp;
   const lp=0.09*W,ramp=0.045*W,Xt=t=>lp+ramp+t/tmax*(W-lp-ramp),clv=v=>Math.max(-SCALE,Math.min(SCALE,v)),Yp=v=>H/2-(clv(v)/SCALE)*(H/2-9*dpr),Yd=v=>H-(v-dlo)/((dhi-dlo)||1)*H;
@@ -439,14 +451,14 @@ function drawTime(sim,e){
   for(const v of [SCALE,SCALE/2,-SCALE/2,-SCALE]){g.strokeStyle=css('--edge');g.globalAlpha=0.35;g.beginPath();g.moveTo(lp,Yp(v));g.lineTo(W,Yp(v));g.stroke();g.globalAlpha=1;g.fillStyle=css('--faint');g.fillText((v>0?'+':'')+Math.round(v)+'pp',lp+2*dpr,Yp(v));}
   g.fillStyle=css('--faint');g.fillText('0',lp+2*dpr,Yp(0));g.textBaseline='top';g.font=`${10*dpr}px "IBM Plex Mono"`;
   function ln(sel,preY,col,w){g.strokeStyle=col;g.lineWidth=w*dpr;g.lineJoin='round';g.beginPath();g.moveTo(0,preY);g.lineTo(lp,preY);for(let i=0;i<n;i++){g.lineTo(Xt(Pp[i][0]),sel(Pp[i]));}g.stroke();}
-  ln(pt=>Yd(pt[3]),Yd(sim.eq[2]),css('--trace-3'),1.2);                     // debt (own scale, right) — pre-shock flat at equilibrium d*
+  if(!sim.wideScale)ln(pt=>Yd(pt[3]),Yd(sim.eq[2]),css('--trace-3'),1.2);   // debt (own scale, right) — pre-shock flat at equilibrium d*; suppressed for orthodox (no debt state)
   ln(pt=>Yp((pt[1]-eqw)*100),Yp(0),css('--trace-2'),1.3);                   // wage share ω (pp)
   ln(pt=>Yp((pt[4]-eqp)*100),Yp(0),css('--ts-profit'),1.6);                 // profit share π (pp, GREEN — the pivot; ≈ −wage share in pure Goodwin)
   ln(pt=>Yp((pt[2]-eql)*100),Yp(0),css('--ts-emp'),2.0);                    // employment λ (pp, RED) — flat at 0 (healthy) pre-shock, then the shock drops it
   g.strokeStyle=css('--warn');g.setLineDash([3*dpr,3*dpr]);g.lineWidth=1.1*dpr;g.beginPath();g.moveTo(lp,0);g.lineTo(lp,H);g.stroke();g.setLineDash([]);  // shock marker
   g.fillStyle=css('--faint');g.fillText('percentage points from steady state (±'+SCALE+'pp)',4*dpr,3*dpr);
   g.fillStyle=css('--warn');g.fillText('↓shock',lp+3*dpr,3*dpr);
-  g.fillStyle=css('--trace-3');g.textAlign='right';g.fillText('debt (right): '+dlo.toFixed(1)+'→'+dhi.toFixed(1),W-4*dpr,3*dpr);g.textAlign='left';
+  if(!sim.wideScale){g.fillStyle=css('--trace-3');g.textAlign='right';g.fillText('debt (right): '+dlo.toFixed(1)+'→'+dhi.toFixed(1),W-4*dpr,3*dpr);g.textAlign='left';}
   g.fillStyle=css('--faint');g.textBaseline='bottom';g.fillText(T>0?('gridline = 1 cycle ≈'+T.toFixed(0)+' yr'):'',4*dpr,H-3*dpr);g.fillText(tmax.toFixed(0)+' yr',W-26*dpr,H-3*dpr);
 }
 function drawIRF(sim,e){
@@ -474,10 +486,10 @@ function drawIRF(sim,e){
 
 /* ---- demonstration strip: 3 models, then Keen-model conditions ---- */
 const BEATS=[
- {beat:0,cls:'',orthodox:true,shape:'rbc',r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'external productivity shock — then it self-corrects',
-  caption:'<b>Orthodox · RBC (Lucas / Kydland–Prescott).</b> Business cycles are the economy’s <b>optimal response to real (productivity) shocks</b>, propagated through capital; agents hold rational expectations and the cycle is <em>efficient</em>, so policy should leave it alone. A shock hits, <span style="color:var(--ts-emp)">employment</span> and <span style="color:var(--ts-profit)">profit</span> dip and return to trend in a single hump. With no shock, no cycle. <b>Illustrative sketch — a stylized RBC impulse response, not our SFC engine (orthodoxy has no debt state here).</b>'},
- {beat:1,cls:'',orthodox:true,shape:'nk',r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'external demand shock — sticky prices leave a gap policy can close',
-  caption:'<b>Orthodox · New Keynesian (Mankiw).</b> A <b>demand</b> shock has real effects because prices/wages are <b>sticky</b> — opening an <em>inefficient</em> output gap that lingers longer and that monetary policy can and should close. The economy still self-corrects, just slowly and wastefully. <b>Illustrative sketch — a stylized NK impulse response, not our engine.</b>'},
+ {beat:0,cls:'',orthodox:true,shape:'rbc',r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'real productivity shock — the efficient cycle self-corrects',
+  caption:'<b>Orthodox · RBC (Lucas / Kydland–Prescott).</b> Business cycles are the economy’s <b>optimal response to real (productivity) shocks</b>, propagated through capital under rational expectations; the cycle is <em>efficient</em>, so policy should leave it alone. An adverse shock makes <span style="color:var(--ts-emp)">employment</span> and <span style="color:var(--ts-profit)">output</span> fall on impact, then recover <b>monotonically</b> (half-life ≈ 5 yr) as technology mean-reverts — <span style="color:var(--trace-2)">the real wage</span> co-moves and consumption barely budges (smoothing). No shock, no cycle. <b>Real output of a log-linear RBC model — <code>src/orthodox/rbc.py</code>; shape-normalized for display; orthodoxy has no debt state.</b>'},
+ {beat:1,cls:'',orthodox:true,shape:'nk',r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'demand shock — sticky prices open a gap policy closes',
+  caption:'<b>Orthodox · New Keynesian (Mankiw).</b> Because prices are <b>sticky</b>, a <b>demand</b> shock is not costlessly absorbed: it opens an <em>inefficient</em> <span style="color:var(--ts-emp)">output gap</span> with <span style="color:var(--ts-profit)">disinflation</span>, and monetary <span style="color:var(--trace-2)">policy</span> eases to close it — a stabilisation role RBC denies. <b>Honest shape note:</b> in the canonical 3-equation model the gap troughs <em>on impact</em> and decays — it is <b>not</b> hump-shaped (the hump is a habit / adjustment-cost feature of larger DSGE models); interest-rate smoothing adds only a slight overshoot. <b>Real output of a 3-equation NK model — <code>src/orthodox/nk.py</code>, shape-normalized.</b>'},
  {beat:2,cls:'hetero',ov:{keen:false,delta:0},r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'endogenous — a one-time nudge, then left alone',
   caption:'<b>Goodwin 1967 — the growth cycle.</b> Now a real model of the income distribution. Nudged once and left alone, the economy traces a <b>closed orbit</b> at constant amplitude: <span style="color:var(--ts-emp)">employment</span> and the <span style="color:var(--trace-2)">wage share</span> chase each other, employment peaking a <b>quarter-cycle before wages</b> — the predator–prey signature (invariant conserved to machine precision). The cycle is <em>endogenous</em> — no external shock needed, which the orthodox models cannot produce. (Goodwin, "A Growth Cycle," 1967.)'},
  {beat:3,cls:'hetero',ov:{kmax:0.45,kmid:0.15},r:0.03,ksharp:30,atEq:true,d0:0,pt:[0.03,30],shock:'endogenous — a one-time nudge, then left alone',
