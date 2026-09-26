@@ -145,7 +145,7 @@ Models and concepts (primary sources):
 - Lotka, A. J. (1925) / Volterra, V. (1926). — the predator–prey system underlying Goodwin's
   conserved centre.
 
-(Citations compiled from the literature — worth a spot-check before any formal citation.)
+(Citations verified against publisher pages / DOIs.)
 
 Instruments: `src/chaos/` (CYB-2/4); the taxonomy registry (`research/notes/concepts/taxonomy.md`).
 Descriptive only — no policy/normative content.
