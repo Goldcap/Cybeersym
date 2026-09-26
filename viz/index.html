@@ -45,14 +45,26 @@
   .demo .dh{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 14px;margin-bottom:10px}
   .demo .dh h2{font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:600;margin:0}
   .demo .dh .dhint{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--faint)}
-  .beats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .beats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
   @media (max-width:760px){.beats{grid-template-columns:1fr 1fr}}
   .beat{text-align:left;background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;padding:9px 11px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:2px;min-width:0}
   .beat:hover{border-color:var(--accent);transform:translateY(-1px)}
   .beat[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--panel)}
-  .beat .bn{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;color:var(--faint)}
-  .beat .bt{font-size:12.5px;font-weight:600}
-  .beat.classical .bt{color:var(--accent)} .beat.hetero .bt{color:var(--warn)}
+  .beat .bn{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;color:var(--faint)}
+  .beat .bt{font-size:12.5px;font-weight:600;color:var(--ink)}
+  /* capability strip — which "bits" the selected model contains */
+  .caps{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+  .cap-bit{font-family:"IBM Plex Mono",monospace;font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid var(--edge);white-space:nowrap}
+  .cap-bit.has{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,var(--edge))}
+  .cap-bit.part{color:var(--muted)}
+  .cap-bit.lacks{color:var(--faint);text-decoration:line-through;opacity:.65}
+  /* shock buttons */
+  .shockrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+  .shockrow .lbl{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--faint);margin-right:2px}
+  .shock{font-family:"IBM Plex Mono",monospace;font-size:12px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink);border-radius:8px;padding:7px 12px;cursor:pointer;transition:.15s}
+  .shock:hover{border-color:var(--warn);transform:translateY(-1px)}
+  .shock[aria-pressed="true"]{border-color:var(--warn);box-shadow:inset 0 0 0 1px var(--warn);background:var(--panel)}
+  .shock.ghost{color:var(--faint)} .shock.ghost[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
   .demo .caption{margin-top:11px;font-size:13.5px;color:var(--ink);background:var(--panel-2);border-left:3px solid var(--accent);border-radius:8px;padding:10px 13px}
   .demo .caption b{color:var(--accent)} .demo .caption.hetero{border-left-color:var(--warn)} .demo .caption.hetero b{color:var(--warn)}
   .demo .nav{display:flex;gap:8px;margin-top:10px}
@@ -62,6 +74,8 @@
 
   .console{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,1fr);gap:16px;align-items:start}
   @media (max-width:980px){.console{grid-template-columns:1fr}}
+  .console.nomap{grid-template-columns:1fr}          /* orthodox models have no regime map */
+  .console.nomap #mapCard,.console.nomap #ctlCard{display:none}
   .card{background:var(--panel);border:1px solid var(--edge);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
   .cap{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:12px 16px 0}
   .cap h2{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;letter-spacing:.03em;margin:0}
@@ -154,36 +168,36 @@
 <div class="wrap">
   <header>
     <div>
-      <div class="eyebrow">Cybeersym · a map of the space, read two ways</div>
-      <h1>Goodwin–Keen Regime Map</h1>
-      <p class="sub">Every point in the plane is one economy. On the left, its <em>structure</em> — where it sits and how it's classified. On the right, what living there <em>looks like over time</em>. The demonstration walks the classical result, then the change that breaks it — and shows which crises you can see coming.</p>
+      <div class="eyebrow">Cybeersym · four models, three shocks — a comparison</div>
+      <h1>Four Models, Three Shocks</h1>
+      <p class="sub">Four models of the business cycle, from the mainstream to the heterodox — each a <em>lens</em> that contains some machinery and omits the rest. Pick one, watch it run, then hit it with the same three shocks. Where a model has the mechanism it responds; where it doesn't, it sits blind — and <b>the blind spots are the point</b>.</p>
     </div>
     <button class="theme-btn" id="themeBtn" type="button">◐ theme</button>
   </header>
 
-  <!-- DEMONSTRATION STRIP: three models (RBC/NK DSGE → Goodwin → Keen), then conditions of the Keen model -->
+  <!-- THE LADDER: four models, left→right = adding machinery. Then a shared shock palette. -->
   <div class="demo">
-    <div class="dh"><h2>Three models, then conditions of the Keen model</h2><span class="dhint">top row = models (Orthodox → Goodwin → Keen); bottom row = conditions of the Keen model. Click any, then turn the dials.</span></div>
-    <div class="beats" id="beats">
-      <button class="beat classical" data-beat="0" aria-pressed="true" type="button"><span class="bn">MODEL · ORTHODOX</span><span class="bt">RBC — real shock (Lucas)</span></button>
-      <button class="beat classical" data-beat="1" aria-pressed="false" type="button"><span class="bn">MODEL · ORTHODOX</span><span class="bt">NK — demand shock (Mankiw)</span></button>
-      <button class="beat hetero" data-beat="2" aria-pressed="false" type="button"><span class="bn">MODEL · GOODWIN</span><span class="bt">Growth cycle (no debt)</span></button>
-      <button class="beat hetero" data-beat="3" aria-pressed="false" type="button"><span class="bn">MODEL · KEEN</span><span class="bt">Prudent finance → stable</span></button>
-      <button class="beat hetero" data-beat="4" aria-pressed="false" type="button"><span class="bn">KEEN · CONDITION</span><span class="bt">Debt collapse (euphoric)</span></button>
-      <button class="beat hetero" data-beat="5" aria-pressed="false" type="button"><span class="bn">KEEN · CONDITION</span><span class="bt">Exogenous shock (bubble)</span></button>
+    <div class="dh"><h2>Pick a model — then shock it</h2><span class="dhint">left→right, each model adds a mechanism the one before it lacks</span></div>
+    <div class="beats" id="models">
+      <button class="beat mdl" data-model="lucas"   aria-pressed="true"  type="button"><span class="bn">① EXOGENOUS · REAL</span><span class="bt">Lucas · RBC</span></button>
+      <button class="beat mdl" data-model="mankiw"  aria-pressed="false" type="button"><span class="bn">② + STICKY PRICES</span><span class="bt">Mankiw · New Keynesian</span></button>
+      <button class="beat mdl" data-model="goodwin" aria-pressed="false" type="button"><span class="bn">③ + ENDOGENOUS DISTRIBUTION</span><span class="bt">Goodwin · growth cycle</span></button>
+      <button class="beat mdl" data-model="keen"    aria-pressed="false" type="button"><span class="bn">④ + FINANCE</span><span class="bt">Keen · debt cycle</span></button>
     </div>
+    <div class="caps" id="caps"></div>
     <div class="caption" id="caption"></div>
-    <div class="nav">
-      <button id="prevBeat" type="button">◀ back</button>
-      <button id="nextBeat" type="button">next ▶</button>
-      <span class="spacer"></span>
-      <button id="freeBeat" type="button">↺ free explore</button>
+    <div class="shockrow">
+      <span class="lbl">shock it →</span>
+      <button class="shock" data-shock="productivity" type="button">⚙ Productivity (supply)</button>
+      <button class="shock" data-shock="demand" type="button">📉 Demand</button>
+      <button class="shock" data-shock="financial" type="button">💥 Financial</button>
+      <button class="shock ghost" data-shock="baseline" aria-pressed="true" type="button">↺ baseline</button>
     </div>
   </div>
 
   <div class="console">
-    <!-- LEFT: the space -->
-    <div class="card">
+    <!-- LEFT: the space (regime map — only meaningful for Goodwin/Keen, which have a debt state) -->
+    <div class="card" id="mapCard">
       <div class="cap"><h2>THE SPACE · interest rate r × investment sensitivity k<sub>sharp</sub></h2><span class="note">click / drag / arrows</span></div>
       <div class="mapbox">
         <div class="mapstage" id="stage" tabindex="0" role="img" aria-label="Regime map; arrow keys move the selected economy">
@@ -209,7 +223,7 @@
         <div class="coord" id="coord">r — · k — · d₀ —</div>
         <div class="cap" style="padding-top:0"><h2 id="phaseHead" style="font-size:11.5px;color:var(--muted)">PHASE PORTRAIT · wage share ω ↔ employment λ</h2></div>
         <div class="scope"><canvas id="pv-phase"></canvas></div>
-        <p style="font-size:11.5px;color:var(--muted);margin:2px 16px 4px">In Goodwin and Keen the loop is the distributive cycle: high employment → wages rise → <span style="color:var(--ts-profit)">profit</span> squeezed → investment &amp; employment fall → wages fall → profit recovers → repeat. That profit pivot turns every peak and trough — the "agent of change." (The orthodox beats plot real DSGE models from <code>src/orthodox/</code>, a different class — not this SFC engine.)</p>
+        <p style="font-size:11.5px;color:var(--muted);margin:2px 16px 4px">In Goodwin and Keen the loop is the distributive cycle: high employment → wages rise → <span style="color:var(--ts-profit)">profit</span> squeezed → investment &amp; employment fall → wages fall → profit recovers → repeat. That profit pivot turns every peak and trough — the "agent of change." (The orthodox models — Lucas, Mankiw — plot real DSGE output from <code>src/orthodox/</code>, a different class with no debt state; this distributive loop is Goodwin/Keen only.)</p>
         <div class="cap" style="padding-top:0"><h2 style="font-size:11.5px;color:var(--muted)">OVER TIME · the same run, as a time-series</h2></div>
         <div class="scope" style="margin-top:0"><canvas id="pv-time"></canvas></div>
         <div class="tslegend" id="tsLegend">
@@ -223,11 +237,10 @@
       <div class="card">
         <div class="irfhead"><h2 id="irfHead" style="font-family:'IBM Plex Mono';font-size:12px;margin:0">SHOCK RESPONSE · employment after a −5% shock</h2><span class="hl" id="hlReadout">—</span></div>
         <div class="scope" style="margin-top:8px"><canvas id="pv-irf"></canvas></div>
-        <button class="shockbtn" id="shockBtn" type="button">⚡ shock it again</button>
-        <div class="metric" style="padding:0 16px 14px"><span class="lab">recovery rate −Re λ<sub>lead</sub></span><span class="val" id="recVal">—</span></div>
+        <div class="metric" style="padding:10px 16px 14px"><span class="lab">recovery rate −Re λ<sub>lead</sub></span><span class="val" id="recVal">—</span></div>
       </div>
 
-      <div class="card">
+      <div class="card" id="ctlCard">
         <div class="controls">
           <div class="dial"><div class="row"><span class="name"><b>Interest rate</b> r <span class="hint">· global basin</span></span><span class="num" id="nR">0.030</span></div><input type="range" id="sR" min="0" max="0.07" step="0.001" value="0.03"></div>
           <div class="dial"><div class="row"><span class="name"><b>Investment sensitivity</b> k<sub>sharp</sub> <span class="hint">· local Hopf</span></span><span class="num" id="nKsharp">40.0</span></div><input type="range" id="sKsharp" min="6" max="60" step="0.5" value="40"></div>
@@ -337,10 +350,11 @@ function simFromEq(p,d0,steps,record){
    barely moves employment; an employment shock is what makes the local dynamics (and CSD) visible. */
 const SHOCK=0.05;  // employment dip fraction
 const DISPLAY_STEPS=10000;  // ~100 yr — long enough for the Minsky debt-ratchet to run to collapse
-function simDisplay(p,d0,steps){
+function simDisplay(p,d0,steps,dip){
+  dip=(dip==null?SHOCK:dip);                                            // employment displacement at t=0 (baseline uses a small dip so the natural motion is visible)
   const eq=keenGoodEq(p); if(!eq)return{eq:null,path:null,broke:false,eqpi:0};
   const pf=v=>1-v[0]-p.r*v[2];                                          // profit share π = 1 − ω − r·d
-  let s=[eq[0],eq[1]*(1-SHOCK),d0]; const path=[[0,s[0],s[1],s[2],pf(s)]]; let b=false;  // row=[t,ω,λ,d,π]
+  let s=[eq[0],eq[1]*(1-dip),d0]; const path=[[0,s[0],s[1],s[2],pf(s)]]; let b=false;  // row=[t,ω,λ,d,π]
   for(let i=1;i<=steps;i++){const ns=gkStep(s,p); if(broke(ns)){b=true;s=ns;path.push([i*p.dt,s[0],s[1],s[2],pf(s)]);break;} s=ns; if(i%6===0)path.push([i*p.dt,s[0],s[1],s[2],pf(s)]);}
   return{eq,path,broke:b,eqpi:1-eq[0]-p.r*eq[2]};
 }
@@ -348,7 +362,7 @@ function simDisplay(p,d0,steps){
 /* ============================================================ MAP ============ */
 const R0=0,R1=0.07,K0=6,K1=60,NX=64,NY=46;
 const BASE={keen:true,delta:0.03,kmid:0.16};
-let ov={};   // per-beat regime overrides (keen / kmax / kmid) — each beat's canonical financial regime
+let ov={};   // per-model regime overrides (keen / kmax / kmid) — Goodwin vs Keen financial regime
 let extra={rho:0.5,nu:3.0};
 const cells={reg:new Uint8Array(NX*NY),rec:new Float32Array(NX*NY),brk:new Uint8Array(NX*NY)}; // reg:0 noeq 1 stable 2 unstable
 let d0=0.85, mark={ix:Math.round(NX*0.43),iy:Math.round(NY*0.72)}, scanTok=0, scanned=false;
@@ -418,53 +432,70 @@ function pinTo(ix,iy){mark.ix=Math.max(0,Math.min(NX-1,ix));mark.iy=Math.max(0,M
 // ==ORTHO-IRF-START==
 const ORTHO_IRF={"rbc":{"t":[0.0,0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5,6.0,6.5,7.0,7.5,8.0,8.5,9.0,9.5,10.0,10.5,11.0,11.5,12.0,12.5,13.0,13.5,14.0,14.5,15.0,15.5,16.0,16.5,17.0,17.5,18.0,18.5,19.0,19.5,20.0,20.5,21.0,21.5,22.0,22.5,23.0,23.5,24.0,24.5,25.0,25.5,26.0,26.5,27.0,27.5,28.0,28.5,29.0,29.5],"emp":[-0.004612,-0.003819,-0.003134,-0.002544,-0.002038,-0.001605,-0.001236,-0.000922,-0.000656,-0.000433,-0.000245,-9e-05,3.9e-05,0.000144,0.000229,0.000296,0.000349,0.000389,0.000418,0.000439,0.000451,0.000458,0.000459,0.000456,0.000449,0.00044,0.000428,0.000415,0.0004,0.000385,0.000368,0.000352,0.000335,0.000318,0.000302,0.000286,0.00027,0.000254,0.000239,0.000225,0.000211,0.000198,0.000185,0.000173,0.000162,0.000151,0.000141,0.000132,0.000122,0.000114,0.000106,9.8e-05,9.1e-05,8.5e-05,7.9e-05,7.3e-05,6.8e-05,6.3e-05,5.8e-05,5.4e-05],"out":[-0.01309,-0.01226,-0.011471,-0.010721,-0.01001,-0.009338,-0.008704,-0.008106,-0.007544,-0.007016,-0.00652,-0.006055,-0.00562,-0.005213,-0.004833,-0.004478,-0.004147,-0.003839,-0.003552,-0.003285,-0.003037,-0.002806,-0.002592,-0.002394,-0.002209,-0.002038,-0.00188,-0.001734,-0.001598,-0.001473,-0.001357,-0.00125,-0.00115,-0.001059,-0.000975,-0.000897,-0.000825,-0.000758,-0.000697,-0.000641,-0.000589,-0.000541,-0.000497,-0.000457,-0.000419,-0.000385,-0.000353,-0.000324,-0.000298,-0.000273,-0.00025,-0.00023,-0.000211,-0.000193,-0.000177,-0.000162,-0.000149,-0.000136,-0.000125,-0.000114],"wage":[-0.008478,-0.008442,-0.008337,-0.008176,-0.007972,-0.007733,-0.007468,-0.007185,-0.006888,-0.006583,-0.006274,-0.005965,-0.005659,-0.005357,-0.005062,-0.004774,-0.004496,-0.004228,-0.00397,-0.003724,-0.003488,-0.003264,-0.003051,-0.002849,-0.002659,-0.002478,-0.002308,-0.002149,-0.001998,-0.001857,-0.001725,-0.001601,-0.001486,-0.001377,-0.001276,-0.001182,-0.001094,-0.001013,-0.000937,-0.000866,-0.0008,-0.000739,-0.000683,-0.00063,-0.000581,-0.000536,-0.000494,-0.000456,-0.00042,-0.000387,-0.000356,-0.000328,-0.000302,-0.000278,-0.000256,-0.000235,-0.000216,-0.000199,-0.000183,-0.000168]},"nk":{"t":[0.0,0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5,6.0,6.5,7.0,7.5,8.0,8.5,9.0,9.5,10.0,10.5,11.0,11.5,12.0,12.5,13.0,13.5,14.0,14.5,15.0,15.5,16.0,16.5,17.0,17.5,18.0,18.5,19.0,19.5,20.0,20.5,21.0,21.5,22.0,22.5,23.0,23.5,24.0,24.5,25.0,25.5,26.0,26.5,27.0,27.5,28.0,28.5,29.0,29.5],"emp":[-0.014438,-0.001218,0.000461,0.00036,0.000168,6.7e-05,2.5e-05,9e-06,3e-06,1e-06,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"infl":[-0.002371,0.0001,0.000247,0.000133,5.6e-05,2.1e-05,8e-06,3e-06,1e-06,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"rate":[-0.001072,-0.000914,-0.000435,-0.000175,-6.5e-05,-2.3e-05,-8e-06,-3e-06,-1e-06,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0]},"nk_supply":{"t":[0.0,0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5,6.0,6.5,7.0,7.5,8.0,8.5,9.0,9.5,10.0,10.5,11.0,11.5,12.0,12.5,13.0,13.5,14.0,14.5,15.0,15.5,16.0,16.5,17.0,17.5,18.0,18.5,19.0,19.5,20.0,20.5,21.0,21.5,22.0,22.5,23.0,23.5,24.0,24.5,25.0,25.5,26.0,26.5,27.0,27.5,28.0,28.5,29.0,29.5],"emp":[-0.012851,-0.01085,-0.005157,-0.002072,-0.000768,-0.000272,-9.4e-05,-3.2e-05,-1.1e-05,-3e-06,-1e-06,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0],"infl":[0.012486,0.000908,-0.000481,-0.000347,-0.000159,-6.3e-05,-2.3e-05,-8e-06,-3e-06,-1e-06,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0,-0.0],"rate":[0.003424,0.002921,0.001391,0.000559,0.000207,7.4e-05,2.5e-05,9e-06,3e-06,1e-06,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]}};
 // ==ORTHO-IRF-END==
-// The two orthodox beats plot the REAL impulse responses of the numpy DSGE toy models
-// (src/orthodox/rbc.py, nk.py), baked above by viz/gen_ortho.py and CI-pinned (reference-drift).
+// The orthodox models (Lucas, Mankiw) plot the REAL impulse responses of the numpy DSGE toy models
+// (src/orthodox/rbc.py, nk.py — RBC, NK demand, NK supply), baked by viz/gen_ortho.py, CI-pinned.
 // Shape-normalized for display: the employment/gap impact maps to ORTHO_DIP pp and every other
 // series scales by the SAME factor (relative co-movements are the model's own). Magnitudes are
 // NOT comparable across models — a topological illustration, per the project method.
-const ORTHO_DIP=7.0; // pp
-function orthoPath(shape){
-  const ew=0.865,el=0.9,ep=1-ew,D=(shape==='nk')?ORTHO_IRF.nk:ORTHO_IRF.rbc;
+const ORTHO_DIP=7.0; // pp — display normalization (shape preserved; magnitudes NOT comparable across models)
+// Map a baked orthodox IRF (dataKey ∈ rbc | nk | nk_supply) to the [t,ω,λ,d,π] draw rows.
+function orthoPath(dataKey){
+  const ew=0.865,el=0.9,ep=1-ew,D=ORTHO_IRF[dataKey],isNK=(dataKey!=='rbc');
   const K=ORTHO_DIP/Math.abs(D.emp[0]*100);                 // employment/gap impact → ORTHO_DIP pp
-  const wg=(shape==='nk')?D.rate:D.wage, pf=(shape==='nk')?D.infl:D.out, path=[];
+  const wg=isNK?D.rate:D.wage, pf=isNK?D.infl:D.out, path=[]; // NK: policy rate(ω slot)/inflation(π slot); RBC: real wage/output
   for(let i=0;i<D.t.length;i++) path.push([D.t[i], ew+K*wg[i], el+K*D.emp[i], 0, ep+K*pf[i]]);
-  return{eq:[ew,el,0],path,broke:false,eqpi:ep,wideScale:true,xlab:(shape==='nk'?'i':'w'),shockLabel:'adverse shock'};
+  return{eq:[ew,el,0],path,broke:false,eqpi:ep,wideScale:true,xlab:(isNK?'i':'w'),shockLabel:'adverse shock'};
 }
-// The panel chrome (phase header, time-series legend, IRF header) is Goodwin–Keen by default;
-// the orthodox beats plot DIFFERENT series (no debt state), so relabel it, and restore it for GK.
+function orthoFlat(){ // baseline: the economy at rest (no shock) — a flat line
+  const ew=0.865,el=0.9,ep=1-ew,path=[];
+  for(let t=0;t<=30;t+=0.5) path.push([t,ew,el,0,ep]);
+  return{eq:[ew,el,0],path,broke:false,eqpi:ep,wideScale:true,xlab:'w',shockLabel:'no shock yet'};
+}
+// The panel chrome is Goodwin–Keen by default; orthodox models plot DIFFERENT series (no debt), so relabel.
 const _GK_LEGEND='<span><i style="background:var(--ts-emp)"></i>employment λ</span><span><i style="background:var(--ts-profit)"></i>profit π (pivot)</span><span><i style="background:var(--trace-2)"></i>wage share ω</span><span><i style="background:var(--trace-3)"></i>debt d (right axis)</span>';
-function setPanelLabels(mode,shape){
-  const ph=document.getElementById('phaseHead'),ir=document.getElementById('irfHead'),lg=document.getElementById('tsLegend');
-  if(mode==='ortho'){
-    ph.textContent='PHASE PORTRAIT · '+(shape==='nk'?'policy rate ↔ output gap':'real wage ↔ employment')+' (shock → return, no cycle)';
-    ir.textContent='SHOCK RESPONSE · Δ '+(shape==='nk'?'output gap':'employment')+' (shape-normalized to '+ORTHO_DIP+'pp on impact)';
-    lg.innerHTML=(shape==='nk')
-      ?'<span><i style="background:var(--ts-emp)"></i>output gap</span><span><i style="background:var(--ts-profit)"></i>inflation</span><span><i style="background:var(--trace-2)"></i>policy rate</span>'
-      :'<span><i style="background:var(--ts-emp)"></i>employment</span><span><i style="background:var(--ts-profit)"></i>output</span><span><i style="background:var(--trace-2)"></i>real wage</span>';
-  }else{
-    ph.textContent='PHASE PORTRAIT · wage share ω ↔ employment λ';
-    ir.textContent='SHOCK RESPONSE · employment after a −5% shock';
-    lg.innerHTML=_GK_LEGEND;
-  }
+function setGKLabels(){
+  document.getElementById('phaseHead').textContent='PHASE PORTRAIT · wage share ω ↔ employment λ';
+  document.getElementById('irfHead').textContent='SHOCK RESPONSE · employment after the shock';
+  document.getElementById('tsLegend').innerHTML=_GK_LEGEND;
 }
-function renderOrtho(){
-  const b=BEATS[curBeat],shape=(b&&b.shape)||'rbc';
-  setPanelLabels('ortho',shape);
-  document.getElementById('coord').innerHTML='<b>real '+(shape==='nk'?'New-Keynesian (3-equation)':'RBC (log-linear)')+' model output</b> · src/orthodox/ · shape-normalized for display — magnitudes not comparable across models';
-  const pill=document.getElementById('ptPill');pill.className='ptpill ok';pill.textContent=(shape==='nk'?'INEFFICIENT GAP · policy eases and closes it':'EFFICIENT · optimal response, self-corrects');
-  const disp=orthoPath(shape);
-  drawPhase(disp,{re:-0.2,im:0});drawTime(disp,{re:-0.2,im:0});drawIRF(disp,{re:-0.2,im:0});
-  document.getElementById('hlReadout').textContent=(shape==='nk'?'inefficient gap — policy eases and closes it':'efficient — output & hours self-correct, no policy needed');document.getElementById('hlReadout').style.color=css('--ok-ink');
-  document.getElementById('recVal').textContent=(shape==='nk'?'policy-stabilised':'shock-driven, efficient');
+function setOrthoLabels(model){
+  const nk=(model==='mankiw');
+  document.getElementById('phaseHead').textContent='PHASE PORTRAIT · '+(nk?'policy rate ↔ output gap':'real wage ↔ employment')+' (no endogenous cycle)';
+  document.getElementById('irfHead').textContent='SHOCK RESPONSE · Δ '+(nk?'output gap':'employment')+' (shape-normalized)';
+  document.getElementById('tsLegend').innerHTML=nk
+    ?'<span><i style="background:var(--ts-emp)"></i>output gap</span><span><i style="background:var(--ts-profit)"></i>inflation</span><span><i style="background:var(--trace-2)"></i>policy rate</span>'
+    :'<span><i style="background:var(--ts-emp)"></i>employment</span><span><i style="background:var(--ts-profit)"></i>output</span><span><i style="background:var(--trace-2)"></i>real wage</span>';
+}
+// Render an orthodox model (lucas|mankiw) responding to the active shock — real IRF, flat baseline,
+// or a flat BLIND line (the model has no machinery for this shock; the callout is the lesson).
+function renderOrtho(model,shock){
+  setOrthoLabels(model);
+  const M=MODELS[model],r=M.resp[shock],e={re:-0.2,im:0};
+  const pill=document.getElementById('ptPill'),hl=document.getElementById('hlReadout'),coord=document.getElementById('coord'),rec=document.getElementById('recVal');
+  if(shock==='baseline'||!r){
+    const d=orthoFlat();drawPhase(d,e);drawTime(d,e);drawIRF(d,e);
+    pill.className='ptpill';pill.textContent='AT REST · fire a shock';
+    coord.innerHTML='<b>'+M.full+'</b> · at baseline — no shock yet';
+    hl.textContent='at rest — no dynamics until shocked';hl.style.color=css('--faint');rec.textContent='—';return;
+  }
+  if(r.blind){
+    const d=orthoFlat();drawPhase(d,e);drawTime(d,e);drawIRF(d,e);
+    pill.className='ptpill warn';pill.textContent='BLIND · '+r.tag;
+    coord.innerHTML='<b>'+M.full+'</b> · '+shock+' shock — nothing to shock';
+    hl.textContent='no response — '+r.tag;hl.style.color=css('--warn');rec.textContent='blind';return;
+  }
+  const d=orthoPath(r.data);drawPhase(d,e);drawTime(d,e);drawIRF(d,e);
+  pill.className='ptpill ok';pill.textContent=r.pill;
+  coord.innerHTML='<b>'+M.full+' — '+shock+' shock</b> · src/orthodox/ · shape-normalized (not comparable across models)';
+  hl.textContent=r.readout;hl.style.color=css('--ok-ink');rec.textContent=r.rec||'—';
 }
 function renderPinned(){
-  if(ortho){renderOrtho();return;}
-  setPanelLabels('gk');
+  if(ortho){renderOrtho(sel,shockSel);return;}
+  setGKLabels();
   const p=pOf(mark.ix,mark.iy),r=rAt(mark.ix),ks=kAt(mark.iy);
   document.getElementById('coord').innerHTML=`r <b>${r.toFixed(4)}</b> · k<sub>sharp</sub> <b>${ks.toFixed(1)}</b> · d₀ <b>${d0.toFixed(2)}</b>`;
   const cl=simFromEq(p,d0,BUDGET,false);   // classification (matches the map): near-equilibrium start
-  const disp=simDisplay(p,d0,DISPLAY_STEPS); // what we draw: a −5% employment shock over ~45 yr
+  const disp=simDisplay(p,d0,DISPLAY_STEPS,gkDip); // what we draw: a gkDip employment displacement over ~100 yr
   const pill=document.getElementById('ptPill');let cls,txt,e=null,rec=0;
   if(!disp.eq){cls='noeq';txt='no interior equilibrium';}
   else{e=leadingEig(disp.eq,p);rec=Math.max(0,-e.re);
@@ -538,41 +569,81 @@ function drawIRF(sim,e){
   else{hl.textContent='neutral cycle (at the tipping point)';hl.style.color=css('--warn');}
 }
 
-/* ---- demonstration strip: 3 models, then Keen-model conditions ---- */
-const BEATS=[
- {beat:0,cls:'',orthodox:true,shape:'rbc',r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'real productivity shock — the efficient cycle self-corrects',
-  caption:'<b>Orthodox · RBC (Lucas / Kydland–Prescott).</b> Business cycles are the economy’s <b>optimal response to real (productivity) shocks</b>, propagated through capital under rational expectations; the cycle is <em>efficient</em>, so policy should leave it alone. An adverse shock makes <span style="color:var(--ts-emp)">employment</span> and <span style="color:var(--ts-profit)">output</span> fall on impact, then recover <b>near-monotonically</b> (half-life ≈ 5 yr) as technology mean-reverts — <span style="color:var(--trace-2)">the real wage</span> co-moves, consumption barely budges (smoothing), and hours mildly overshoot as capital rebuilds. No shock, no cycle. <b>Real output of a log-linear RBC model — <code>src/orthodox/rbc.py</code>; shape-normalized for display; orthodoxy has no debt state.</b>'},
- {beat:1,cls:'',orthodox:true,shape:'nk',r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'demand shock — sticky prices open a gap policy closes',
-  caption:'<b>Orthodox · New Keynesian (Mankiw).</b> Because prices are <b>sticky</b>, a <b>demand</b> shock is not costlessly absorbed: it opens an <em>inefficient</em> <span style="color:var(--ts-emp)">output gap</span> with <span style="color:var(--ts-profit)">disinflation</span>, and monetary <span style="color:var(--trace-2)">policy</span> eases to close it — a stabilisation role RBC denies. <b>Honest shape note:</b> in the canonical 3-equation model the gap troughs <em>on impact</em> and decays — it is <b>not</b> hump-shaped (the hump is a habit / adjustment-cost feature of larger DSGE models); interest-rate smoothing adds only a slight overshoot. <b>Real output of a 3-equation NK model — <code>src/orthodox/nk.py</code>, shape-normalized.</b>'},
- {beat:2,cls:'hetero',ov:{keen:false,delta:0},r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'endogenous — a one-time nudge, then left alone',
-  caption:'<b>Goodwin 1967 — the growth cycle.</b> Now a real model of the income distribution. Nudged once and left alone, the economy traces a <b>closed orbit</b> at constant amplitude: <span style="color:var(--ts-emp)">employment</span> and the <span style="color:var(--trace-2)">wage share</span> chase each other, employment peaking a <b>quarter-cycle before wages</b> — the predator–prey signature (invariant conserved to machine precision). The cycle is <em>endogenous</em> — no external shock needed, which the orthodox models cannot produce. (Goodwin, "A Growth Cycle," 1967.)'},
- {beat:3,cls:'hetero',ov:{kmax:0.45,kmid:0.15},r:0.03,ksharp:30,atEq:true,d0:0,pt:[0.03,30],shock:'endogenous — a one-time nudge, then left alone',
-  caption:'<b>Keen 1995 — add finance.</b> Keen put a private-<span style="color:var(--trace-3)">debt</span> equation into Goodwin: firms borrow to invest, so the profit that drives investment is now <em>net of interest</em> (π = 1 − ω − r·d). At prudent settings, equilibrium leverage sits near ~170% of output, debt cycles up in booms and down in busts, and the cycle <b>damps very slowly — stabilising, but only just</b> (it sits near the edge). <em>The next two use the SAME Keen equations — only the dials and the starting point change.</em>'},
- {beat:4,cls:'hetero',ov:{kmax:0.6,kmid:0.12},r:0.07,ksharp:25,d0:1.0,pt:[0.07,25],shock:'endogenous — a one-time nudge, then the crisis is built in',
-  caption:'<b>Keen model · euphoric finance — endogenous fragility (Minsky’s hypothesis).</b> Crank investment appetite and interest up (watch the dials move): <span style="color:var(--trace-3)">debt</span> <b>ratchets up each boom</b>, interest compounds so the <span style="color:var(--ts-profit)">profit</span> margin <b>tightens every cycle</b>, and the economy — already past its stability edge (the map colours this cell <em>unstable</em>) — spirals into <b>debt-deflation</b>, no external shock. <b>Honest caveat: this lives in the high-interest corner — slide r down and the same economy simmers for a century without collapsing.</b> "Stability breeds instability" (Minsky), formalized by Keen.'},
- {beat:5,cls:'hetero',ov:{kmax:0.45,kmid:0.15},r:0.03,ksharp:30,d0:9.0,pt:[0.03,30],shock:'shock · an exogenous debt bubble / COVID-type hit',
-  caption:'<b>Keen model · the Minsky moment — a sound economy tips.</b> The <em>same locally-stable</em> prudent economy as above (Re&lt;0, it damps) — but start it with a sudden <span style="color:var(--trace-3)">debt</span> overhang (a burst bubble, or a COVID-type hit) past the basin, and it collapses with <b>no prior warning</b>: same map cell, same damping, opposite fate. Early warning catches the endogenous tipping; it is <span style="color:var(--warn)">blind</span> to this over-the-basin shock.'}];
-let curBeat=0,freeMode=false,ortho=false;
-function applyBeat(i){
-  const b=BEATS[i];curBeat=i;freeMode=false;ortho=!!b.orthodox;
-  document.querySelectorAll('.beat').forEach(el=>el.setAttribute('aria-pressed',String(+el.dataset.beat===i)));
-  const cap=document.getElementById('caption');cap.className='caption'+(b.cls?' '+b.cls:'');
-  const sc=(b.shock&&b.shock.indexOf('shock ·')===0)?'var(--warn)':'var(--ts-profit)';
-  cap.innerHTML=b.caption+(b.shock?('<div style="margin-top:8px;font-size:12px;color:'+sc+'">▸ '+b.shock+'</div>'):'');
-  st.params_r=b.r;st.params_k=b.ksharp; ov=Object.assign({},b.ov||{});   // adopt this beat's financial regime
-  const pb=P(Object.assign({},BASE,ov,{r:b.r,ksharp:b.ksharp,rho:extra.rho,nu:extra.nu})),eqb=keenGoodEq(pb);
-  d0 = b.atEq ? (eqb?Math.max(0,Math.round(eqb[2]*100)/100):0) : b.d0;   // stabilising beat starts at equilibrium debt d*; others use their set d0
-  document.getElementById('sR').value=b.r;document.getElementById('sKsharp').value=b.ksharp;document.getElementById('sD0').value=d0;
-  syncNums();
-  // place the marker at the beat's (r,k)
-  mark.ix=Math.round((b.pt[0]-R0)/(R1-R0)*NX-0.5);mark.iy=Math.round((b.pt[1]-K0)/(K1-K0)*NY-0.5);
-  mark.ix=Math.max(0,Math.min(NX-1,mark.ix));mark.iy=Math.max(0,Math.min(NY-1,mark.iy));
+/* ============ MODELS × SHOCKS — the comparative document ============ */
+// Capability bits: which machinery each model contains. 1 = has, 2 = partial (~), 0 = lacks.
+const BITS=['endogenous cycle','supply shock','demand shock','distribution','finance'];
+const MODELS={
+  lucas:{name:'Lucas', full:'Lucas · RBC (Kydland–Prescott)', kind:'ortho', bits:[0,1,0,0,0],
+    intro:'<b>Lucas · Real Business Cycle.</b> Fluctuations are the economy’s <b>optimal, efficient response to real (productivity) shocks</b> under rational expectations and flexible prices. Money is neutral, recessions are efficient, and stabilisation policy has <em>no job</em>. Nothing moves without a real shock.',
+    resp:{
+      productivity:{data:'rbc', pill:'EFFICIENT · optimal response', readout:'efficient — output & hours self-correct (half-life ≈5 yr)', rec:'shock-driven, efficient',
+        why:'RBC’s <b>native</b> shock. Output and hours fall on impact and recover <b>near-monotonically</b> as technology mean-reverts; consumption barely moves (smoothing). The cycle is efficient — no policy needed.'},
+      demand:{blind:true, tag:'money is neutral', why:'A nominal / aggregate-demand shock has <b>no real effect</b> in RBC — flexible prices absorb it instantly. The flat line <em>is</em> the claim: Lucas says demand shocks don’t cause real fluctuations.'},
+      financial:{blind:true, tag:'no debt state', why:'RBC has <b>no financial sector</b> — there is no debt to shock. A bit the model simply doesn’t contain (and why it can’t represent a 2008).'}
+    }},
+  mankiw:{name:'Mankiw', full:'Mankiw · New Keynesian', kind:'ortho', bits:[0,1,1,0,0],
+    intro:'<b>Mankiw · New Keynesian.</b> Prices are <b>sticky</b>, so shocks aren’t costlessly absorbed — they open an <em>inefficient</em> output gap, and monetary <b>policy has a job</b> (the role RBC denies). Adds a nominal / demand side on top of Lucas.',
+    resp:{
+      productivity:{data:'nk_supply', pill:'TRADEOFF · output↓ inflation↑', readout:'cost-push tradeoff — policy can’t fix both at once', rec:'policy tightens',
+        why:'A supply / cost-push shock: output falls but <span style="color:var(--ts-profit)">inflation rises</span> — the classic <b>inflation-output tradeoff</b>. Policy tightens and can’t close the gap and hit the target at once. (The mirror of the demand shock.)'},
+      demand:{data:'nk', pill:'INEFFICIENT GAP · policy closes it', readout:'inefficient gap — policy eases and closes it', rec:'policy-stabilised',
+        why:'NK’s <b>native</b> shock. Sticky prices ⇒ an <em>inefficient</em> <span style="color:var(--ts-emp)">output gap</span> and <span style="color:var(--ts-profit)">disinflation</span>; <span style="color:var(--trace-2)">policy</span> eases to close it. (Canonical 3-equation model: the gap troughs on impact and decays — <b>not</b> a hump.)'},
+      financial:{blind:true, tag:'no debt state', why:'The 3-equation NK model has <b>no financial sector</b> either — no debt to shock. Financial frictions are a later bolt-on, not in the core model.'}
+    }},
+  goodwin:{name:'Goodwin', full:'Goodwin · growth cycle', kind:'gk', gk:{ov:{keen:false,delta:0}, r:0.03, ksharp:40, d0:0}, bits:[1,2,2,1,0],
+    intro:'<b>Goodwin · growth cycle.</b> The first <b>endogenous</b> model here: <span style="color:var(--ts-emp)">employment</span> and the <span style="color:var(--trace-2)">wage share</span> chase each other in a <em>self-sustaining</em> distributive cycle — <b>no shock needed</b>. But it has no supply/demand distinction and no finance.',
+    resp:{
+      productivity:{pert:'kick', tag:'a perturbation', why:'Goodwin has <b>no supply/demand distinction</b> — a real shock just displaces the state, and the conservative distributive cycle absorbs it (it keeps cycling at the new amplitude).'},
+      demand:{pert:'kick', tag:'a perturbation', why:'Same as a productivity shock here — Goodwin <b>can’t tell supply from demand</b> (it has no such structure); the shock just resets the cycle’s amplitude.'},
+      financial:{blind:true, tag:'no debt', why:'Goodwin has <b>no debt</b> — a financial shock has nothing to act on, so the cycle just continues. Adding that debt equation is exactly what Keen does (→).'}
+    }},
+  keen:{name:'Keen', full:'Keen · debt cycle', kind:'gk', gk:{ov:{kmax:0.45,kmid:0.15}, r:0.03, ksharp:30, atEq:true, d0:0}, bits:[1,2,2,1,1],
+    intro:'<b>Keen · debt cycle.</b> Goodwin <b>+ private debt</b>: firms borrow to invest, so profit is <em>net of interest</em> (π = 1 − ω − r·d). Endogenous distribution AND a financial sector — the only model here that a debt shock can tip.',
+    resp:{
+      productivity:{pert:'kick', tag:'a perturbation', why:'A real shock displaces the debt-distribution cycle; at prudent settings it damps back. (Keen, like Goodwin, has no supply/demand distinction.)'},
+      demand:{pert:'kick', tag:'a perturbation', why:'A perturbation to the debt-distribution cycle; at prudent settings it damps back toward equilibrium.'},
+      financial:{pert:'debt', tag:'debt overhang', why:'Keen’s <b>native</b> shock: a sudden <span style="color:var(--trace-3)">debt</span> overhang (a burst bubble / COVID-type hit) pushes the economy <b>over the basin</b> into <b>debt-deflation collapse</b> — with no prior warning. The crisis only the finance-containing model can even represent.'}
+    }},
+};
+const SHOCKS=['productivity','demand','financial'];
+let sel='lucas', shockSel='baseline', ortho=true, gkDip=0.02;
+function renderCaps(m){
+  const M=MODELS[m];
+  document.getElementById('caps').innerHTML=BITS.map((nm,i)=>{
+    const v=M.bits[i],cls=v===1?'has':(v===2?'part':'lacks'),mk=v===1?'✓ ':(v===2?'~ ':'✗ ');
+    return '<span class="cap-bit '+cls+'">'+mk+nm+'</span>';}).join('');
+}
+function setCaption(html,warn){const cap=document.getElementById('caption');cap.className='caption'+(warn?' hetero':'');cap.innerHTML=html;}
+function pressShock(s){document.querySelectorAll('.shock').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.shock===s)));}
+function selectModel(m){
+  sel=m;shockSel='baseline';ortho=(MODELS[m].kind==='ortho');
+  document.querySelectorAll('.beat.mdl').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.model===m)));
+  pressShock('baseline');document.querySelector('.console').classList.toggle('nomap',ortho);renderCaps(m);
+  setCaption(MODELS[m].intro+'<div style="margin-top:8px;font-size:12px;color:var(--faint)">▸ '+(ortho?'the economy at rest — fire a shock to see it respond':'left alone it moves on its own — fire a shock to perturb it')+'</div>');
+  if(ortho)renderOrtho(m,'baseline'); else applyGK(MODELS[m].gk);
+}
+function applyGK(g){
+  ov=Object.assign({},g.ov||{});
+  const pb=P(Object.assign({},BASE,ov,{r:g.r,ksharp:g.ksharp,rho:extra.rho,nu:extra.nu})),eqb=keenGoodEq(pb);
+  const rf=MODELS[sel].resp.financial;
+  d0=(shockSel==='financial'&&rf&&rf.pert==='debt')?9.0:(g.atEq&&eqb?Math.max(0,Math.round(eqb[2]*100)/100):(g.d0||0));
+  document.getElementById('sR').value=g.r;document.getElementById('sKsharp').value=g.ksharp;document.getElementById('sD0').value=d0;syncNums();
+  mark.ix=Math.max(0,Math.min(NX-1,Math.round((g.r-R0)/(R1-R0)*NX-0.5)));
+  mark.iy=Math.max(0,Math.min(NY-1,Math.round((g.ksharp-K0)/(K1-K0)*NY-0.5)));
   scanMap();const w=setInterval(()=>{if(scanned){clearInterval(w);renderPinned();}},50);
 }
-document.getElementById('beats').addEventListener('click',e=>{const b=e.target.closest('.beat');if(b)applyBeat(+b.dataset.beat);});
-document.getElementById('nextBeat').onclick=()=>applyBeat(Math.min(BEATS.length-1,curBeat+1));
-document.getElementById('prevBeat').onclick=()=>applyBeat(Math.max(0,curBeat-1));
-document.getElementById('freeBeat').onclick=()=>{freeMode=true;ortho=false;ov={};document.querySelectorAll('.beat').forEach(el=>el.setAttribute('aria-pressed','false'));const cap=document.getElementById('caption');cap.className='caption';cap.innerHTML='<b>Free exploration.</b> Drag on the map or move the dials. Watch the phase portrait, the time-series, and the shock response update together — and the breakdown hatching grow as you raise d₀.';};
+function fireShock(s){
+  shockSel=s;pressShock(s);
+  const M=MODELS[sel],r=(s==='baseline')?null:M.resp[s];
+  if(s==='baseline')setCaption(M.intro+'<div style="margin-top:8px;font-size:12px;color:var(--faint)">▸ '+(ortho?'the economy at rest':'moving on its own — no external shock')+'</div>');
+  else if(r.blind)setCaption('<b>'+M.name+' × '+s+' shock.</b> '+r.why+'<div style="margin-top:8px;font-size:12px;color:var(--warn)">▸ blind spot — '+r.tag+' (the flat line is the lesson)</div>',true);
+  else setCaption('<b>'+M.name+' × '+s+' shock.</b> '+r.why,(s==='financial'));
+  if(ortho){renderOrtho(sel,s);return;}
+  gkDip=(r&&r.pert==='kick')?0.06:0.02;
+  applyGK(M.gk);
+}
+document.getElementById('models').addEventListener('click',e=>{const b=e.target.closest('.beat');if(b)selectModel(b.dataset.model);});
+document.querySelector('.shockrow').addEventListener('click',e=>{const b=e.target.closest('.shock');if(b)fireShock(b.dataset.shock);});
 
 /* ---- controls ---- */
 const st={params_r:0.03,params_k:40};
@@ -594,7 +665,6 @@ document.getElementById('sNu').addEventListener('change',structChange);
 document.getElementById('sRho').addEventListener('input',()=>document.getElementById('nRho').textContent=(+document.getElementById('sRho').value).toFixed(3));
 document.getElementById('sNu').addEventListener('input',()=>document.getElementById('nNu').textContent=(+document.getElementById('sNu').value).toFixed(2));
 document.getElementById('advToggle').onclick=e=>{const a=document.getElementById('adv');a.hidden=!a.hidden;e.target.textContent=(a.hidden?'▸':'▾')+' advanced (structural)';};
-document.getElementById('shockBtn').onclick=()=>renderPinned();
 
 /* map interaction */
 function evCell(ev){const r=stage.getBoundingClientRect();return{ix:Math.floor((ev.clientX-r.left)/r.width*NX),iy:Math.floor((1-(ev.clientY-r.top)/r.height)*NY)};}
@@ -622,6 +692,6 @@ function runFidelity(){let m=0,n=0;for(const r of REF){let s=r.s0.slice();const 
   ['pv-phase','pv-time','pv-irf'].forEach(id=>sizeC(document.getElementById(id)));
   const fd=runFidelity(),ok=fd.m<1e-5;document.getElementById('fidDot').classList.toggle('bad',!ok);
   document.getElementById('fidText').textContent=(ok?'fidelity verified':'fidelity FAIL')+` · max Δ ${fd.m.toExponential(1)} vs numpy (full check in CI)`;
-  syncNums(); applyBeat(0);
+  syncNums(); selectModel('lucas');
 })();
 </script>
