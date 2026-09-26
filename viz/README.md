@@ -10,7 +10,7 @@ reference and checks the deployed JS against it on every change.
 A **coverage comparison**: four models of the business cycle, arranged left→right as a ladder where
 each *adds a mechanism the one before it lacks* — **Lucas (RBC)** → **Mankiw (NK, +sticky prices)** →
 **Goodwin (+endogenous distribution)** → **Keen (+finance)**. Pick a model, watch it run, then hit it
-with the same three shocks — **Productivity · Demand · Financial**. Where a model has the machinery it
+with the same three shocks — **Supply · Demand · Financial**. Where a model has the machinery it
 responds (real model output); where it doesn't, it sits **blind**, with a one-line reason — and *the
 blind spots are the point* (e.g. fire **Financial** at Lucas/Mankiw/Goodwin: no debt state, nothing to
 shock — the flat line is why the mainstream models couldn't represent a 2008).
@@ -18,14 +18,25 @@ shock — the flat line is why the mainstream models couldn't represent a 2008).
 - **Capability strip:** the selected model's "bits" (endogenous cycle · supply · demand · distribution
   · finance) shown as ✓ / ~ / ✗ — read across = the ladder, read down = the blind spots.
 - **The response matrix** (real numpy output in ✓/~, honest flat-line in ✗):
-  - **Lucas** — Productivity ✅ (RBC IRF: efficient, near-monotone recovery). Demand ✗ (money neutral).
-    Financial ✗ (no debt state).
-  - **Mankiw** — Demand ✅ (inefficient gap, policy closes it). Productivity ✅ (cost-push **tradeoff**:
-    output↓ inflation↑, policy tightens). Financial ✗ (no debt state).
-  - **Goodwin** — Productivity / Demand ~ (a perturbation to the endogenous cycle; Goodwin has no
+  - **Lucas** — Supply ✅ (a real TFP shock → RBC IRF: efficient, near-monotone recovery). Demand ✗
+    (money neutral). Financial ✗ (no debt state).
+  - **Mankiw** — Demand ✅ (inefficient gap, policy closes it). Supply ✅ (a **cost-push** shock → the
+    inflation-output **tradeoff**: output↓ inflation↑, policy tightens; note a *genuine TFP* shock in
+    NK would instead disinflate — Galí — so the button is "Supply", and this is the cost-push variant
+    that creates the tradeoff NK is known for). Financial ✗ (no debt state).
+  - **Goodwin** — Supply / Demand ~ (a perturbation to the endogenous cycle; Goodwin has no
     supply/demand *distinction*). Financial ✗ (no debt).
   - **Keen** — Financial ✅ (a debt overhang tips it over the global basin into debt-deflation, no
-    warning). Productivity / Demand ~ (perturbation, damps back at prudent settings).
+    warning). Supply / Demand ~ (perturbation, damps back at prudent settings).
+- **Layout:** the **standard time charts** (the "over time" time-series + the shock-response IRF) sit
+  at the top in the SAME size and position for all four models; the **state-space / dynamics section**
+  (the regime map, the phase portrait, and the local-stability/eigenvalue readout + dials) sits at the
+  bottom and appears **only for Goodwin/Keen** (the models with a debt state). Selecting an orthodox
+  model opens on its native shock (data visible), since an orthodox model *at rest* is a flat line.
+- **Literature check:** `src/viz_literature_check.py` verifies each trajectory against the documented
+  canonical shapes (RBC volatility ordering σ_c<σ_y<σ_i & monotone output; NK demand same-sign/monotone;
+  NK cost-push tradeoff; Goodwin ¼-cycle employment-leads-wage lead & conserved orbit; Keen breakdown
+  to d→∞, ω→0, λ→0) — topological (shape/sign/timing), not a magnitude fit. Runs in CI.
 - **Orthodox responses** are the real numpy DSGE IRFs (`src/orthodox/`), baked in and CI-pinned,
   shape-normalized for display (magnitudes not comparable across models — topological). **Goodwin/Keen**
   responses compute live from the in-page Goodwin–Keen RK4 engine.

@@ -74,8 +74,15 @@
 
   .console{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,1fr);gap:16px;align-items:start}
   @media (max-width:980px){.console{grid-template-columns:1fr}}
-  .console.nomap{grid-template-columns:1fr}          /* orthodox models have no regime map */
-  .console.nomap #mapCard,.console.nomap #ctlCard{display:none}
+  /* standard time charts — SAME size & location for all four models (top) */
+  .timecharts{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  @media (max-width:820px){.timecharts{grid-template-columns:1fr}}
+  /* state-space / dynamics section — chaos, eigenvalues, the regime map — Goodwin/Keen only (bottom) */
+  .statespace{margin-top:16px}
+  .statespace.hide{display:none}
+  .ssh{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin:2px 0 12px}
+  .ssh h2{font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:600;margin:0}
+  .ssh .dhint{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--faint)}
   .card{background:var(--panel);border:1px solid var(--edge);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
   .cap{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:12px 16px 0}
   .cap h2{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;letter-spacing:.03em;margin:0}
@@ -188,67 +195,72 @@
     <div class="caption" id="caption"></div>
     <div class="shockrow">
       <span class="lbl">shock it →</span>
-      <button class="shock" data-shock="productivity" type="button">⚙ Productivity (supply)</button>
+      <button class="shock" data-shock="supply" type="button">⚙ Supply</button>
       <button class="shock" data-shock="demand" type="button">📉 Demand</button>
       <button class="shock" data-shock="financial" type="button">💥 Financial</button>
       <button class="shock ghost" data-shock="baseline" aria-pressed="true" type="button">↺ baseline</button>
     </div>
   </div>
 
-  <div class="console">
-    <!-- LEFT: the space (regime map — only meaningful for Goodwin/Keen, which have a debt state) -->
-    <div class="card" id="mapCard">
-      <div class="cap"><h2>THE SPACE · interest rate r × investment sensitivity k<sub>sharp</sub></h2><span class="note">click / drag / arrows</span></div>
-      <div class="mapbox">
-        <div class="mapstage" id="stage" tabindex="0" role="img" aria-label="Regime map; arrow keys move the selected economy">
-          <canvas id="mapBase"></canvas>
-          <canvas id="mapMark"></canvas>
-          <span class="scanbadge" id="scan" hidden>mapping…</span>
-        </div>
-        <div class="axis-y">k<sub>sharp</sub> — investment sensitivity →</div>
-        <div class="axis-x"><span>r = 0</span><span class="ttl">interest rate r →</span><span>0.07</span></div>
-      </div>
-      <div class="maplegend">
-        <span><i style="background:var(--reg-stable)"></i>stable (Re&lt;0) — spirals home</span>
-        <span><i style="background:var(--reg-unstable)"></i>unstable (Re≥0) — self-driven cycles</span>
-        <span><i class="hatch"></i>breakdown from THIS d₀ (the basin)</span>
-        <span><i class="hopf"></i>Hopf line (local tipping)</span>
+  <!-- STANDARD TIME CHARTS — SAME size & location for all four models -->
+  <div class="timecharts">
+    <div class="card">
+      <div class="cap"><h2>SELECTED ECONOMY</h2><span class="ptpill ok" id="ptPill">—</span></div>
+      <div class="coord" id="coord">—</div>
+      <div class="cap" style="padding-top:0"><h2 style="font-size:11.5px;color:var(--muted)">OVER TIME · the response as a time-series</h2></div>
+      <div class="scope" style="margin-top:0"><canvas id="pv-time"></canvas></div>
+      <div class="tslegend" id="tsLegend">
+        <span><i style="background:var(--ts-emp)"></i>employment λ</span>
+        <span><i style="background:var(--ts-profit)"></i>profit π (pivot)</span>
+        <span><i style="background:var(--trace-2)"></i>wage share ω</span>
+        <span><i style="background:var(--trace-3)"></i>debt d (right axis)</span>
       </div>
     </div>
+    <div class="card">
+      <div class="irfhead"><h2 id="irfHead" style="font-family:'IBM Plex Mono';font-size:12px;margin:0">SHOCK RESPONSE</h2><span class="hl" id="hlReadout">—</span></div>
+      <div class="scope" style="margin-top:8px"><canvas id="pv-irf"></canvas></div>
+    </div>
+  </div>
 
-    <!-- RIGHT: over time -->
-    <div class="side">
-      <div class="card">
-        <div class="cap"><h2>SELECTED ECONOMY</h2><span class="ptpill ok" id="ptPill">—</span></div>
-        <div class="coord" id="coord">r — · k — · d₀ —</div>
-        <div class="cap" style="padding-top:0"><h2 id="phaseHead" style="font-size:11.5px;color:var(--muted)">PHASE PORTRAIT · wage share ω ↔ employment λ</h2></div>
-        <div class="scope"><canvas id="pv-phase"></canvas></div>
-        <p style="font-size:11.5px;color:var(--muted);margin:2px 16px 4px">In Goodwin and Keen the loop is the distributive cycle: high employment → wages rise → <span style="color:var(--ts-profit)">profit</span> squeezed → investment &amp; employment fall → wages fall → profit recovers → repeat. That profit pivot turns every peak and trough — the "agent of change." (The orthodox models — Lucas, Mankiw — plot real DSGE output from <code>src/orthodox/</code>, a different class with no debt state; this distributive loop is Goodwin/Keen only.)</p>
-        <div class="cap" style="padding-top:0"><h2 style="font-size:11.5px;color:var(--muted)">OVER TIME · the same run, as a time-series</h2></div>
-        <div class="scope" style="margin-top:0"><canvas id="pv-time"></canvas></div>
-        <div class="tslegend" id="tsLegend">
-          <span><i style="background:var(--ts-emp)"></i>employment λ</span>
-          <span><i style="background:var(--ts-profit)"></i>profit π (pivot)</span>
-          <span><i style="background:var(--trace-2)"></i>wage share ω</span>
-          <span><i style="background:var(--trace-3)"></i>debt d (right axis)</span>
+  <!-- STATE SPACE / DYNAMICS — Goodwin & Keen only (chaos, eigenvalues, the regime map) -->
+  <div class="statespace" id="statespace">
+    <div class="ssh"><h2>THE STATE SPACE · Goodwin / Keen dynamics</h2><span class="dhint">the regime map, the phase portrait, and the local-stability (eigenvalue) readout — only these models have a debt state and a space to map</span></div>
+    <div class="console">
+      <div class="card" id="mapCard">
+        <div class="cap"><h2>THE SPACE · interest rate r × investment sensitivity k<sub>sharp</sub></h2><span class="note">click / drag / arrows</span></div>
+        <div class="mapbox">
+          <div class="mapstage" id="stage" tabindex="0" role="img" aria-label="Regime map; arrow keys move the selected economy">
+            <canvas id="mapBase"></canvas>
+            <canvas id="mapMark"></canvas>
+            <span class="scanbadge" id="scan" hidden>mapping…</span>
+          </div>
+          <div class="axis-y">k<sub>sharp</sub> — investment sensitivity →</div>
+          <div class="axis-x"><span>r = 0</span><span class="ttl">interest rate r →</span><span>0.07</span></div>
+        </div>
+        <div class="maplegend">
+          <span><i style="background:var(--reg-stable)"></i>stable (Re&lt;0) — spirals home</span>
+          <span><i style="background:var(--reg-unstable)"></i>unstable (Re≥0) — self-driven cycles</span>
+          <span><i class="hatch"></i>breakdown from THIS d₀ (the basin)</span>
+          <span><i class="hopf"></i>Hopf line (local tipping)</span>
         </div>
       </div>
-
-      <div class="card">
-        <div class="irfhead"><h2 id="irfHead" style="font-family:'IBM Plex Mono';font-size:12px;margin:0">SHOCK RESPONSE · employment after a −5% shock</h2><span class="hl" id="hlReadout">—</span></div>
-        <div class="scope" style="margin-top:8px"><canvas id="pv-irf"></canvas></div>
-        <div class="metric" style="padding:10px 16px 14px"><span class="lab">recovery rate −Re λ<sub>lead</sub></span><span class="val" id="recVal">—</span></div>
-      </div>
-
-      <div class="card" id="ctlCard">
-        <div class="controls">
-          <div class="dial"><div class="row"><span class="name"><b>Interest rate</b> r <span class="hint">· global basin</span></span><span class="num" id="nR">0.030</span></div><input type="range" id="sR" min="0" max="0.07" step="0.001" value="0.03"></div>
-          <div class="dial"><div class="row"><span class="name"><b>Investment sensitivity</b> k<sub>sharp</sub> <span class="hint">· local Hopf</span></span><span class="num" id="nKsharp">40.0</span></div><input type="range" id="sKsharp" min="6" max="60" step="0.5" value="40"></div>
-          <div class="dial global"><div class="row"><span class="name"><b>Initial debt</b> d₀ <span class="hint">· the basin (off-map)</span></span><span class="num" id="nD0">0.85</span></div><input type="range" id="sD0" class="g" min="0" max="12" step="0.1" value="0.85"></div>
-          <button class="advbtn" id="advToggle" type="button">▸ advanced (structural)</button>
-          <div class="adv" id="adv" hidden>
-            <div class="dial"><div class="row"><span class="name"><b>Phillips slope</b> ρ</span><span class="num" id="nRho">0.500</span></div><input type="range" id="sRho" min="0.2" max="1.0" step="0.005" value="0.5"></div>
-            <div class="dial"><div class="row"><span class="name"><b>Capital-output</b> ν</span><span class="num" id="nNu">3.00</span></div><input type="range" id="sNu" min="2.0" max="4.0" step="0.02" value="3.0"></div>
+      <div class="side">
+        <div class="card">
+          <div class="cap" style="padding-top:0"><h2 id="phaseHead" style="font-size:11.5px;color:var(--muted)">PHASE PORTRAIT · wage share ω ↔ employment λ</h2></div>
+          <div class="scope"><canvas id="pv-phase"></canvas></div>
+          <p style="font-size:11.5px;color:var(--muted);margin:2px 16px 4px">In Goodwin and Keen the loop is the distributive cycle: high employment → wages rise → <span style="color:var(--ts-profit)">profit</span> squeezed → investment &amp; employment fall → wages fall → profit recovers → repeat. That profit pivot turns every peak and trough — the "agent of change."</p>
+          <div class="metric" style="padding:6px 16px 14px"><span class="lab">recovery rate −Re λ<sub>lead</sub></span><span class="val" id="recVal">—</span></div>
+        </div>
+        <div class="card" id="ctlCard">
+          <div class="controls">
+            <div class="dial"><div class="row"><span class="name"><b>Interest rate</b> r <span class="hint">· global basin</span></span><span class="num" id="nR">0.030</span></div><input type="range" id="sR" min="0" max="0.07" step="0.001" value="0.03"></div>
+            <div class="dial"><div class="row"><span class="name"><b>Investment sensitivity</b> k<sub>sharp</sub> <span class="hint">· local Hopf</span></span><span class="num" id="nKsharp">40.0</span></div><input type="range" id="sKsharp" min="6" max="60" step="0.5" value="40"></div>
+            <div class="dial global"><div class="row"><span class="name"><b>Initial debt</b> d₀ <span class="hint">· the basin (off-map)</span></span><span class="num" id="nD0">0.85</span></div><input type="range" id="sD0" class="g" min="0" max="12" step="0.1" value="0.85"></div>
+            <button class="advbtn" id="advToggle" type="button">▸ advanced (structural)</button>
+            <div class="adv" id="adv" hidden>
+              <div class="dial"><div class="row"><span class="name"><b>Phillips slope</b> ρ</span><span class="num" id="nRho">0.500</span></div><input type="range" id="sRho" min="0.2" max="1.0" step="0.005" value="0.5"></div>
+              <div class="dial"><div class="row"><span class="name"><b>Capital-output</b> ν</span><span class="num" id="nNu">3.00</span></div><input type="range" id="sNu" min="2.0" max="4.0" step="0.02" value="3.0"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -473,18 +485,18 @@ function renderOrtho(model,shock){
   const M=MODELS[model],r=M.resp[shock],e={re:-0.2,im:0};
   const pill=document.getElementById('ptPill'),hl=document.getElementById('hlReadout'),coord=document.getElementById('coord'),rec=document.getElementById('recVal');
   if(shock==='baseline'||!r){
-    const d=orthoFlat();drawPhase(d,e);drawTime(d,e);drawIRF(d,e);
+    const d=orthoFlat();drawTime(d,e);drawIRF(d,e);
     pill.className='ptpill';pill.textContent='AT REST · fire a shock';
     coord.innerHTML='<b>'+M.full+'</b> · at baseline — no shock yet';
     hl.textContent='at rest — no dynamics until shocked';hl.style.color=css('--faint');rec.textContent='—';return;
   }
   if(r.blind){
-    const d=orthoFlat();drawPhase(d,e);drawTime(d,e);drawIRF(d,e);
+    const d=orthoFlat();drawTime(d,e);drawIRF(d,e);
     pill.className='ptpill warn';pill.textContent='BLIND · '+r.tag;
     coord.innerHTML='<b>'+M.full+'</b> · '+shock+' shock — nothing to shock';
     hl.textContent='no response — '+r.tag;hl.style.color=css('--warn');rec.textContent='blind';return;
   }
-  const d=orthoPath(r.data);drawPhase(d,e);drawTime(d,e);drawIRF(d,e);
+  const d=orthoPath(r.data);drawTime(d,e);drawIRF(d,e);
   pill.className='ptpill ok';pill.textContent=r.pill;
   coord.innerHTML='<b>'+M.full+' — '+shock+' shock</b> · src/orthodox/ · shape-normalized (not comparable across models)';
   hl.textContent=r.readout;hl.style.color=css('--ok-ink');rec.textContent=r.rec||'—';
@@ -573,19 +585,19 @@ function drawIRF(sim,e){
 // Capability bits: which machinery each model contains. 1 = has, 2 = partial (~), 0 = lacks.
 const BITS=['endogenous cycle','supply shock','demand shock','distribution','finance'];
 const MODELS={
-  lucas:{name:'Lucas', full:'Lucas · RBC (Kydland–Prescott)', kind:'ortho', bits:[0,1,0,0,0],
+  lucas:{name:'Lucas', full:'Lucas · RBC (Kydland–Prescott)', kind:'ortho', native:'supply', bits:[0,1,0,0,0],
     intro:'<b>Lucas · Real Business Cycle.</b> Fluctuations are the economy’s <b>optimal, efficient response to real (productivity) shocks</b> under rational expectations and flexible prices. Money is neutral, recessions are efficient, and stabilisation policy has <em>no job</em>. Nothing moves without a real shock.',
     resp:{
-      productivity:{data:'rbc', pill:'EFFICIENT · optimal response', readout:'efficient — output & hours self-correct (half-life ≈5 yr)', rec:'shock-driven, efficient',
-        why:'RBC’s <b>native</b> shock. Output and hours fall on impact and recover <b>near-monotonically</b> as technology mean-reverts; consumption barely moves (smoothing). The cycle is efficient — no policy needed.'},
+      supply:{data:'rbc', pill:'EFFICIENT · optimal response', readout:'efficient — output & hours self-correct (half-life ≈5 yr)', rec:'shock-driven, efficient',
+        why:'A real <b>productivity (TFP) shock</b> — RBC’s native shock. Output and hours fall on impact and recover <b>near-monotonically</b> as technology mean-reverts; consumption barely moves (smoothing); the real wage co-moves. The cycle is efficient — no policy needed. (σ_c &lt; σ_y &lt; σ_i, the canonical RBC volatility ordering.)'},
       demand:{blind:true, tag:'money is neutral', why:'A nominal / aggregate-demand shock has <b>no real effect</b> in RBC — flexible prices absorb it instantly. The flat line <em>is</em> the claim: Lucas says demand shocks don’t cause real fluctuations.'},
       financial:{blind:true, tag:'no debt state', why:'RBC has <b>no financial sector</b> — there is no debt to shock. A bit the model simply doesn’t contain (and why it can’t represent a 2008).'}
     }},
-  mankiw:{name:'Mankiw', full:'Mankiw · New Keynesian', kind:'ortho', bits:[0,1,1,0,0],
+  mankiw:{name:'Mankiw', full:'Mankiw · New Keynesian', kind:'ortho', native:'demand', bits:[0,1,1,0,0],
     intro:'<b>Mankiw · New Keynesian.</b> Prices are <b>sticky</b>, so shocks aren’t costlessly absorbed — they open an <em>inefficient</em> output gap, and monetary <b>policy has a job</b> (the role RBC denies). Adds a nominal / demand side on top of Lucas.',
     resp:{
-      productivity:{data:'nk_supply', pill:'TRADEOFF · output↓ inflation↑', readout:'cost-push tradeoff — policy can’t fix both at once', rec:'policy tightens',
-        why:'A supply / cost-push shock: output falls but <span style="color:var(--ts-profit)">inflation rises</span> — the classic <b>inflation-output tradeoff</b>. Policy tightens and can’t close the gap and hit the target at once. (The mirror of the demand shock.)'},
+      supply:{data:'nk_supply', pill:'TRADEOFF · output↓ inflation↑', readout:'cost-push tradeoff — policy can’t fix both at once', rec:'policy tightens',
+        why:'A <b>cost-push (markup) supply shock</b>: output falls but <span style="color:var(--ts-profit)">inflation rises</span> — the classic <b>inflation-output tradeoff</b> that breaks the "divine coincidence"; policy tightens and can’t close the gap and hit the target at once. <em>(Note: a genuine TFP/productivity shock in NK would instead LOWER inflation — Galí; we show the cost-push shock because it’s the supply shock that creates the tradeoff NK is known for.)</em>'},
       demand:{data:'nk', pill:'INEFFICIENT GAP · policy closes it', readout:'inefficient gap — policy eases and closes it', rec:'policy-stabilised',
         why:'NK’s <b>native</b> shock. Sticky prices ⇒ an <em>inefficient</em> <span style="color:var(--ts-emp)">output gap</span> and <span style="color:var(--ts-profit)">disinflation</span>; <span style="color:var(--trace-2)">policy</span> eases to close it. (Canonical 3-equation model: the gap troughs on impact and decays — <b>not</b> a hump.)'},
       financial:{blind:true, tag:'no debt state', why:'The 3-equation NK model has <b>no financial sector</b> either — no debt to shock. Financial frictions are a later bolt-on, not in the core model.'}
@@ -593,19 +605,19 @@ const MODELS={
   goodwin:{name:'Goodwin', full:'Goodwin · growth cycle', kind:'gk', gk:{ov:{keen:false,delta:0}, r:0.03, ksharp:40, d0:0}, bits:[1,2,2,1,0],
     intro:'<b>Goodwin · growth cycle.</b> The first <b>endogenous</b> model here: <span style="color:var(--ts-emp)">employment</span> and the <span style="color:var(--trace-2)">wage share</span> chase each other in a <em>self-sustaining</em> distributive cycle — <b>no shock needed</b>. But it has no supply/demand distinction and no finance.',
     resp:{
-      productivity:{pert:'kick', tag:'a perturbation', why:'Goodwin has <b>no supply/demand distinction</b> — a real shock just displaces the state, and the conservative distributive cycle absorbs it (it keeps cycling at the new amplitude).'},
-      demand:{pert:'kick', tag:'a perturbation', why:'Same as a productivity shock here — Goodwin <b>can’t tell supply from demand</b> (it has no such structure); the shock just resets the cycle’s amplitude.'},
+      supply:{pert:'kick', tag:'a perturbation', why:'Goodwin has <b>no supply/demand distinction</b> — a supply shock just displaces the state, and the conservative distributive cycle absorbs it (it keeps cycling at the new amplitude).'},
+      demand:{pert:'kick', tag:'a perturbation', why:'Same as a supply shock here — Goodwin <b>can’t tell supply from demand</b> (it has no such structure); the shock just resets the cycle’s amplitude.'},
       financial:{blind:true, tag:'no debt', why:'Goodwin has <b>no debt</b> — a financial shock has nothing to act on, so the cycle just continues. Adding that debt equation is exactly what Keen does (→).'}
     }},
   keen:{name:'Keen', full:'Keen · debt cycle', kind:'gk', gk:{ov:{kmax:0.45,kmid:0.15}, r:0.03, ksharp:30, atEq:true, d0:0}, bits:[1,2,2,1,1],
     intro:'<b>Keen · debt cycle.</b> Goodwin <b>+ private debt</b>: firms borrow to invest, so profit is <em>net of interest</em> (π = 1 − ω − r·d). Endogenous distribution AND a financial sector — the only model here that a debt shock can tip.',
     resp:{
-      productivity:{pert:'kick', tag:'a perturbation', why:'A real shock displaces the debt-distribution cycle; at prudent settings it damps back. (Keen, like Goodwin, has no supply/demand distinction.)'},
+      supply:{pert:'kick', tag:'a perturbation', why:'A supply shock displaces the debt-distribution cycle; at prudent settings it damps back. (Keen, like Goodwin, has no supply/demand distinction.)'},
       demand:{pert:'kick', tag:'a perturbation', why:'A perturbation to the debt-distribution cycle; at prudent settings it damps back toward equilibrium.'},
       financial:{pert:'debt', tag:'debt overhang', why:'Keen’s <b>native</b> shock: a sudden <span style="color:var(--trace-3)">debt</span> overhang (a burst bubble / COVID-type hit) pushes the economy <b>over the basin</b> into <b>debt-deflation collapse</b> — with no prior warning. The crisis only the finance-containing model can even represent.'}
     }},
 };
-const SHOCKS=['productivity','demand','financial'];
+const SHOCKS=['supply','demand','financial'];
 let sel='lucas', shockSel='baseline', ortho=true, gkDip=0.02;
 function renderCaps(m){
   const M=MODELS[m];
@@ -616,11 +628,13 @@ function renderCaps(m){
 function setCaption(html,warn){const cap=document.getElementById('caption');cap.className='caption'+(warn?' hetero':'');cap.innerHTML=html;}
 function pressShock(s){document.querySelectorAll('.shock').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.shock===s)));}
 function selectModel(m){
-  sel=m;shockSel='baseline';ortho=(MODELS[m].kind==='ortho');
+  sel=m;ortho=(MODELS[m].kind==='ortho');
   document.querySelectorAll('.beat.mdl').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.model===m)));
-  pressShock('baseline');document.querySelector('.console').classList.toggle('nomap',ortho);renderCaps(m);
-  setCaption(MODELS[m].intro+'<div style="margin-top:8px;font-size:12px;color:var(--faint)">▸ '+(ortho?'the economy at rest — fire a shock to see it respond':'left alone it moves on its own — fire a shock to perturb it')+'</div>');
-  if(ortho)renderOrtho(m,'baseline'); else applyGK(MODELS[m].gk);
+  document.getElementById('statespace').classList.toggle('hide',ortho);   // chaos/eigenvalue/map section: Goodwin/Keen only
+  renderCaps(m);
+  // Orthodox at rest is a FLAT line (no dynamics) — so open on its NATIVE shock (data visible);
+  // Goodwin/Keen "chug" as a cycle, so they open at baseline. fireShock does the caption + render.
+  fireShock(ortho ? MODELS[m].native : 'baseline');
 }
 function applyGK(g){
   ov=Object.assign({},g.ov||{});

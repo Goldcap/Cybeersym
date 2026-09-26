@@ -16,9 +16,9 @@ name: viz
 on:
   push:
     branches: [main]
-    paths: ["viz/**", "src/goodwin_keen/**", "src/orthodox/**", ".github/workflows/viz.yml"]
+    paths: ["viz/**", "src/goodwin_keen/**", "src/orthodox/**", "src/viz_literature_check.py", ".github/workflows/viz.yml"]
   pull_request:
-    paths: ["viz/**", "src/goodwin_keen/**", "src/orthodox/**", ".github/workflows/viz.yml"]
+    paths: ["viz/**", "src/goodwin_keen/**", "src/orthodox/**", "src/viz_literature_check.py", ".github/workflows/viz.yml"]
 
 concurrency:
   group: viz-${{ github.event_name == 'push' && github.sha || github.ref }}
@@ -57,6 +57,9 @@ jobs:
           cd src && python3 orthodox/rbc.py && python3 orthodox/nk.py
       - name: baked orthodox IRFs match src/orthodox/
         run: python3 viz/gen_ortho.py --check
+      - name: trajectories match the literature shapes (topological)
+        run: |
+          cd src && python3 viz_literature_check.py
 
   deploy:
     needs: [fidelity, reference-drift]
