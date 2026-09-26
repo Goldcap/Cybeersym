@@ -31,6 +31,15 @@ independent policy-function (Blanchard–Kahn 2×2) solve is provided and cross-
 self-test, so an algebra slip in either surfaces immediately.
 
 Deterministic; pure functions of parameters. Run `python3 rbc.py` (from src/) for the self-test.
+
+References
+  Lucas, R. E. (1972). "Expectations and the Neutrality of Money." J. Economic Theory 4(2), 103–124.
+  Kydland, F. E., & Prescott, E. C. (1982). "Time to Build and Aggregate Fluctuations."
+    Econometrica 50(6), 1345–1370.
+  King, R. G., Plosser, C. I., & Rebelo, S. T. (1988). "Production, Growth and Business Cycles: I.
+    The Basic Neoclassical Model." J. Monetary Economics 21(2–3), 195–232.
+  Campbell, J. Y. (1994). "Inspecting the Mechanism: An Analytical Approach to the Stochastic
+    Growth Model." J. Monetary Economics 33(3), 463–506.   (the log-linear mechanics used here)
 """
 from dataclasses import dataclass
 import numpy as np

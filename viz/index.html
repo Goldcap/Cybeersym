@@ -131,6 +131,11 @@
   .gitem .sym{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink);white-space:nowrap}
   .gitem .sym .role{display:block;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:500}
   .gitem .sym .role.local{color:var(--accent)} .gitem .sym .role.global{color:var(--warn)} .gitem .sym .role.state{color:var(--faint)}
+  .refs{margin-top:16px}
+  .refs h4{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin:13px 0 5px}
+  .refs h4:first-of-type{margin-top:2px}
+  .refs ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--muted)}
+  .refs li{line-height:1.45} .refs i{color:var(--ink)} .refs .rn{font-size:11.5px;color:var(--faint);margin:0 0 4px}
   .gitem .def{color:var(--muted)}
   .concl{display:flex;flex-direction:column;gap:10px;font-size:13.5px}
   .concl p{margin:0;color:var(--muted)}
@@ -260,6 +265,36 @@
         <p style="color:var(--ink)"><b>Division of labour:</b> <span class="lo">k<sub>sharp</sub></span> (with the structural terms) sets the <b>local</b> Hopf; <span class="gl">r and d₀</span> govern the <b>global</b> basin. Verified against the numpy engine: the Hopf locus is r-independent.</p>
       </div>
     </div>
+  </div>
+
+  <div class="card refs">
+    <h3>References</h3>
+    <p class="rn">Primary sources for the models and concepts this page illustrates. Descriptive/illustrative use only. (Compiled from the literature — worth a spot-check before any formal citation.)</p>
+    <h4>Distributive & financial cycles (Goodwin · Keen · Minsky)</h4>
+    <ul>
+      <li>Goodwin, R. M. (1967). "A Growth Cycle." In <i>Socialism, Capitalism and Economic Growth</i> (C. H. Feinstein, ed.). Cambridge University Press.</li>
+      <li>Keen, S. (1995). "Finance and Economic Breakdown: Modeling Minsky's 'Financial Instability Hypothesis'." <i>Journal of Post Keynesian Economics</i> 17(4), 607–635.</li>
+      <li>Minsky, H. P. (1986). <i>Stabilizing an Unstable Economy.</i> Yale University Press.</li>
+      <li>Lotka, A. J. (1925) / Volterra, V. (1926) — the predator–prey system underlying Goodwin's conservative cycle.</li>
+    </ul>
+    <h4>Orthodox · Real Business Cycle (Lucas / Kydland–Prescott)</h4>
+    <ul>
+      <li>Lucas, R. E. (1972). "Expectations and the Neutrality of Money." <i>Journal of Economic Theory</i> 4(2), 103–124.</li>
+      <li>Kydland, F. E., &amp; Prescott, E. C. (1982). "Time to Build and Aggregate Fluctuations." <i>Econometrica</i> 50(6), 1345–1370.</li>
+      <li>King, R. G., Plosser, C. I., &amp; Rebelo, S. T. (1988). "Production, Growth and Business Cycles: I. The Basic Neoclassical Model." <i>Journal of Monetary Economics</i> 21(2–3), 195–232.</li>
+      <li>Campbell, J. Y. (1994). "Inspecting the Mechanism: An Analytical Approach to the Stochastic Growth Model." <i>Journal of Monetary Economics</i> 33(3), 463–506. <span class="rn">— the log-linear mechanics used in <code>src/orthodox/rbc.py</code>.</span></li>
+    </ul>
+    <h4>Orthodox · New Keynesian (Mankiw)</h4>
+    <ul>
+      <li>Mankiw, N. G. (1985). "Small Menu Costs and Large Business Cycles: A Macroeconomic Model of Monopoly." <i>Quarterly Journal of Economics</i> 100(2), 529–537.</li>
+      <li>Clarida, R., Galí, J., &amp; Gertler, M. (1999). "The Science of Monetary Policy: A New Keynesian Perspective." <i>Journal of Economic Literature</i> 37(4), 1661–1707. <span class="rn">— the 3-equation model in <code>src/orthodox/nk.py</code>.</span></li>
+      <li>Woodford, M. (2003). <i>Interest and Prices: Foundations of a Theory of Monetary Policy.</i> Princeton University Press.</li>
+      <li>Galí, J. (2015). <i>Monetary Policy, Inflation, and the Business Cycle</i>, 2nd ed. Princeton University Press.</li>
+    </ul>
+    <h4>Early-warning / critical slowing down</h4>
+    <ul>
+      <li>Scheffer, M., et al. (2009). "Early-warning signals for critical transitions." <i>Nature</i> 461, 53–59.</li>
+    </ul>
   </div>
 
   <footer>

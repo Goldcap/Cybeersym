@@ -33,6 +33,14 @@ perfect-foresight = the true IRF). An independent residual check plugs the solut
 plainly-written IS/PC/TR and confirms residuals ~0 (guards the matrix assembly).
 
 Deterministic; pure. Run `python3 nk.py` (from src/) for the self-test.
+
+References
+  Mankiw, N. G. (1985). "Small Menu Costs and Large Business Cycles: A Macroeconomic Model of
+    Monopoly." Quarterly J. Economics 100(2), 529–537.
+  Clarida, R., Galí, J., & Gertler, M. (1999). "The Science of Monetary Policy: A New Keynesian
+    Perspective." J. Economic Literature 37(4), 1661–1707.   (the 3-equation model used here)
+  Woodford, M. (2003). Interest and Prices: Foundations of a Theory of Monetary Policy. Princeton.
+  Galí, J. (2015). Monetary Policy, Inflation, and the Business Cycle, 2nd ed. Princeton.
 """
 from dataclasses import dataclass
 import numpy as np
