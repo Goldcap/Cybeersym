@@ -13,6 +13,32 @@ or *escaped* (reached done/merge; the rows that should drive escalation).
 
 ## Entries
 
+### 12 — 2026-09-26 · Orthodox NK beat "hump-shaped" (CYB-42 viz) · **ESCAPED (reached deployed + a reviewer PASS) — caught only by building the real model**
+- **What:** the viz's New-Keynesian beat asserted an adverse demand shock produces a **hump-shaped**
+  output IRF (a hand-drawn gamma curve, τ=6), described as "faithful to Mankiw." This is **wrong for
+  the canonical 3-equation NK model**: the output gap **troughs on impact and decays** — the
+  hump-shaped output IRF is a *medium-scale-DSGE* feature (habit formation / investment-adjustment
+  costs, CEE 2005), not the 3-equation model. Interest-rate smoothing adds only a slight overshoot.
+- **Where it had leaked:** BEATS[1] prose + the orthodox "sketch" + the coord line — AND it was
+  ratified in **entry #11's own reviewer sign-off** ("NK: hump-shaped IRF … faithful to Mankiw").
+  It shipped: deployed to cybeersym.motormeme.com and reported done.
+- **Why the gate (and a fresh reviewer) missed it:** the orthodox curves were **hand-drawn to a
+  plausible textbook cartoon**. The automated gates only exercise the Goodwin–Keen engine
+  (fidelity/display), so they are structurally blind to the orthodox shapes; and the domain reviewer
+  accepted a plausible-looking hump **without solving a real NK model**. A hand-drawn "shape" is an
+  unfalsifiable claim until a real model is run — plausibility passed for verification.
+- **Check that caught it:** **instantiating the model instead of sketching it** — building
+  `src/orthodox/nk.py` (a real 3-equation NK solve). Trough-on-impact is robust across 18
+  calibrations (κ×ρ_d×ρ_i). Same move that killed the egg "beautiful lie" (feed the real thing).
+- **Outcome:** the hand-drawn orthodox curves were **replaced by real numpy DSGE models**
+  (`src/orthodox/rbc.py`, `nk.py`), CI-pinned; prose corrected to the true RBC↔NK distinction
+  (efficiency + policy role, not humpiness). Class = **domain-correctness error in a hand-drawn
+  illustration** (distinct from #11's "renders but doesn't demonstrate"). **Escalation:** standing
+  rule reinforced — *never ship a hand-drawn shape for a model we can actually build; treat any
+  stylized curve as unverified until the real model is run.* Cf. the method rule (HANDOFF §"The
+  METHOD": feed REAL series, flag stylization loudly) and the [[build-discipline-cite-theory-first]]
+  memory. This is the first escaped (not caught-at-gate) domain defect since the exhibit drop (#3).
+
 ### 11 — 2026-09-07 · Goodwin–Keen regime-map viz (CYB-42, `viz/index.html`) · **caught at gate — a NEW class (rendering, not math)**
 - **What:** the interactive regime map. A fresh independent reviewer re-derived everything in numpy and
   confirmed the **intellectual core is sound**: fidelity byte-identical JS↔python; regime classification

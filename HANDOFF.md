@@ -14,6 +14,40 @@ hypotheses. Wind tunnel, not crystal ball. Working commodity: **eggs** (2022-23 
 2024-25 US HPAI price spikes). Econometrics is the *referee* (out-of-sample
 validation), never the engine.
 
+## The larger arc — where this is ALL going (read this if you're lost)
+The egg model is the *foundation that proved the method*; the inflation channel-stack
+(conflict → accommodation → Minsky → Fisher, below) is *structural robustness*. But the
+**north star is a different trophy**, laid out in **`docs/thesis/08-future-work-roadmap.md`**
+(the canonical plan) — a **phase-space economy-state classifier** that reads a regime
+label + distance-to-border + basin membership from *data*, validated on **independent
+distributional data (WID / Piketty)** with a **pre-registered rule frozen before we look**.
+The staging: **representational + methodological (now) → structural robustness across the
+classifier arc (CYB-26→29) → empirical, on withheld data (the trophy).**
+- **The classifier arc CYB-26→29** = four layers: state-space axes · vector field ·
+  **endogenous slow variables (CYB-28 — Piketty/WID wealth-concentration as the slow
+  manifold that walks the fast economy across a border)** · thresholds. Design-first seeds.
+- **Why Goodwin–Keen + CSD (CYB-33, CYB-40/41, and the CYB-42 viz) exist:** the claim that
+  makes the classifier *worth anything* (thesis doc 04) is *a good local fit is blind to its
+  own domain-of-validity border*. There are two tipping types — **local** (Hopf; critical
+  slowing down WARNS) vs **global** (basin crossing; CSD is BLIND). Goodwin–Keen is the
+  canonical minimal model exhibiting **both in one place**, so it's the cleanest non-circular
+  vehicle to demonstrate the distinction and validate the CSD instruments. The **`viz/`
+  regime map** (CYB-42, live at cybeersym.motormeme.com) is that demonstration made interactive.
+- **The trophy is currently BLOCKED at design — and that block is itself a finding.** Two
+  pre-registrations died at pre-lock adversarial review (`docs/preregistrations/`: classifier-
+  vs-WID 2026-09-05; CSD credit-boom-vs-shock 2026-09-07): the frozen model borders aren't
+  empirically instantiable and the *powered* macro test isn't assemblable from available data.
+  The informative meta-finding (per "success = informative, not confirmatory"): **the
+  transitions our model emits CSD before are exactly the rare, data-poor ones; the abundant,
+  well-dated macro transitions are global/shock and CSD-blind — which structurally explains the
+  documented weakness of CSD early-warning in macro.** Captured in CYB-41 + memory; **not yet
+  written up** as a thesis result. CYB-41 holds a live fork (honest single-case illustration /
+  pooled discrimination / bank the meta-finding).
+- **Current representational-layer work:** the `viz/` regime map is a 3-model ladder
+  (orthodox RBC/NK → Goodwin → Keen) then *conditions* of the Keen model; the orthodox beats
+  are being upgraded from hand-drawn sketches to **real toy DSGE models** (`src/orthodox/`,
+  the orthodox-special-case-then-diverge story made runnable).
+
 ## Project board & the conserved-network track (CYB-1…15)
 The egg model (below) proved the **method**. The CYB tickets carry it onto the THESIS's
 **recursion channel** — a conserved producer network — with chaos-measurement tooling
