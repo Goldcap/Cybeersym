@@ -13,6 +13,35 @@ or *escaped* (reached done/merge; the rows that should drive escalation).
 
 ## Entries
 
+### 11 — 2026-09-07 · Goodwin–Keen regime-map viz (CYB-42, `viz/index.html`) · **caught at gate — a NEW class (rendering, not math)**
+- **What:** the interactive regime map. A fresh independent reviewer re-derived everything in numpy and
+  confirmed the **intellectual core is sound**: fidelity byte-identical JS↔python; regime classification
+  matches `numpy.linalg.eigvals` across all 2944 cells (0 stability sign-flips, 0 complex-pair mismatches
+  — the hand-rolled cubic solver is correct); the Hopf is a genuine local bifurcation at k_sharp≈19.5 and
+  **r-independent** (confirming: r governs the global basin, not the local Hopf); local-vs-global holds as
+  mathematics (eigenvalues take no d₀; same eigenvalues, opposite fate across the basin).
+- **Escaped into the *deployed* page (CHANGES-REQUIRED):** the page **failed to show its own thesis.**
+  (1) CRITICAL — the d₀ slider never repainted the breakdown region: the classifier integrated only 2500
+  steps but the debt-deflation collapse lands ~step 2589, just past the budget, so the central demo was
+  **inert at every d₀**. (2) HIGH — the Hopf contour was never drawn: the boundary is ~horizontal
+  (r-independent) but the detector only scanned horizontal neighbours (emitting vertical segments). (3) HIGH
+  — the "limit cycle" band mislabelled slow debt-escapes as "bounded." (4) MEDIUM — map (2500 steps) and
+  pinned pill (5001) could contradict; README checkpoint count stale (said 10; actually 7).
+- **Why the gate (nearly) missed it / who caught it:** the builder's self-verification AND the CI fidelity
+  gate both covered the **math**, never the **rendering** — you cannot screenshot an animation, and the
+  fidelity check only exercises the model block, not the classify/contour/overlay display logic. The fresh
+  reviewer caught it by porting the page's *own* classify logic into node and sweeping d₀ on the real grid.
+- **The check that now catches it:** a new **display-logic regression gate**, `viz/verify_display.mjs`
+  (wired into `.github/workflows/viz.yml`), asserts the demonstration is visible — both regime bands exist,
+  the Hopf contour has segments (scanned on **both** axes), and the breakdown overlay **fires and grows with
+  d₀** (d0=0.85→0 cells, d0=9→708). Plus the map re-based on the exact eigenvalue Re-sign (local stability,
+  d₀-independent) with the breakdown as a separate d₀-driven overlay — repairing all four at their two roots.
+- **Outcome:** caught at gate (before "done"). **Escalation signal:** a genuinely **new escaped-defect
+  class — "the artifact renders but does not demonstrate its claim"** — that math-only verification is
+  structurally blind to. Response: a standing display-logic CI gate, so an inert demonstration fails the
+  build the way a wrong number does. (The Fisher "two-basin" detector-artifact, CYB-30, was the same shape:
+  a display/detector lied while the math was fine.)
+
 ### 10 — 2026-09-06 · CSD early-warning instrument self-test (CYB-40, `src/csd/`) · **clean pass (NIT → strengthened) — positive signal**
 - **What:** a new scale-free early-warning instrument (critical slowing down) self-tested on
   known-answer models *before* any data (the `src/chaos/`-on-the-logistic-map discipline). A fresh
