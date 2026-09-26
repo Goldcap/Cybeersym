@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate (or --check) the orthodox-IRF reference baked into the viz.
 
-The viz's two orthodox beats (RBC, NK) plot REAL impulse responses from the numpy DSGE toy
+The viz's two orthodox models (Lucas/RBC, Mankiw/NK) plot REAL impulse responses from the numpy DSGE toy
 models in `src/orthodox/` (rbc.py, nk.py) — not hand-drawn shapes. Unlike the Goodwin–Keen
 model (ported to JS and computed live in the page), these small DSGE solves are not ported;
 instead this script bakes their IRFs inline into `viz/index.html` between the

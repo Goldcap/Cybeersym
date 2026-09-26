@@ -424,8 +424,8 @@ if(typeof window!=='undefined'){window.__viz={pOf,keenGoodEq,leadingEig,simFromE
 
 /* ---- pinned views ---- */
 function pinTo(ix,iy){mark.ix=Math.max(0,Math.min(NX-1,ix));mark.iy=Math.max(0,Math.min(NY-1,iy));drawMark();renderPinned();}
-/* ORTHODOX beats plot REAL numpy DSGE models (src/orthodox/), a DIFFERENT class from the SFC
-   engine — no debt state. An adverse shock makes output/employment fall on impact and return to
+/* ORTHODOX models (Lucas, Mankiw) plot REAL numpy DSGE output (src/orthodox/), a DIFFERENT class
+   from the SFC engine — no debt state. An adverse shock makes output/employment fall on impact and return to
    trend: RBC = efficient, near-monotone recovery (Kydland–Prescott); NK = an inefficient sticky-
    price gap that policy closes, gap troughs on impact (NOT a hump). Co-movers real; magnitudes
    shape-normalized for display (not comparable across models). */
