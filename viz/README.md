@@ -20,8 +20,13 @@ Read the same economy two ways, side by side:
   as a **time-series** (employment λ, wage share ω, debt d vs time) **plus** an **impulse-response**
   panel — a +2% debt shock and employment's return, with a **shock half-life** readout that
   lengthens toward the Hopf. This is critical slowing down in a macroeconomist's native grammar.
-- **The Keen A→B demonstration** across the top: classical self-correction → relax investment
-  prudence → endogenous cycles → the debt-basin collapse you *can't* see coming.
+- **The demonstration strip** across the top runs three *models*, then two *conditions* of the
+  Keen model (kept distinct on purpose — Minsky/tipping are conditions of Keen, not new models):
+  **orthodox** RBC (real productivity shock, Lucas) and NK (demand shock + sticky prices, Mankiw),
+  drawn as an *illustrative hump sketch, not the SFC engine* and labelled as such; **Goodwin** (the
+  endogenous growth cycle); **Keen** with prudent finance (stable); then Keen's **debt-collapse**
+  (euphoric investment → endogenous debt-deflation) and **exogenous-shock** (a sound economy tipped
+  over the global basin) conditions. Each beat carries prose on the dynamic and its honest caveats.
 - **Glossary + conclusions** below: what every dial/axis means, and the load-bearing division of
   labour (k_sharp sets the local Hopf; r and d₀ govern the global basin).
 

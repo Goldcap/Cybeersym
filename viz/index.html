@@ -45,7 +45,7 @@
   .demo .dh{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 14px;margin-bottom:10px}
   .demo .dh h2{font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:600;margin:0}
   .demo .dh .dhint{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--faint)}
-  .beats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .beats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
   @media (max-width:760px){.beats{grid-template-columns:1fr 1fr}}
   .beat{text-align:left;background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;padding:9px 11px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:2px;min-width:0}
   .beat:hover{border-color:var(--accent);transform:translateY(-1px)}
@@ -158,13 +158,14 @@
 
   <!-- KEEN-STYLE A→B DEMONSTRATION -->
   <div class="demo">
-    <div class="dh"><h2>Demonstration — which crises can you see coming?</h2><span class="dhint">click a beat, or use ◀ ▶ · then explore freely</span></div>
+    <div class="dh"><h2>Three models, then conditions of the Keen model</h2><span class="dhint">top row = models (Orthodox → Goodwin → Keen); bottom row = conditions of the Keen model. Click any, then turn the dials.</span></div>
     <div class="beats" id="beats">
-      <button class="beat classical" data-beat="0" aria-pressed="true" type="button"><span class="bn">LUCAS · MANKIW · 1</span><span class="bt">Self-correcting (orthodox)</span></button>
-      <button class="beat hetero" data-beat="1" aria-pressed="false" type="button"><span class="bn">GOODWIN 1967 · 2</span><span class="bt">The growth cycle</span></button>
-      <button class="beat hetero" data-beat="2" aria-pressed="false" type="button"><span class="bn">KEEN · 3</span><span class="bt">Add finance</span></button>
-      <button class="beat hetero" data-beat="3" aria-pressed="false" type="button"><span class="bn">MINSKY MOMENT · 4</span><span class="bt">Endogenous debt collapse</span></button>
-      <button class="beat hetero" data-beat="4" aria-pressed="false" type="button"><span class="bn">N-TIPPING · 5</span><span class="bt">Exogenous shock</span></button>
+      <button class="beat classical" data-beat="0" aria-pressed="true" type="button"><span class="bn">MODEL · ORTHODOX</span><span class="bt">RBC — real shock (Lucas)</span></button>
+      <button class="beat classical" data-beat="1" aria-pressed="false" type="button"><span class="bn">MODEL · ORTHODOX</span><span class="bt">NK — demand shock (Mankiw)</span></button>
+      <button class="beat hetero" data-beat="2" aria-pressed="false" type="button"><span class="bn">MODEL · GOODWIN</span><span class="bt">Growth cycle (no debt)</span></button>
+      <button class="beat hetero" data-beat="3" aria-pressed="false" type="button"><span class="bn">MODEL · KEEN</span><span class="bt">Prudent finance → stable</span></button>
+      <button class="beat hetero" data-beat="4" aria-pressed="false" type="button"><span class="bn">KEEN · CONDITION</span><span class="bt">Debt collapse (euphoric)</span></button>
+      <button class="beat hetero" data-beat="5" aria-pressed="false" type="button"><span class="bn">KEEN · CONDITION</span><span class="bt">Exogenous shock (bubble)</span></button>
     </div>
     <div class="caption" id="caption"></div>
     <div class="nav">
@@ -201,9 +202,9 @@
       <div class="card">
         <div class="cap"><h2>SELECTED ECONOMY</h2><span class="ptpill ok" id="ptPill">—</span></div>
         <div class="coord" id="coord">r — · k — · d₀ —</div>
-        <div class="cap" style="padding-top:0"><h2 style="font-size:11.5px;color:var(--muted)">PHASE PORTRAIT · ω ↔ λ (Goodwin's growth cycle)</h2></div>
+        <div class="cap" style="padding-top:0"><h2 style="font-size:11.5px;color:var(--muted)">PHASE PORTRAIT · wage share ω ↔ employment λ</h2></div>
         <div class="scope"><canvas id="pv-phase"></canvas></div>
-        <p style="font-size:11.5px;color:var(--muted);margin:2px 16px 4px">The loop is Goodwin's distributive cycle: high employment → wages rise → <span style="color:var(--ts-profit)">profit</span> squeezed → investment &amp; employment fall → wages fall → profit recovers → repeat. That profit pivot turns every peak and trough — the "agent of change."</p>
+        <p style="font-size:11.5px;color:var(--muted);margin:2px 16px 4px">In Goodwin and Keen the loop is the distributive cycle: high employment → wages rise → <span style="color:var(--ts-profit)">profit</span> squeezed → investment &amp; employment fall → wages fall → profit recovers → repeat. That profit pivot turns every peak and trough — the "agent of change." (Orthodox is a stylized sketch, not this engine.)</p>
         <div class="cap" style="padding-top:0"><h2 style="font-size:11.5px;color:var(--muted)">OVER TIME · the same run, as a time-series</h2></div>
         <div class="scope" style="margin-top:0"><canvas id="pv-time"></canvas></div>
         <div class="tslegend">
@@ -287,7 +288,7 @@ function leadingEig(s,p){const J=jacobian(s,p);const tr=J[0][0]+J[1][1]+J[2][2];
 // ==GK-MODEL-END==
 
 /* ---- shared simulation budget (map classify AND pinned views use the SAME value) ---- */
-const BUDGET=6000;                 // steps; catches the d0-driven debt-deflation escape (~step 2589) with margin
+const BUDGET=10000;                // = DISPLAY_STEPS: the map's breakdown hatch and the pinned pill judge collapse over the SAME 100-yr horizon (fixes the 60-vs-100 disagreement on the N-tipping cell)
 function broke(s){return !isFinite(s[0])||!isFinite(s[1])||!isFinite(s[2])||s[0]<=1e-3||Math.abs(s[2])>1e3;}
 function simFromEq(p,d0,steps,record){
   const eq=keenGoodEq(p); if(!eq)return{eq:null,broke:false,path:null,end:null};
@@ -374,18 +375,22 @@ if(typeof window!=='undefined'){window.__viz={pOf,keenGoodEq,leadingEig,simFromE
 
 /* ---- pinned views ---- */
 function pinTo(ix,iy){mark.ix=Math.max(0,Math.min(NX-1,ix));mark.iy=Math.max(0,Math.min(NY-1,iy));drawMark();renderPinned();}
-function orthoPath(steps){                          // orthodox: a shock-driven business cycle that DAMPS back to trend (co-moving vars, no debt)
-  const ew=0.865,el=0.9,ep=1-ew,dt=0.01,tau=10.0,T=8.0,A=0.10,path=[];
-  for(let i=0;i<=steps;i++){if(i%6===0){const t=i*dt,e=-A*Math.exp(-t/tau)*Math.cos(2*Math.PI*t/T);
-    path.push([t, ew*(1-0.4*e), el*(1+e), 0, ep*(1+0.7*e)]);}}   // employment shocked down then damps; profit procyclical; wage share mildly countercyclical
+/* ORTHODOX (a DIFFERENT model — a stylized sketch, NOT the SFC engine). A shock hits, output/
+   employment fall and return to trend as a single HUMP (no ringing): RBC = a quick optimal return
+   (Kydland–Prescott); NK = a more persistent, sticky-price gap (Mankiw). Profit co-moves; no debt. */
+function orthoPath(steps,shape){
+  const ew=0.865,el=0.9,ep=1-ew,dt=0.01,A=0.08,tau=(shape==='nk'?6.0:3.0),path=[];
+  for(let i=0;i<=steps;i++){if(i%6===0){const t=i*dt,e=-A*(t/tau)*Math.exp(1-t/tau);   // gamma hump: 0 → trough −A at t=τ → monotone back to 0 (no oscillation)
+    path.push([t, ew*(1-0.4*e), el*(1+e), 0, ep*(1+0.7*e)]);}}
   return{eq:[ew,el,0],path,broke:false,eqpi:ep};
 }
 function renderOrtho(){
-  document.getElementById('coord').innerHTML='orthodox · unique stable equilibrium, shock-driven cycle (no debt)';
-  const pill=document.getElementById('ptPill');pill.className='ptpill ok';pill.textContent='STABLE · shock damps back to trend';
-  const disp=orthoPath(4000);
-  drawPhase(disp,{re:-0.07,im:0.785});drawTime(disp,{re:-0.07,im:0.785});drawIRF(disp,{re:-0.07,im:0.785});
-  document.getElementById('hlReadout').textContent='shock-driven — damps back to trend';document.getElementById('hlReadout').style.color=css('--ok-ink');
+  const b=BEATS[curBeat],shape=(b&&b.shape)||'rbc';
+  document.getElementById('coord').innerHTML='<b>illustrative sketch — not the SFC engine</b> · orthodoxy has no debt state here';
+  const pill=document.getElementById('ptPill');pill.className='ptpill ok';pill.textContent=(shape==='nk'?'STABLE · sticky-price gap, then closes':'STABLE · shock, then self-corrects');
+  const disp=orthoPath(3500,shape);
+  drawPhase(disp,{re:-0.2,im:0});drawTime(disp,{re:-0.2,im:0});drawIRF(disp,{re:-0.2,im:0});
+  document.getElementById('hlReadout').textContent=(shape==='nk'?'persistent gap — policy can close it':'self-corrects — no cycle without a shock');document.getElementById('hlReadout').style.color=css('--ok-ink');
   document.getElementById('recVal').textContent='needs a shock';
 }
 function renderPinned(){
@@ -397,9 +402,9 @@ function renderPinned(){
   const pill=document.getElementById('ptPill');let cls,txt,e=null,rec=0;
   if(!disp.eq){cls='noeq';txt='no interior equilibrium';}
   else{e=leadingEig(disp.eq,p);rec=Math.max(0,-e.re);
-    if(cl.broke||disp.broke){cls='warn';txt='BREAKDOWN · debt-deflation escape';}
-    else if(e.re<0){cls='ok';txt='STABLE · shock decays';}
-    else{cls='cyc';txt='UNSTABLE · self-driven cycles';}}
+    if(cl.broke||disp.broke){cls='warn';txt='TOXIC · debt-deflation collapse';}
+    else if(e.re<0){cls='ok';txt='STABLE · disturbances fade';}
+    else{cls='cyc';txt='UNSTABLE · past the Hopf → cycle grows';}}
   pill.className='ptpill '+cls;pill.textContent=txt;
   document.getElementById('recVal').textContent=e?(rec.toFixed(4)+' / yr'):'—';
   drawPhase(disp,e);drawTime(disp,e);drawIRF(disp,e);
@@ -417,7 +422,6 @@ function drawPhase(sim,e){
   const col=sim.broke?css('--trace-break'):css('--trace');g.strokeStyle=col;g.lineWidth=1.5*dpr;g.lineJoin='round';g.beginPath();let started=false;
   for(const pt of sim.path){const x=X(pt[1]),y=Y(pt[2]);if(x<-60||x>W+60||y<-60||y>H+60){started=false;continue;}started?g.lineTo(x,y):(g.moveTo(x,y),started=true);}
   g.stroke();const s0=sim.path[0];g.fillStyle=css('--warn');g.beginPath();g.arc(X(s0[1]),Y(s0[2]),3*dpr,0,7);g.fill();
-  g.fillStyle=css('--accent');g.font=`${9.5*dpr}px "IBM Plex Mono"`;g.textBaseline='bottom';g.fillText('Goodwin 1967 · the growth cycle',6*dpr,H-4*dpr);
 }
 function drawTime(sim,e){
   const c=document.getElementById('pv-time'),dpr=sizeC(c),g=c.getContext('2d'),W=c.width,H=c.height;g.clearRect(0,0,W,H);
@@ -470,16 +474,18 @@ function drawIRF(sim,e){
 
 /* ---- demonstration (Keen A→B) ---- */
 const BEATS=[
- {beat:0,cls:'',orthodox:true,r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'a demand shock — then it damps away',
-  caption:'<b>The orthodox baseline (Lucas · Mankiw · DSGE).</b> A unique stable equilibrium. A demand shock sends the economy into a business cycle — <span style="color:var(--ts-emp)">employment</span> and <span style="color:var(--ts-profit)">profit</span> co-move — but it <b>damps back to trend</b>. Cycles are the economy digesting <em>external</em> shocks; with no shock, no cycle. This is the null the heterodox beats depart from — starting with Goodwin, whose cycle needs no shock at all.'},
- {beat:1,cls:'hetero',ov:{keen:false,delta:0},r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'endogenous · no shock, no debt',
-  caption:'<b>Goodwin 1967 — the growth cycle.</b> Relax "external shocks only." With <em>no shock at all</em>, the economy traces a <b>closed orbit</b> at constant amplitude: <span style="color:var(--ts-emp)">employment</span> and the <span style="color:var(--trace-2)">wage share</span> chase each other, employment peaking a <b>quarter-cycle before wages</b> — the predator–prey signature (invariant conserved to machine precision). The cycle is <em>endogenous</em> — the smooth orthodox return is already gone.'},
- {beat:2,cls:'hetero',ov:{kmax:0.45,kmid:0.15},r:0.03,ksharp:30,atEq:true,d0:0,pt:[0.03,30],shock:'endogenous · no shock',
-  caption:'<b>Keen — add finance.</b> Keen (1995) put private <span style="color:var(--trace-3)">debt</span> into Goodwin’s cycle. Firms borrow to invest; equilibrium leverage sits near ~100–170% of output; debt cycles up in booms and down in busts, and for prudent finance the whole cycle <b>damps</b>. Finance can be stabilising.'},
- {beat:3,cls:'hetero',ov:{kmax:0.6,kmid:0.12},r:0.07,ksharp:25,d0:1.0,pt:[0.07,25],shock:'endogenous · no shock — the crisis is built in',
-  caption:'<b>The Minsky moment (Keen).</b> Euphoric finance and higher interest: <span style="color:var(--trace-3)">debt</span> <b>ratchets up every boom</b>, the interest burden compounds so the <span style="color:var(--ts-profit)">profit</span> margin <b>tightens each cycle</b>, and with <em>no external shock</em> the economy tips into <b>debt-deflation collapse</b> — sooner the higher the interest rate. Keen’s formalisation of Minsky.'},
- {beat:4,cls:'hetero',ov:{kmax:0.45,kmid:0.15},r:0.03,ksharp:30,d0:9.0,pt:[0.03,30],shock:'shock · an exogenous debt bubble / COVID-type hit',
-  caption:'<b>N-tipping — the exogenous shock.</b> The <em>same locally-stable economy as the KEEN beat</em> (Re&lt;0, it damps) — but hit it with a sudden <span style="color:var(--trace-3)">debt</span> overhang (a burst bubble, or a COVID-type collapse) past the basin, and it crashes with <b>no prior warning</b>: same map cell, same damping, opposite fate. Early warning catches the endogenous tipping; it is <span style="color:var(--warn)">blind</span> to this.'}];
+ {beat:0,cls:'',orthodox:true,shape:'rbc',r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'external productivity shock — then it self-corrects',
+  caption:'<b>Orthodox · RBC (Lucas / Kydland–Prescott).</b> Business cycles are the economy’s <b>optimal response to real (productivity) shocks</b>, propagated through capital; agents hold rational expectations and the cycle is <em>efficient</em>, so policy should leave it alone. A shock hits, <span style="color:var(--ts-emp)">employment</span> and <span style="color:var(--ts-profit)">profit</span> dip and return to trend in a single hump. With no shock, no cycle. <b>Illustrative sketch — a stylized RBC impulse response, not our SFC engine (orthodoxy has no debt state here).</b>'},
+ {beat:1,cls:'',orthodox:true,shape:'nk',r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'external demand shock — sticky prices leave a gap policy can close',
+  caption:'<b>Orthodox · New Keynesian (Mankiw).</b> A <b>demand</b> shock has real effects because prices/wages are <b>sticky</b> — opening an <em>inefficient</em> output gap that lingers longer and that monetary policy can and should close. The economy still self-corrects, just slowly and wastefully. <b>Illustrative sketch — a stylized NK impulse response, not our engine.</b>'},
+ {beat:2,cls:'hetero',ov:{keen:false,delta:0},r:0.03,ksharp:40,d0:0,pt:[0.03,40],shock:'endogenous — a one-time nudge, then left alone',
+  caption:'<b>Goodwin 1967 — the growth cycle.</b> Now a real model of the income distribution. Nudged once and left alone, the economy traces a <b>closed orbit</b> at constant amplitude: <span style="color:var(--ts-emp)">employment</span> and the <span style="color:var(--trace-2)">wage share</span> chase each other, employment peaking a <b>quarter-cycle before wages</b> — the predator–prey signature (invariant conserved to machine precision). The cycle is <em>endogenous</em> — no external shock needed, which the orthodox models cannot produce. (Goodwin, "A Growth Cycle," 1967.)'},
+ {beat:3,cls:'hetero',ov:{kmax:0.45,kmid:0.15},r:0.03,ksharp:30,atEq:true,d0:0,pt:[0.03,30],shock:'endogenous — a one-time nudge, then left alone',
+  caption:'<b>Keen 1995 — add finance.</b> Keen put a private-<span style="color:var(--trace-3)">debt</span> equation into Goodwin: firms borrow to invest, so the profit that drives investment is now <em>net of interest</em> (π = 1 − ω − r·d). At prudent settings, equilibrium leverage sits near ~170% of output, debt cycles up in booms and down in busts, and the cycle <b>damps very slowly — stabilising, but only just</b> (it sits near the edge). <em>The next two use the SAME Keen equations — only the dials and the starting point change.</em>'},
+ {beat:4,cls:'hetero',ov:{kmax:0.6,kmid:0.12},r:0.07,ksharp:25,d0:1.0,pt:[0.07,25],shock:'endogenous — a one-time nudge, then the crisis is built in',
+  caption:'<b>Keen model · euphoric finance — endogenous fragility (Minsky’s hypothesis).</b> Crank investment appetite and interest up (watch the dials move): <span style="color:var(--trace-3)">debt</span> <b>ratchets up each boom</b>, interest compounds so the <span style="color:var(--ts-profit)">profit</span> margin <b>tightens every cycle</b>, and the economy — already past its stability edge (the map colours this cell <em>unstable</em>) — spirals into <b>debt-deflation</b>, no external shock. <b>Honest caveat: this lives in the high-interest corner — slide r down and the same economy simmers for a century without collapsing.</b> "Stability breeds instability" (Minsky), formalized by Keen.'},
+ {beat:5,cls:'hetero',ov:{kmax:0.45,kmid:0.15},r:0.03,ksharp:30,d0:9.0,pt:[0.03,30],shock:'shock · an exogenous debt bubble / COVID-type hit',
+  caption:'<b>Keen model · the Minsky moment — a sound economy tips.</b> The <em>same locally-stable</em> prudent economy as above (Re&lt;0, it damps) — but start it with a sudden <span style="color:var(--trace-3)">debt</span> overhang (a burst bubble, or a COVID-type hit) past the basin, and it collapses with <b>no prior warning</b>: same map cell, same damping, opposite fate. Early warning catches the endogenous tipping; it is <span style="color:var(--warn)">blind</span> to this over-the-basin shock.'}];
 let curBeat=0,freeMode=false,ortho=false;
 function applyBeat(i){
   const b=BEATS[i];curBeat=i;freeMode=false;ortho=!!b.orthodox;
