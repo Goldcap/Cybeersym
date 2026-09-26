@@ -109,7 +109,7 @@
   .ptpill.warn{background:var(--warn-bg);color:var(--warn-ink)}
   .ptpill.noeq{background:var(--panel-2);color:var(--muted)}
   .scope{position:relative;margin:10px 14px 12px;border-radius:9px;background:var(--screen);border:1px solid var(--edge);overflow:hidden}
-  .scope canvas{display:block;width:100%;height:100%}
+  .scope canvas{display:block;width:100%;height:auto}   /* size from aspect-ratio; height:100% overflowed the grid cell and overwrote the legend */
   #pv-phase{aspect-ratio:1/.82}
   #pv-time{aspect-ratio:1/.52}
   #pv-irf{aspect-ratio:1/.52}
@@ -512,8 +512,9 @@ function renderPinned(){
   if(!disp.eq){cls='noeq';txt='no interior equilibrium';}
   else{e=leadingEig(disp.eq,p);rec=Math.max(0,-e.re);
     if(cl.broke||disp.broke){cls='warn';txt='TOXIC · debt-deflation collapse';}
-    else if(e.re<0){cls='ok';txt='STABLE · disturbances fade';}
-    else{cls='cyc';txt='UNSTABLE · past the Hopf → cycle grows';}}
+    else if(e.re<-1e-4){cls='ok';txt='STABLE · disturbances fade';}
+    else if(e.re>1e-4){cls='cyc';txt='UNSTABLE · past the Hopf → cycle grows';}
+    else{cls='cyc';txt='NEUTRAL · constant-amplitude cycle';}}   // the Goodwin conservative centre (Re≈0)
   pill.className='ptpill '+cls;pill.textContent=txt;
   document.getElementById('recVal').textContent=e?(rec.toFixed(4)+' / yr'):'—';
   drawPhase(disp,e);drawTime(disp,e);drawIRF(disp,e);
@@ -554,7 +555,7 @@ function drawTime(sim,e){
   ln(pt=>Yp((pt[2]-eql)*100),Yp(0),css('--ts-emp'),2.0);                    // employment λ (pp, RED) — flat at 0 (healthy) pre-shock, then the shock drops it
   g.strokeStyle=css('--warn');g.setLineDash([3*dpr,3*dpr]);g.lineWidth=1.1*dpr;g.beginPath();g.moveTo(lp,0);g.lineTo(lp,H);g.stroke();g.setLineDash([]);  // shock marker
   g.fillStyle=css('--faint');g.fillText('percentage points from steady state (±'+SCALE+'pp)',4*dpr,3*dpr);
-  g.fillStyle=css('--warn');g.fillText('↓shock',lp+3*dpr,3*dpr);
+  g.fillStyle=css('--warn');g.fillText('↓ shock',lp+3*dpr,15*dpr);
   if(!sim.wideScale){g.fillStyle=css('--trace-3');g.textAlign='right';g.fillText('debt (right): '+dlo.toFixed(1)+'→'+dhi.toFixed(1),W-4*dpr,3*dpr);g.textAlign='left';}
   g.fillStyle=css('--faint');g.textBaseline='bottom';g.fillText(T>0?('gridline = 1 cycle ≈'+T.toFixed(0)+' yr'):'',4*dpr,H-3*dpr);g.fillText(tmax.toFixed(0)+' yr',W-26*dpr,H-3*dpr);
 }
