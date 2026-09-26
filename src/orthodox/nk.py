@@ -55,14 +55,25 @@ class NKParams:
     phi_x: float = 0.125    # Taylor gap response (0.5 annualised /4)
     rho_i: float = 0.8      # interest-rate smoothing (the source of the hump)
     rho_d: float = 0.5      # demand-shock persistence
+    rho_s: float = 0.5      # supply (cost-push) shock persistence
 
 
-def irf(p: NKParams = NKParams(), shock: float = -0.01, T: int = 400):
-    """Impulse response to a one-time demand (natural-rate) innovation `shock`.
+def irf(p: NKParams = NKParams(), shock: float = -0.01, kind: str = "demand", T: int = 400):
+    """Impulse response to a one-time shock (`shock` < 0 = adverse, for BOTH kinds).
 
-    Returns dict of arrays (length T): rn (shock path), x (output gap), pi (inflation), i (rate).
+    kind='demand' — a natural-rate / aggregate-demand innovation r^n_t in the IS curve. Adverse ⇒
+      output gap AND inflation both fall; policy eases. (Galí ch.3.)
+    kind='supply'  — a cost-push innovation u_t in the NKPC (π_t = βEπ_{t+1} + κx_t + u_t). An
+      adverse cost-push RAISES inflation while output falls — the classic inflation–output
+      TRADEOFF: policy cannot close the gap and hit the inflation target at once, so it tightens
+      and inflation and output move in OPPOSITE directions (the mirror of a demand shock). This is
+      the NK feature Lucas/RBC lacks (no nominal side) — the signature the viz's Mankiw beat shows.
+
+    Returns dict of arrays (length T): rn, u (shock paths), x (output gap), pi (inflation), i (rate).
     """
-    rn = shock * (p.rho_d ** np.arange(T))
+    rn = (shock * (p.rho_d ** np.arange(T))) if kind == "demand" else np.zeros(T)
+    # adverse (shock<0) cost-push RAISES marginal cost ⇒ cp_t > 0, hence the −shock sign:
+    cp = (-shock * (p.rho_s ** np.arange(T))) if kind == "supply" else np.zeros(T)
     # Unknowns u = [x_0..x_{T-1}, pi_0..pi_{T-1}, i_0..i_{T-1}] (length 3T).
     # Terminal x_T = pi_T = 0 (T large); i_{-1} = 0 (predetermined).
     def xi(t): return t
@@ -79,11 +90,12 @@ def irf(p: NKParams = NKParams(), shock: float = -0.01, T: int = 400):
         A[row, ii(t)] += 1.0 / p.sigma
         b[row] += rn[t] / p.sigma
         row += 1
-    for t in range(T):                               # (PC)  π_t − β π_{t+1} − κ x_t = 0
+    for t in range(T):                               # (PC)  π_t − β π_{t+1} − κ x_t − u_t = 0
         A[row, pi(t)] += 1.0
         if t + 1 < T:
             A[row, pi(t + 1)] += -p.beta
         A[row, xi(t)] += -p.kappa
+        b[row] += cp[t]
         row += 1
     for t in range(T):                               # (TR)  i_t − ρ_i i_{t-1} − (1−ρ_i)(φ_π π_t + φ_x x_t)=0
         A[row, ii(t)] += 1.0
@@ -93,17 +105,17 @@ def irf(p: NKParams = NKParams(), shock: float = -0.01, T: int = 400):
         A[row, xi(t)] += -(1.0 - p.rho_i) * p.phi_x
         row += 1
     assert row == N
-    u = np.linalg.solve(A, b)
-    return {"rn": rn, "x": u[0:T], "pi": u[T:2 * T], "i": u[2 * T:3 * T]}
+    sol = np.linalg.solve(A, b)
+    return {"rn": rn, "u": cp, "x": sol[0:T], "pi": sol[T:2 * T], "i": sol[2 * T:3 * T]}
 
 
-def residuals(p: NKParams, sol):
+def residuals(p: NKParams, s):
     """Independent check: plug the solution into plainly-written IS/PC/TR; should be ~0."""
-    x, pip, i, rn = sol["x"], sol["pi"], sol["i"], sol["rn"]
+    x, pip, i, rn, cp = s["x"], s["pi"], s["i"], s["rn"], s["u"]
     T = len(x)
     xn = np.append(x[1:], 0.0); pn = np.append(pip[1:], 0.0); il = np.append(0.0, i[:-1])
     r_is = x - xn + (1.0 / p.sigma) * (i - pn - rn)
-    r_pc = pip - p.beta * pn - p.kappa * x
+    r_pc = pip - p.beta * pn - p.kappa * x - cp
     r_tr = i - p.rho_i * il - (1.0 - p.rho_i) * (p.phi_pi * pip + p.phi_x * x)
     return max(np.max(np.abs(r_is)), np.max(np.abs(r_pc)), np.max(np.abs(r_tr)))
 
@@ -136,10 +148,20 @@ def _selftest():
     dx = np.diff(s0["x"][:100]); nz = dx[np.abs(dx) > 1e-12]
     assert np.all(nz > 0) or np.all(nz < 0), "ρ_i=0 gap should be monotone"
 
+    # (6) SUPPLY (cost-push) shock — the inflation–output TRADEOFF: output falls but inflation
+    # RISES (opposite signs), and policy TIGHTENS. This is the distinguishing NK supply signature.
+    ss = irf(p, shock=-0.01, kind="supply", T=400)
+    assert residuals(p, ss) < 1e-10, "supply-shock solve residuals not zero"
+    assert ss["x"][0] < 0 and ss["pi"][0] > 0, (ss["x"][0], ss["pi"][0])   # output DOWN, inflation UP
+    assert ss["i"][0] > 0, ss["i"][0]                                        # policy TIGHTENS
+    # opposite-sign co-movement (tradeoff) vs the demand shock's same-sign fall:
+    assert np.sign(ss["x"][0]) != np.sign(ss["pi"][0]), "supply shock should split output & inflation"
+    assert np.sign(x[0]) == np.sign(pip[0]), "demand shock should move output & inflation together"
+
     print(f"NK self-test OK  (residuals {res:.2e})")
-    print(f"  impact:  x={x[0]:+.4f}  π={pip[0]:+.4f}  i={i[0]:+.4f}   (adverse 1% demand shock)")
-    print(f"  gap troughs ON IMPACT then decays (NOT hump); policy eases and closes it")
-    print(f"  smoothing overshoot: gap rings to {overshoot:+.4f}; ρ_i=0 control is monotone (no overshoot)")
+    print(f"  DEMAND  impact:  x={x[0]:+.4f}  π={pip[0]:+.4f}  i={i[0]:+.4f}   (both fall, policy eases)")
+    print(f"  SUPPLY  impact:  x={ss['x'][0]:+.4f}  π={ss['pi'][0]:+.4f}  i={ss['i'][0]:+.4f}   (TRADEOFF: output↓ inflation↑, policy tightens)")
+    print(f"  gap troughs ON IMPACT then decays (NOT hump); demand-shock smoothing overshoot {overshoot:+.4f}")
     return s
 
 

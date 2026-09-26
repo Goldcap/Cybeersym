@@ -47,10 +47,12 @@ def build():
            "wage": _samp(r["y"] - r["n"])}                     # real wage ŵ = ŷ − n̂ (procyclical)
 
     npar = NKParams()
-    s = nk_irf(npar, shock=-0.01, T=400)
-    nk = {"t": yrs, "emp": _samp(s["x"]), "infl": _samp(s["pi"]), "rate": _samp(s["i"])}
+    sd = nk_irf(npar, shock=-0.01, kind="demand", T=400)
+    nk = {"t": yrs, "emp": _samp(sd["x"]), "infl": _samp(sd["pi"]), "rate": _samp(sd["i"])}
+    ss = nk_irf(npar, shock=-0.01, kind="supply", T=400)   # cost-push: output↓ inflation↑ (tradeoff)
+    nk_supply = {"t": yrs, "emp": _samp(ss["x"]), "infl": _samp(ss["pi"]), "rate": _samp(ss["i"])}
 
-    return {"rbc": rbc, "nk": nk}
+    return {"rbc": rbc, "nk": nk, "nk_supply": nk_supply}
 
 
 def block():
